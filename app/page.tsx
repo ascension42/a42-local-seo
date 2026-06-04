@@ -1,4 +1,4 @@
-import { getFeaturedPractitioners, getBlogPosts, getPractitioners } from '@/lib/queries'
+import { getPractitioners, getBlogPosts } from '@/lib/queries'
 import Hero from '@/components/home/Hero'
 import CategoryGrid from '@/components/home/CategoryGrid'
 import SectionHeader from '@/components/ui/SectionHeader'
@@ -11,15 +11,14 @@ import { siteConfig } from '@/lib/config'
 export const revalidate = 3600
 
 export default async function HomePage() {
-  const [featured, allPractitioners, posts] = await Promise.all([
-    getFeaturedPractitioners(),
+  const [practitioners, posts] = await Promise.all([
     getPractitioners(),
     getBlogPosts(),
   ])
 
   return (
     <>
-      <Hero practitionerCount={allPractitioners.length} />
+      <Hero practitionerCount={practitioners.length} />
 
       <section className="py-[52px] pb-11">
         <div className="max-w-[1060px] mx-auto px-10">
@@ -40,15 +39,18 @@ export default async function HomePage() {
             subtitle="Certifiés et vérifiés par notre équipe"
           />
           <div className="grid grid-cols-3 gap-[18px]">
-            {featured.map((p) => <PractitionerCard key={p.id} practitioner={p} />)}
+            {practitioners.map((p) => (
+              <PractitionerCard key={p.id} practitioner={p} />
+            ))}
           </div>
-          {allPractitioners.length > featured.length && (
-            <div className="text-center mt-7">
-              <Link href="/praticiens" className="text-green-dark text-[13px] font-semibold border-b-2 border-green pb-px hover:text-green transition-colors">
-                Voir les {allPractitioners.length} praticiens →
-              </Link>
-            </div>
-          )}
+          <div className="text-center mt-7">
+            <Link
+              href="/praticiens"
+              className="text-green-dark text-[13px] font-semibold border-b-2 border-green pb-px hover:text-green transition-colors"
+            >
+              Voir tous les praticiens →
+            </Link>
+          </div>
         </div>
       </section>
 

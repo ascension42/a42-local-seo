@@ -23,7 +23,7 @@ export default function Hero({ practitionerCount }: { practitionerCount: number 
             Voir les praticiens
           </Link>
           <Link href="/inscription" className="text-white/75 text-xs font-medium hover:text-white transition-colors">
-            Comment ça marche →
+            Inscrire mon cabinet →
           </Link>
         </div>
       </div>
