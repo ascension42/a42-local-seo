@@ -14,18 +14,20 @@ export default function Footer() {
         <p className="text-xs mt-1.5">Annuaire indépendant — {siteConfig.cityLabel} &amp; région</p>
       </div>
 
-      <div className="flex flex-col items-end gap-2">
-        <p className="text-[11px] text-white/50">Powered by</p>
-        <a href="https://ascension42.fr" target="_blank" rel="noopener noreferrer">
-          <Image
-            src="/logo-blanc.png"
-            alt="Ascension 42"
-            width={120}
-            height={52}
-            className="opacity-80 hover:opacity-100 transition-opacity"
-          />
-        </a>
-      </div>
+      <a
+        href="https://ascension42.fr"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex items-center gap-3 hover:opacity-100 transition-opacity opacity-90"
+      >
+        <span className="text-[11px] text-white/60">Powered by</span>
+        <Image
+          src="/logo-blanc.png"
+          alt="Ascension 42"
+          width={80}
+          height={34}
+        />
+      </a>
     </footer>
   )
 }
