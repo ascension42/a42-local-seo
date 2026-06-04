@@ -69,7 +69,7 @@ export default async function ProfilePage(
           </div>
           <div className="pb-6">
             <p className="text-[10px] font-bold text-green-light uppercase tracking-[2px] mb-1.5">
-              {p.certification ?? 'Sophrologue'}
+              {siteConfig.specialtyLabel} certifié — {siteConfig.cityLabel}
             </p>
             <h1 className="text-[28px] font-extrabold text-white tracking-tight mb-1.5">
               {p.first_name} {p.last_name}
@@ -78,19 +78,16 @@ export default async function ProfilePage(
               {siteConfig.specialtyLabel} à {siteConfig.cityLabel} — {p.neighborhood}
             </p>
             <div className="flex gap-2 flex-wrap">
-              {p.certification && <Badge variant="certified">{p.certification}</Badge>}
               <Badge variant="mode">{modeLabel[p.consultation_mode]}</Badge>
               {p.is_premium && <Badge variant="premium">Praticien mis en avant</Badge>}
             </div>
           </div>
           <div className="pb-6 flex flex-col gap-2.5 items-end">
             <a
-              href={p.booking_url ?? p.doctolib_url ?? '#'}
-              target="_blank"
-              rel="noopener noreferrer"
+              href={`mailto:contact@${siteConfig.domain}?subject=Contact ${encodeURIComponent(p.first_name + ' ' + p.last_name)}`}
               className="bg-green text-white font-bold text-[13px] px-7 py-3 rounded-lg whitespace-nowrap hover:bg-[#4faa73] transition-colors"
             >
-              Prendre rendez-vous
+              Contacter le praticien
             </a>
           </div>
         </div>
