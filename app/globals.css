@@ -28,3 +28,9 @@ body {
   background: var(--background);
   color: var(--foreground);
 }
+
+@layer base {
+  h1 { font-weight: 800; color: var(--color-green-dark); }
+  h2 { font-weight: 700; color: var(--color-green-dark); }
+  h3 { font-weight: 600; color: var(--color-ink); }
+}
