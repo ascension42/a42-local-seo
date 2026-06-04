@@ -77,3 +77,26 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> 
   if (error) return null
   return data as BlogPost
 }
+
+export interface NetworkCity {
+  id: string
+  name: string
+  slug: string
+  lat: number
+  lng: number
+  specialty: string
+  domain: string
+  practitioner_count: number
+  is_live: boolean
+}
+
+export async function getNetworkCities(): Promise<NetworkCity[]> {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('network_cities')
+    .select('*')
+    .order('is_live', { ascending: false })
+    .order('name')
+  if (error) throw new Error(error.message)
+  return (data ?? []) as NetworkCity[]
+}

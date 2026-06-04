@@ -6,6 +6,7 @@ import FilterSidebar from '@/components/practitioners/FilterSidebar'
 import SortSelect from '@/components/practitioners/SortSelect'
 import { Suspense } from 'react'
 import type { ConsultationMode } from '@/lib/types'
+import PractitionersMapWrapper from '@/components/practitioners/PractitionersMapWrapper'
 
 export const revalidate = 3600
 
@@ -87,6 +88,14 @@ export default async function AnnuairePage({ searchParams }: Props) {
             <ModeChips />
           </Suspense>
         </div>
+      </div>
+
+      {/* Carte interactive */}
+      <div className="max-w-[1060px] mx-auto px-10 py-6">
+        <p className="text-[11px] font-bold text-muted uppercase tracking-[1px] mb-3">
+          Carte des praticiens
+        </p>
+        <PractitionersMapWrapper practitioners={filtered} />
       </div>
 
       <div
