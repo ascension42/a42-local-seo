@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import type { Practitioner } from '@/lib/types'
 import ModeTag from './ModeTag'
+import PatientsBadge from './PatientsBadge'
 import { siteConfig } from '@/lib/config'
 
 interface Props { practitioner: Practitioner }
@@ -52,6 +53,9 @@ export default function PractitionerRow({ practitioner: p }: Props) {
         <p className="text-[11px] text-muted">
           {p.neighborhood}{p.hourly_rate ? ` · ${p.hourly_rate} €/séance` : ''}{p.years_active ? ` · En activité depuis ${p.years_active}` : ''}
         </p>
+        <div className="mt-1.5">
+          <PatientsBadge accepting={p.accepting_patients} />
+        </div>
       </div>
       <div className="flex flex-col gap-2 items-end">
         <ModeTag mode={p.consultation_mode} />

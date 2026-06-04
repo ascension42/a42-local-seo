@@ -52,6 +52,7 @@ export interface Practitioner {
   facebook_url: string | null
   is_premium: boolean
   is_verified: boolean
+  accepting_patients: boolean
   created_at: string
   updated_at: string
   practitioner_tags?: PractitionerTag[]

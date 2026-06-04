@@ -4,6 +4,7 @@ import { createStaticClient } from '@/lib/supabase/static'
 import { siteConfig } from '@/lib/config'
 import type { Metadata } from 'next'
 import Badge from '@/components/ui/Badge'
+import PatientsBadge from '@/components/practitioners/PatientsBadge'
 
 export const revalidate = 3600
 
@@ -80,6 +81,7 @@ export default async function ProfilePage(
             <div className="flex gap-2 flex-wrap">
               <Badge variant="mode">{modeLabel[p.consultation_mode]}</Badge>
               {p.is_premium && <Badge variant="premium">Praticien mis en avant</Badge>}
+              <PatientsBadge accepting={p.accepting_patients} />
             </div>
           </div>
           <div className="pb-6 flex flex-col gap-2.5 items-end">

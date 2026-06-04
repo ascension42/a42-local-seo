@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import type { Practitioner } from '@/lib/types'
 import ModeTag from './ModeTag'
+import PatientsBadge from './PatientsBadge'
 
 interface Props { practitioner: Practitioner }
 
@@ -53,6 +54,9 @@ export default function PractitionerCard({ practitioner: p }: Props) {
               {t.label}
             </span>
           ))}
+        </div>
+        <div className="mb-2">
+          <PatientsBadge accepting={p.accepting_patients} />
         </div>
         <div className="h-px bg-[#f0ede8] mb-3.5" />
         <span className={[
