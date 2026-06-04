@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { siteConfig } from '@/lib/config'
 
 export default function Footer() {
@@ -12,11 +13,19 @@ export default function Footer() {
         </Link>
         <p className="text-xs mt-1.5">Annuaire indépendant — {siteConfig.cityLabel} &amp; région</p>
       </div>
-      <nav className="flex gap-5">
-        <Link href="/praticiens" className="text-white/55 text-xs hover:text-white transition-colors">Tous les praticiens</Link>
-        <Link href="/blog" className="text-white/55 text-xs hover:text-white transition-colors">Blog</Link>
-        <Link href="/inscription" className="text-white/55 text-xs hover:text-white transition-colors">Inscrire mon cabinet</Link>
-      </nav>
+
+      <div className="flex flex-col items-end gap-2">
+        <p className="text-[11px] text-white/50">Powered by</p>
+        <a href="https://ascension42.fr" target="_blank" rel="noopener noreferrer">
+          <Image
+            src="/logo-blanc.png"
+            alt="Ascension 42"
+            width={120}
+            height={52}
+            className="opacity-80 hover:opacity-100 transition-opacity"
+          />
+        </a>
+      </div>
     </footer>
   )
 }
