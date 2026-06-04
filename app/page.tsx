@@ -1,4 +1,4 @@
-import { getPractitioners, getBlogPosts } from '@/lib/queries'
+import { getRotatingPractitioners, getPractitioners, getBlogPosts } from '@/lib/queries'
 import Hero from '@/components/home/Hero'
 import CategoryGrid from '@/components/home/CategoryGrid'
 import SectionHeader from '@/components/ui/SectionHeader'
@@ -11,14 +11,15 @@ import { siteConfig } from '@/lib/config'
 export const revalidate = 3600
 
 export default async function HomePage() {
-  const [practitioners, posts] = await Promise.all([
+  const [displayedPractitioners, allPractitioners, posts] = await Promise.all([
+    getRotatingPractitioners(3),
     getPractitioners(),
     getBlogPosts(),
   ])
 
   return (
     <>
-      <Hero practitionerCount={practitioners.length} />
+      <Hero practitionerCount={allPractitioners.length} />
 
       <section className="py-[52px] pb-11">
         <div className="max-w-[1060px] mx-auto px-10">
@@ -39,7 +40,7 @@ export default async function HomePage() {
             subtitle="Certifiés et vérifiés par notre équipe"
           />
           <div className="grid grid-cols-3 gap-[18px]">
-            {practitioners.map((p) => (
+            {displayedPractitioners.map((p) => (
               <PractitionerCard key={p.id} practitioner={p} />
             ))}
           </div>

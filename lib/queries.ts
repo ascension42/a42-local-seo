@@ -26,6 +26,18 @@ export async function getFeaturedPractitioners(): Promise<Practitioner[]> {
   return all.filter((p) => p.is_premium).slice(0, 3)
 }
 
+export async function getRotatingPractitioners(count: number = 3): Promise<Practitioner[]> {
+  const all = await getPractitioners()
+  if (all.length <= count) return all
+
+  // Offset déterministe basé sur le jour (change chaque jour)
+  const dayOffset = Math.floor(Date.now() / 86400000) % all.length
+
+  // Rotation circulaire
+  const rotated = [...all.slice(dayOffset), ...all.slice(0, dayOffset)]
+  return rotated.slice(0, count)
+}
+
 export async function getPractitionerBySlug(slug: string): Promise<Practitioner | null> {
   const supabase = await createClient()
   const { data, error } = await supabase
