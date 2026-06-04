@@ -53,6 +53,8 @@ export interface Practitioner {
   is_premium: boolean
   is_verified: boolean
   accepting_patients: boolean
+  lat?: number | null
+  lng?: number | null
   created_at: string
   updated_at: string
   practitioner_tags?: PractitionerTag[]

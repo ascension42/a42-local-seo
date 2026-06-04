@@ -16,6 +16,9 @@ export default function Navbar() {
         <Link href="/blog" className="text-white/75 text-xs font-medium hover:text-white transition-colors">
           Blog
         </Link>
+        <Link href="/faq" className="text-white/75 text-xs font-medium hover:text-white transition-colors">
+          FAQ
+        </Link>
         <Link
           href="/inscription"
           className="bg-green text-white text-xs font-semibold px-4 py-[7px] rounded-[5px] hover:bg-[#4faa73] transition-colors"

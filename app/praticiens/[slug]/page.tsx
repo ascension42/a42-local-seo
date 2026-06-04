@@ -49,6 +49,30 @@ export default async function ProfilePage(
   const p = await getPractitionerBySlug(slug)
   if (!p) notFound()
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'LocalBusiness',
+    name: `${p.first_name} ${p.last_name} — ${siteConfig.specialtyLabel}`,
+    description: p.bio ?? `${siteConfig.specialtyLabel} certifié à ${siteConfig.cityLabel}`,
+    url: `https://${siteConfig.domain}/praticiens/${p.slug}`,
+    telephone: undefined,
+    priceRange: p.hourly_rate ? `${p.hourly_rate}€` : undefined,
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: siteConfig.cityLabel,
+      addressCountry: 'FR',
+      streetAddress: p.neighborhood ?? undefined,
+    },
+    ...(p.lat && p.lng ? {
+      geo: {
+        '@type': 'GeoCoordinates',
+        latitude: p.lat,
+        longitude: p.lng,
+      },
+    } : {}),
+    sameAs: [p.website_url, p.instagram_url ? `https://instagram.com/${p.instagram_url.replace('@', '')}` : null].filter(Boolean),
+  }
+
   const tags = p.practitioner_tags ?? []
   const testimonials = p.testimonials ?? []
   const initials = `${p.first_name[0]}${p.last_name[0]}`
@@ -56,6 +80,10 @@ export default async function ProfilePage(
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Header */}
       <div
         className="px-10 pt-8 pb-0"
