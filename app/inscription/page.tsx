@@ -6,37 +6,15 @@ export const metadata: Metadata = {
   description: `Soyez visible par les patients qui vous cherchent à ${siteConfig.cityLabel}. Profil complet, lien de réservation, visibilité Google.`,
 }
 
-const plans = [
-  {
-    name: 'Standard',
-    price: 'Gratuit',
-    priceNote: '/toujours',
-    featured: false,
-    features: [
-      { text: "Profil public dans l'annuaire", active: true },
-      { text: 'Nom, spécialité, quartier',      active: true },
-      { text: 'Lien vers votre site',           active: true },
-      { text: 'Position mise en avant',         active: false },
-      { text: 'Lien de réservation direct',     active: false },
-      { text: '"Badge Certifié vérifié"',       active: false },
-      { text: 'Profil complet (bio, avis)',     active: false },
-    ],
-  },
-  {
-    name: 'Premium',
-    price: '59 €',
-    priceNote: '/mois',
-    featured: true,
-    features: [
-      { text: "Profil public dans l'annuaire", active: true },
-      { text: 'Nom, spécialité, quartier',      active: true },
-      { text: 'Lien vers votre site',           active: true },
-      { text: 'Position mise en avant (top 3)', active: true },
-      { text: 'Lien de réservation direct',     active: true },
-      { text: 'Badge "Certifié vérifié"',       active: true },
-      { text: 'Profil complet (bio, avis)',     active: true },
-    ],
-  },
+const features = [
+  { text: "Profil public dans l'annuaire",   active: true },
+  { text: 'Nom, spécialité, quartier',        active: true },
+  { text: 'Lien vers votre site',             active: true },
+  { text: 'Position mise en avant (top 3)',   active: true },
+  { text: 'Lien de réservation direct',       active: true },
+  { text: 'Badge "Certifié vérifié"',         active: true },
+  { text: 'Profil complet (bio, avis)',        active: true },
+  { text: 'Mis en avant dans les articles',   active: true },
 ]
 
 const steps = [
@@ -49,6 +27,7 @@ const steps = [
 export default function InscriptionPage() {
   return (
     <>
+      {/* Hero */}
       <div className="bg-green-dark text-center px-10 py-[52px]">
         <span className="inline-block bg-surface text-green-dark text-[10px] font-bold px-3.5 py-[5px] rounded-xl uppercase tracking-[1px] mb-4">
           Pour les praticiens
@@ -63,6 +42,7 @@ export default function InscriptionPage() {
         </p>
       </div>
 
+      {/* Stats */}
       <div className="bg-green-deep border-b border-white/10 py-5">
         <div className="max-w-[1060px] mx-auto flex justify-center gap-[60px]">
           {[
@@ -78,52 +58,62 @@ export default function InscriptionPage() {
         </div>
       </div>
 
+      {/* Offre unique */}
       <section className="py-14 px-10">
-        <div className="max-w-[860px] mx-auto">
-          <p className="text-[10px] font-bold text-green uppercase tracking-[2px] text-center mb-2">Tarifs</p>
-          <h2 className="text-2xl font-extrabold text-green-dark text-center mb-1.5 tracking-tight">
-            Choisissez votre visibilité
+        <div className="max-w-[520px] mx-auto">
+          <p className="text-[10px] font-bold text-green uppercase tracking-[2px] text-center mb-2">Tarif</p>
+          <h2 className="text-2xl font-extrabold text-green-dark text-center mb-2 tracking-tight">
+            Une seule offre, tout inclus
           </h2>
-          <p className="text-[13px] text-muted text-center mb-9">Sans engagement. Résiliable à tout moment.</p>
-          <div className="grid grid-cols-2 gap-5">
-            {plans.map((plan) => (
-              <div
-                key={plan.name}
-                className={`relative bg-white rounded-2xl p-7 border-2 ${plan.featured ? 'border-green' : 'border-border'}`}
-              >
-                {plan.featured && (
-                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-green text-white text-[10px] font-extrabold px-3.5 py-1 rounded-[10px] whitespace-nowrap">
-                    Le plus choisi
-                  </span>
-                )}
-                <p className="text-xs font-bold text-muted uppercase tracking-[1.5px] mb-2">{plan.name}</p>
-                <p className="text-[38px] font-extrabold text-green-dark tracking-tight mb-0.5">
-                  {plan.price}{' '}
-                  <span className="text-sm font-medium text-muted">{plan.priceNote}</span>
-                </p>
-                <ul className="space-y-2.5 my-6">
-                  {plan.features.map((f) => (
-                    <li key={f.text} className={`flex gap-2.5 items-start text-xs leading-[1.5] ${f.active ? 'text-ink' : 'text-muted'}`}>
-                      <span className={`w-4 h-4 rounded-full border-2 shrink-0 mt-0.5 ${f.active ? 'bg-green border-green' : 'bg-bg-alt border-border'}`} />
-                      {f.text}
-                    </li>
-                  ))}
-                </ul>
-                <button
-                  className={`w-full py-3 rounded-lg font-bold text-[13px] border-2 transition-colors ${
-                    plan.featured
-                      ? 'bg-green text-white border-green hover:bg-[#4faa73]'
-                      : 'bg-bg-alt text-green-dark border-border hover:border-green'
-                  }`}
-                >
-                  {plan.featured ? 'Commencer — 59 €/mois' : 'Créer mon profil gratuit'}
-                </button>
+          <p className="text-[13px] text-muted text-center mb-6">Sans engagement. Résiliable à tout moment.</p>
+
+          {/* Bandeau promo */}
+          <div className="bg-surface border border-green rounded-xl px-5 py-3.5 mb-6 text-center">
+            <p className="text-sm font-bold text-green-dark">
+              Offre de lancement — Les 3 premiers inscrits bénéficient du premier mois offert !
+            </p>
+            <p className="text-[11px] text-muted mt-1">Plus que quelques places disponibles.</p>
+          </div>
+
+          {/* Plan unique */}
+          <div className="relative bg-white rounded-2xl p-8 border-2 border-green shadow-lg">
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-green text-white text-[10px] font-extrabold px-4 py-1 rounded-[10px] whitespace-nowrap">
+              Accès complet
+            </div>
+
+            <div className="text-center mb-6">
+              <div className="flex items-end justify-center gap-1">
+                <span className="text-[48px] font-extrabold text-green-dark tracking-tight leading-none">24</span>
+                <span className="text-xl font-bold text-green-dark mb-1">€</span>
+                <span className="text-sm font-medium text-muted mb-2">/mois</span>
               </div>
-            ))}
+              <p className="text-[11px] text-muted mt-1">Soit moins de 1 € par jour</p>
+            </div>
+
+            <ul className="space-y-3 mb-8">
+              {features.map((f) => (
+                <li key={f.text} className="flex gap-3 items-center text-sm text-ink">
+                  <span className="w-5 h-5 rounded-full bg-green flex items-center justify-center shrink-0">
+                    <svg viewBox="0 0 10 8" width="10" fill="none">
+                      <path d="M1 4l2.5 2.5L9 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </span>
+                  {f.text}
+                </li>
+              ))}
+            </ul>
+
+            <button className="w-full py-4 rounded-xl font-bold text-[15px] bg-green text-white hover:bg-[#4faa73] transition-colors">
+              Inscrire mon cabinet — 24 €/mois
+            </button>
+            <p className="text-center text-[11px] text-muted mt-3">
+              Sans engagement · Annulable à tout moment · Paiement sécurisé
+            </p>
           </div>
         </div>
       </section>
 
+      {/* How it works */}
       <section className="bg-bg-alt py-[52px] px-10">
         <div className="max-w-[860px] mx-auto">
           <p className="text-[10px] font-bold text-green uppercase tracking-[2px] text-center mb-2">
@@ -146,13 +136,37 @@ export default function InscriptionPage() {
         </div>
       </section>
 
+      {/* FAQ */}
+      <section className="py-[52px] px-10">
+        <div className="max-w-[680px] mx-auto">
+          <h2 className="text-2xl font-extrabold text-green-dark text-center mb-8 tracking-tight">
+            Questions fréquentes
+          </h2>
+          {[
+            ['Puis-je annuler à tout moment ?', 'Oui, sans frais ni préavis. Votre profil est retiré dans les 24h suivant votre résiliation.'],
+            ['Comment est vérifiée ma certification ?', 'Nous vous demandons de télécharger votre diplôme RNCP. Notre équipe valide sous 24h ouvrées.'],
+            ['Dois-je avoir un système de réservation en ligne ?', 'Non. Si vous n\'avez pas de Doctolib ou Cal.com, nous affichons votre numéro ou email.'],
+            ['Qu\'est-ce que l\'offre de lancement ?', 'Les 3 premiers praticiens à s\'inscrire bénéficient du premier mois totalement offert. Aucune carte bancaire requise pendant ce mois.'],
+          ].map(([q, a]) => (
+            <div key={String(q)} className="border-b border-border py-4">
+              <p className="text-sm font-bold text-green-dark mb-2">{q}</p>
+              <p className="text-xs text-muted leading-[1.7]">{a}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Bottom CTA */}
       <section className="bg-green-dark text-center py-[52px] px-10">
         <h2 className="text-[26px] font-extrabold text-white mb-2.5">Prêt à remplir votre agenda ?</h2>
-        <p className="text-[13px] text-white/70 mb-6">
+        <p className="text-[13px] text-white/70 mb-2">
           Rejoignez les praticiens déjà référencés sur {siteConfig.domain}
         </p>
+        <p className="text-[12px] text-green-light mb-6 font-semibold">
+          Offre de lancement : premier mois offert pour les 3 premiers inscrits
+        </p>
         <button className="bg-green text-white font-bold text-sm px-8 py-3.5 rounded-lg hover:bg-[#4faa73] transition-colors">
-          Inscrire mon cabinet gratuitement
+          Inscrire mon cabinet — 24 €/mois
         </button>
       </section>
     </>
