@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { getBlogPostBySlug, getFeaturedPractitioners } from '@/lib/queries'
+import { getBlogPostBySlug, getFeaturedPractitioners, getBlogPosts } from '@/lib/queries'
 import { createStaticClient } from '@/lib/supabase/static'
 import { siteConfig } from '@/lib/config'
 import type { Metadata } from 'next'
@@ -32,11 +32,14 @@ export default async function BlogArticlePage(
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params
-  const [post, featured] = await Promise.all([
+  const [post, featured, allPosts] = await Promise.all([
     getBlogPostBySlug(slug),
     getFeaturedPractitioners(),
+    getBlogPosts(),
   ])
   if (!post) notFound()
+
+  const relatedPosts = allPosts.filter((p) => p.slug !== slug).slice(0, 2)
 
   return (
     <>
@@ -95,7 +98,7 @@ export default async function BlogArticlePage(
                     <p className="text-xs font-bold text-green-dark">{p.first_name} {p.last_name}</p>
                     <p className="text-[10px] text-muted">{p.hourly_rate} €/séance</p>
                   </div>
-                  <span className="text-[10px] font-bold text-green ml-auto">RDV →</span>
+                  <span className="text-[10px] font-bold text-green ml-auto whitespace-nowrap">Voir le profil →</span>
                 </Link>
               ))}
             </div>
@@ -115,6 +118,31 @@ export default async function BlogArticlePage(
           </div>
         </aside>
       </div>
+
+      {relatedPosts.length > 0 && (
+        <div className="max-w-[1060px] mx-auto px-10 pb-12">
+          <h2 className="text-lg font-extrabold text-green-dark mb-5 tracking-tight">
+            Ces articles pourraient vous intéresser
+          </h2>
+          <div className={`grid gap-5 ${relatedPosts.length === 1 ? 'grid-cols-1 max-w-sm' : 'grid-cols-2'}`}>
+            {relatedPosts.map((p) => (
+              <Link
+                key={p.id}
+                href={`/blog/${p.slug}`}
+                className="flex gap-4 p-4 bg-white border-[1.5px] border-border rounded-xl hover:border-green hover:shadow-md transition-all duration-150"
+              >
+                <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-green-dark to-green shrink-0" />
+                <div>
+                  <p className="text-[10px] font-bold text-green uppercase tracking-[1px] mb-1">
+                    {p.reading_time_min} min de lecture
+                  </p>
+                  <p className="text-sm font-bold text-green-dark leading-[1.35]">{p.title}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
     </>
   )
 }
