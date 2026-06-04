@@ -3,6 +3,7 @@ import { siteConfig } from '@/lib/config'
 import type { Metadata } from 'next'
 import PractitionerRow from '@/components/practitioners/PractitionerRow'
 import FilterSidebar from '@/components/practitioners/FilterSidebar'
+import SortSelect from '@/components/practitioners/SortSelect'
 import { Suspense } from 'react'
 import type { ConsultationMode } from '@/lib/types'
 
@@ -14,7 +15,7 @@ export const metadata: Metadata = {
 }
 
 interface Props {
-  searchParams: Promise<{ mode?: string; quartier?: string; prix?: string; tag?: string }>
+  searchParams: Promise<{ mode?: string; quartier?: string; prix?: string; tag?: string; sort?: string }>
 }
 
 export default async function AnnuairePage({ searchParams }: Props) {
@@ -48,6 +49,18 @@ export default async function AnnuairePage({ searchParams }: Props) {
         t.label.toLowerCase().includes(params.tag!.toLowerCase())
       )
     )
+  }
+
+  // Tri
+  if (params.sort === 'alpha') {
+    filtered = [...filtered].sort((a, b) =>
+      `${a.last_name} ${a.first_name}`.localeCompare(`${b.last_name} ${b.first_name}`)
+    )
+  } else if (params.sort === 'price') {
+    filtered = [...filtered].sort((a, b) => (a.hourly_rate ?? 999) - (b.hourly_rate ?? 999))
+  } else {
+    // Par défaut : premium en premier
+    filtered = [...filtered].sort((a, b) => (b.is_premium ? 1 : 0) - (a.is_premium ? 1 : 0))
   }
 
   return (
@@ -89,11 +102,9 @@ export default async function AnnuairePage({ searchParams }: Props) {
             <p className="text-[13px] font-semibold text-green-dark">
               {filtered.length} praticien{filtered.length > 1 ? 's' : ''} trouvé{filtered.length > 1 ? 's' : ''}
             </p>
-            <select className="border-[1.5px] border-border rounded-md px-2.5 py-1.5 text-xs text-ink bg-white cursor-pointer font-sans">
-              <option>Mis en avant</option>
-              <option>Alphabétique</option>
-              <option>Tarif croissant</option>
-            </select>
+            <Suspense>
+              <SortSelect />
+            </Suspense>
           </div>
           <div className="flex flex-col gap-3.5">
             {filtered.length === 0 ? (
@@ -127,6 +138,17 @@ function ModeChips() {
           className="px-3.5 py-1.5 rounded-full border-[1.5px] text-[11px] font-semibold transition-colors border-border text-muted bg-white hover:border-green hover:text-green-dark hover:bg-surface"
         >
           {f.label}
+        </a>
+      ))}
+      <div className="w-px h-4 bg-border mx-1" />
+      <span className="text-[11px] font-bold text-muted uppercase tracking-[1px] mr-1">Spécialité :</span>
+      {['Stress & Anxiété', 'Sommeil', 'Burn-out', 'Confiance en soi'].map((tag) => (
+        <a
+          key={tag}
+          href={`/praticiens?tag=${encodeURIComponent(tag)}`}
+          className="px-3.5 py-1.5 rounded-full border-[1.5px] text-[11px] font-semibold transition-colors border-border text-muted bg-white hover:border-green hover:text-green-dark hover:bg-surface"
+        >
+          {tag}
         </a>
       ))}
     </>

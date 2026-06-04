@@ -8,7 +8,7 @@ const labels: Record<ConsultationMode, string> = {
 }
 
 const styles: Record<ConsultationMode, string> = {
-  cabinet: 'bg-bg-alt text-muted border border-border',
+  cabinet: 'bg-[#f0fdf4] text-[#166534] border border-[#bbf7d0]',
   online:  'bg-[#f0fdf4] text-[#15803d] border border-[#86efac]',
   both:    'bg-surface text-green-dark border border-green-light',
 }

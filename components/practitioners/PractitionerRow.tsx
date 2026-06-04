@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import type { Practitioner } from '@/lib/types'
 import ModeTag from './ModeTag'
+import { siteConfig } from '@/lib/config'
 
 interface Props { practitioner: Practitioner }
 
@@ -39,7 +40,7 @@ export default function PractitionerRow({ practitioner: p }: Props) {
           )}
         </div>
         <p className="text-[10px] font-bold text-green uppercase tracking-[0.8px] mb-1.5">
-          {p.certification ?? 'Sophrologue'}
+          {siteConfig.specialtyLabel} certifié
         </p>
         <div className="flex flex-wrap gap-1 mb-1.5">
           {tags.slice(0, 4).map((t) => (
@@ -54,11 +55,8 @@ export default function PractitionerRow({ practitioner: p }: Props) {
       </div>
       <div className="flex flex-col gap-2 items-end">
         <ModeTag mode={p.consultation_mode} />
-        <span className={[
-          'text-[11px] font-bold px-4 py-2 rounded-md whitespace-nowrap',
-          p.is_premium ? 'bg-green text-white' : 'bg-bg-alt text-green-dark border border-border',
-        ].join(' ')}>
-          {p.is_premium ? 'Prendre RDV' : 'Voir le profil'}
+        <span className="text-[11px] font-bold px-4 py-2 rounded-md whitespace-nowrap bg-bg-alt text-green-dark border border-border">
+          Voir le profil
         </span>
       </div>
     </Link>
