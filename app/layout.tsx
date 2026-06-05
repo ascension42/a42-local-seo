@@ -30,9 +30,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="fr" className={`${jakarta.variable} ${fraunces.variable}`} suppressHydrationWarning>
-      <body className="bg-bg text-ink font-sans antialiased">
+      <body className="bg-bg text-ink font-sans antialiased flex flex-col min-h-screen">
         <Navbar />
-        <main>{children}</main>
+        <main className="flex-1">{children}</main>
         <Footer />
       </body>
     </html>
