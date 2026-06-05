@@ -103,9 +103,9 @@ export default function InscriptionPage() {
               ))}
             </ul>
 
-            <button className="w-full py-4 rounded-xl font-bold text-[15px] bg-green text-white hover:bg-[#4faa73] transition-colors">
+            <a href="/inscription/formulaire" className="block w-full py-4 rounded-xl font-bold text-[15px] bg-green text-white hover:bg-[#4faa73] transition-colors text-center">
               Inscrire mon cabinet — 24 €/mois
-            </button>
+            </a>
             <p className="text-center text-[11px] text-muted mt-3">
               Sans engagement · Annulable à tout moment · Paiement sécurisé
             </p>
@@ -165,9 +165,9 @@ export default function InscriptionPage() {
         <p className="text-[12px] text-green-light mb-6 font-semibold">
           Offre de lancement : premier mois offert pour les 3 premiers inscrits
         </p>
-        <button className="bg-green text-white font-bold text-sm px-8 py-3.5 rounded-lg hover:bg-[#4faa73] transition-colors">
+        <a href="/inscription/formulaire" className="inline-block bg-green text-white font-bold text-sm px-8 py-3.5 rounded-lg hover:bg-[#4faa73] transition-colors">
           Inscrire mon cabinet — 24 €/mois
-        </button>
+        </a>
       </section>
     </>
   )

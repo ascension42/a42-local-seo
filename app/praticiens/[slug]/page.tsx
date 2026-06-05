@@ -5,6 +5,7 @@ import { siteConfig } from '@/lib/config'
 import type { Metadata } from 'next'
 import Badge from '@/components/ui/Badge'
 import PatientsBadge from '@/components/practitioners/PatientsBadge'
+import ProfileViewTracker from '@/components/practitioners/ProfileViewTracker'
 
 export const revalidate = 3600
 
@@ -80,6 +81,7 @@ export default async function ProfilePage(
 
   return (
     <>
+      <ProfileViewTracker practitionerId={p.id} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
