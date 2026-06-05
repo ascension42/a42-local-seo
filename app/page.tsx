@@ -1,4 +1,4 @@
-import { getRotatingPractitioners, getPractitioners, getBlogPosts } from '@/lib/queries'
+import { getRotatingPractitioners, getHeroStats, getBlogPosts } from '@/lib/queries'
 import Hero from '@/components/home/Hero'
 import CategoryGrid from '@/components/home/CategoryGrid'
 import SectionHeader from '@/components/ui/SectionHeader'
@@ -11,15 +11,15 @@ import { siteConfig } from '@/lib/config'
 export const revalidate = 3600
 
 export default async function HomePage() {
-  const [displayedPractitioners, allPractitioners, posts] = await Promise.all([
+  const [displayedPractitioners, heroStats, posts] = await Promise.all([
     getRotatingPractitioners(3),
-    getPractitioners(),
+    getHeroStats(),
     getBlogPosts(),
   ])
 
   return (
     <>
-      <Hero practitionerCount={allPractitioners.length} />
+      <Hero practitionerCount={heroStats.practitionerCount} neighborhoodCount={heroStats.neighborhoodCount} tagCount={heroStats.tagCount} />
 
       <section className="py-[52px] pb-11">
         <div className="max-w-[1060px] mx-auto px-10">

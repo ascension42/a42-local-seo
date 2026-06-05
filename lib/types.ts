@@ -67,6 +67,7 @@ export interface BlogPost {
   title: string
   excerpt: string | null
   content: string | null
+  cover_url: string | null
   city_id: string | null
   specialty_id: string | null
   reading_time_min: number | null

@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { siteConfig } from '@/lib/config'
 
-export default function Hero({ practitionerCount }: { practitionerCount: number }) {
+export default function Hero({ practitionerCount, neighborhoodCount, tagCount }: { practitionerCount: number; neighborhoodCount: number; tagCount: number }) {
   return (
     <div className="relative h-[420px] overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-green-dark via-[#3c6947] to-green" />
@@ -30,8 +30,8 @@ export default function Hero({ practitionerCount }: { practitionerCount: number 
       <div className="absolute bottom-7 right-10 flex gap-7">
         {[
           { num: practitionerCount, label: 'Praticiens' },
-          { num: 8, label: 'Spécialités' },
-          { num: 4, label: 'Zones' },
+          { num: tagCount, label: 'Spécialités' },
+          { num: neighborhoodCount, label: 'Zones' },
         ].map(({ num, label }) => (
           <div key={label} className="text-center text-white">
             <span className="block text-[22px] font-extrabold text-green-light">{num}</span>

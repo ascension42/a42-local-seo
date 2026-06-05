@@ -26,9 +26,14 @@ export default function PractitionerCard({ practitioner: p }: Props) {
       ].join(' ')}
     >
       <div className="h-[130px] relative bg-bg-alt flex items-center justify-center">
-        <div className={`w-[72px] h-[72px] rounded-full border-[3px] border-white bg-gradient-to-br ${avatarGradients[idx]} flex items-center justify-center text-[26px] font-extrabold text-white`}>
-          {initials}
-        </div>
+        {p.photo_url ? (
+          <img src={p.photo_url} alt={`${p.first_name} ${p.last_name}`}
+            className="w-[72px] h-[72px] rounded-full border-[3px] border-white object-cover" />
+        ) : (
+          <div className={`w-[72px] h-[72px] rounded-full border-[3px] border-white bg-gradient-to-br ${avatarGradients[idx]} flex items-center justify-center text-[26px] font-extrabold text-white`}>
+            {initials}
+          </div>
+        )}
         {p.is_premium && (
           <span className="absolute top-2.5 left-2.5 bg-green-dark text-white text-[9px] font-bold px-2 py-0.5 rounded-[10px] uppercase tracking-[0.5px]">
             Premium

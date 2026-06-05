@@ -47,7 +47,7 @@ export default function InscriptionFormulairePage() {
 
   if (submitted) {
     return (
-      <div className="flex items-center justify-center px-5 py-16">
+      <div className="min-h-[calc(100vh-72px)] flex items-center justify-center px-5 py-16">
         <div className="max-w-[680px] w-full text-center bg-surface rounded-2xl p-10 shadow-sm">
           <div className="w-14 h-14 bg-green/15 rounded-full flex items-center justify-center mx-auto mb-5">
             <svg className="w-7 h-7 text-green" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>

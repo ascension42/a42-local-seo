@@ -80,6 +80,23 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> 
   return data as BlogPost
 }
 
+export async function getHeroStats(): Promise<{ practitionerCount: number; neighborhoodCount: number; tagCount: number }> {
+  const supabase = await createClient()
+  const { data: practitioners } = await supabase
+    .from('practitioners')
+    .select('neighborhood, practitioner_tags(label), cities!inner(slug), specialties!inner(slug)')
+    .eq('cities.slug', siteConfig.city)
+    .eq('specialties.slug', siteConfig.specialty)
+    .eq('is_verified', true)
+
+  const all = practitioners ?? []
+  const neighborhoods = new Set(all.map((p: { neighborhood: string | null }) => p.neighborhood).filter(Boolean))
+  const tags = new Set(
+    all.flatMap((p: { practitioner_tags?: { label: string }[] }) => (p.practitioner_tags ?? []).map((t) => t.label))
+  )
+  return { practitionerCount: all.length, neighborhoodCount: neighborhoods.size, tagCount: tags.size }
+}
+
 export async function getCityCenter(): Promise<{ lat: number; lng: number }> {
   const supabase = await createClient()
   const { data } = await supabase
