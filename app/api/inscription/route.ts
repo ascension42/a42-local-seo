@@ -12,7 +12,7 @@ export async function POST(req: Request) {
     }
 
     const supabase = await createClient()
-    const { error } = await supabase.from('inscription_requests').insert({
+    const { data: row, error } = await supabase.from('inscription_requests').insert({
       first_name, last_name, email,
       phone: phone || null,
       certification: certification || null,
@@ -25,10 +25,10 @@ export async function POST(req: Request) {
       doctolib_url: doctolib_url || null,
       bio: bio || null,
       tags: tags?.length ? tags : null,
-    })
+    }).select('id').single()
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-    return NextResponse.json({ ok: true })
+    return NextResponse.json({ ok: true, id: row.id })
   } catch {
     return NextResponse.json({ ok: false }, { status: 500 })
   }

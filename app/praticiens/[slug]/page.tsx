@@ -6,6 +6,7 @@ import type { Metadata } from 'next'
 import Badge from '@/components/ui/Badge'
 import PatientsBadge from '@/components/practitioners/PatientsBadge'
 import ProfileViewTracker from '@/components/practitioners/ProfileViewTracker'
+import BookingButton from '@/components/practitioners/BookingButton'
 
 export const revalidate = 3600
 
@@ -208,14 +209,13 @@ export default async function ProfilePage(
             <p className="text-[11px] text-white/65 mb-4 leading-[1.5]">
               Réservation directe sur l&apos;agenda de {p.first_name}.
             </p>
-            <a
+            <BookingButton
               href={p.booking_url ?? p.doctolib_url ?? '#'}
-              target="_blank"
-              rel="noopener noreferrer"
+              practitionerId={p.id}
               className="block bg-green text-white text-center font-bold text-[13px] py-3 rounded-lg mb-2.5 hover:bg-[#4faa73] transition-colors"
             >
               Réserver une séance →
-            </a>
+            </BookingButton>
             <p className="text-[10px] text-white/50 text-center">Via Doctolib / Cal.com / site personnel</p>
           </div>
 

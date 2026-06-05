@@ -56,17 +56,36 @@ export default function InscriptionFormulairePage() {
     setLoading(true)
     setError(null)
     try {
-      const res = await fetch('/api/inscription', {
+      // 1. Save inscription request
+      const inscRes = await fetch('/api/inscription', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       })
-      if (res.ok) {
-        setSubmitted(true)
-      } else {
-        const json = await res.json()
+      if (!inscRes.ok) {
+        const json = await inscRes.json()
         setError(json.error ?? 'Une erreur est survenue.')
+        setLoading(false)
+        return
       }
+      const { id: inscription_request_id } = await inscRes.json()
+
+      // 2. If Stripe is configured, redirect to Checkout; otherwise show success
+      const stripeRes = await fetch('/api/stripe/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          inscription_request_id,
+          email: data.email,
+          name: `${data.first_name} ${data.last_name}`,
+        }),
+      })
+      if (stripeRes.ok) {
+        const { url } = await stripeRes.json()
+        if (url) { window.location.href = url; return }
+      }
+      // Fallback if Stripe not configured
+      setSubmitted(true)
     } catch {
       setError('Une erreur est survenue, veuillez réessayer.')
     }
