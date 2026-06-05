@@ -84,8 +84,8 @@ async function migratePractitioners() {
   if (error) { console.error(error.message); return }
 
   for (const p of data ?? []) {
-    const citySlug      = (p.cities as { slug: string }).slug
-    const specialtySlug = (p.specialties as { slug: string }).slug
+    const citySlug      = (p.cities as unknown as { slug: string }).slug
+    const specialtySlug = (p.specialties as unknown as { slug: string }).slug
 
     console.log(`\n  ${p.slug}`)
 
@@ -133,8 +133,8 @@ async function migrateBlogPosts() {
   if (error) { console.error(error.message); return }
 
   for (const p of data ?? []) {
-    const citySlug      = (p.cities as { slug: string }).slug
-    const specialtySlug = (p.specialties as { slug: string }).slug
+    const citySlug      = (p.cities as unknown as { slug: string }).slug
+    const specialtySlug = (p.specialties as unknown as { slug: string }).slug
 
     console.log(`\n  ${p.slug}`)
 
