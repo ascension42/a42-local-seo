@@ -111,7 +111,6 @@ export default async function ProfilePage(
             </p>
             <div className="flex gap-2 flex-wrap">
               <Badge variant="mode">{modeLabel[p.consultation_mode]}</Badge>
-              {p.is_premium && <Badge variant="premium">Praticien mis en avant</Badge>}
               <PatientsBadge accepting={p.accepting_patients} />
             </div>
           </div>

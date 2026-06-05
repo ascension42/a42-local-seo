@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { siteConfig } from '@/lib/config'
 import Link from 'next/link'
+import FaqAccordion from '@/components/ui/FaqAccordion'
 
 export const metadata: Metadata = {
   title: `FAQ — La sophrologie à ${siteConfig.cityLabel} : toutes vos questions`,
@@ -91,28 +92,21 @@ export default function FaqPage() {
         </div>
       </div>
 
-      <div className="max-w-[760px] mx-auto px-10 py-12">
+      <div className="max-w-[760px] mx-auto px-10 py-12 space-y-10">
         {faqs.map((section) => (
-          <div key={section.category} className="mb-10">
-            <h2 className="text-lg font-extrabold text-green-dark mb-5 pb-3 border-b border-border tracking-tight">
+          <div key={section.category}>
+            <h2 className="text-base font-extrabold text-green-dark mb-4 pb-3 border-b-2 border-border tracking-tight">
               {section.category}
             </h2>
-            <div className="space-y-5">
-              {section.questions.map(({ q, a }) => (
-                <div key={q} className="bg-white border-[1.5px] border-border rounded-xl p-5">
-                  <h3 className="text-sm font-bold text-green-dark mb-2">{q}</h3>
-                  <p className="text-xs text-muted leading-[1.8]">{a}</p>
-                </div>
-              ))}
-            </div>
+            <FaqAccordion items={section.questions} />
           </div>
         ))}
 
-        <div className="bg-surface border border-green rounded-xl p-6 text-center mt-8">
+        <div className="bg-surface border border-green rounded-2xl p-8 text-center">
           <h2 className="text-base font-extrabold text-green-dark mb-2">
             Prêt à trouver votre sophrologue ?
           </h2>
-          <p className="text-xs text-muted mb-4">
+          <p className="text-xs text-muted mb-5">
             Consultez notre annuaire des praticiens certifiés à {siteConfig.cityLabel}.
           </p>
           <Link
