@@ -24,6 +24,7 @@ export async function POST(req: Request) {
         inscription_request_id: inscription_request_id ?? '',
         practitioner_name: name ?? '',
       },
+      allow_promotion_codes: true,
       success_url: `${origin}/inscription/succes?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/inscription/formulaire`,
       subscription_data: {
