@@ -1,4 +1,4 @@
-import { createStaticClient } from '@/lib/supabase/static'
+import { createServiceClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
 
 export async function POST(req: Request) {
@@ -15,8 +15,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Champs obligatoires manquants' }, { status: 400 })
     }
 
-    // Use static client (no cookies) → always anon role → RLS INSERT policy applies
-    const supabase = createStaticClient()
+    const supabase = createServiceClient()
     const { data: row, error } = await supabase
       .from('inscription_requests')
       .insert({

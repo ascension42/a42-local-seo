@@ -1,6 +1,6 @@
 import Stripe from 'stripe'
 import { NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createServiceClient } from '@/lib/supabase/server'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2026-05-27.dahlia' })
 
@@ -25,7 +25,7 @@ export async function POST(req: Request) {
     const inscriptionId = session.metadata?.inscription_request_id
     if (!inscriptionId) return NextResponse.json({ received: true })
 
-    const supabase = await createClient()
+    const supabase = createServiceClient()
 
     // 1. Fetch the inscription request
     const { data: req_ } = await supabase
