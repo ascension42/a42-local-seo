@@ -28,9 +28,14 @@ export default function PractitionerRow({ practitioner: p }: Props) {
       ].join(' ')}
       style={{ gridTemplateColumns: '72px 1fr auto' }}
     >
-      <div className={`w-16 h-16 rounded-full bg-gradient-to-br ${avatarGradients[idx]} flex items-center justify-center text-xl font-extrabold text-white shrink-0`}>
-        {initials}
-      </div>
+      {p.photo_url ? (
+        <img src={p.photo_url} alt={`${p.first_name} ${p.last_name}`}
+          className="w-16 h-16 rounded-full object-cover shrink-0" />
+      ) : (
+        <div className={`w-16 h-16 rounded-full bg-gradient-to-br ${avatarGradients[idx]} flex items-center justify-center text-xl font-extrabold text-white shrink-0`}>
+          {initials}
+        </div>
+      )}
       <div>
         <div className="flex items-center gap-2 mb-0.5">
           <span className="text-[15px] font-extrabold text-green-dark">{p.first_name} {p.last_name}</span>

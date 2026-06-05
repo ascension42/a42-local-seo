@@ -96,18 +96,20 @@ export default async function ProfilePage(
           className="max-w-[1060px] mx-auto grid gap-7 items-end"
           style={{ gridTemplateColumns: 'auto 1fr auto' }}
         >
-          <div className={`w-[120px] h-[120px] rounded-full border-4 border-white bg-gradient-to-br ${grad} flex items-center justify-center text-[40px] font-extrabold text-white -mb-5 shrink-0`}>
-            {initials}
-          </div>
+          {p.photo_url ? (
+            <img src={p.photo_url} alt={`${p.first_name} ${p.last_name}`}
+              className="w-[120px] h-[120px] rounded-full border-4 border-white object-cover -mb-5 shrink-0" />
+          ) : (
+            <div className={`w-[120px] h-[120px] rounded-full border-4 border-white bg-gradient-to-br ${grad} flex items-center justify-center text-[40px] font-extrabold text-white -mb-5 shrink-0`}>
+              {initials}
+            </div>
+          )}
           <div className="pb-6">
-            <p className="text-[10px] font-bold text-green-light uppercase tracking-[2px] mb-1.5">
-              {siteConfig.specialtyLabel} certifié — {siteConfig.cityLabel}
-            </p>
             <h1 className="text-[28px] font-extrabold text-white tracking-tight mb-1.5">
               {p.first_name} {p.last_name}
             </h1>
             <p className="text-[13px] text-white/70 mb-2.5">
-              {siteConfig.specialtyLabel} à {siteConfig.cityLabel} — {p.neighborhood}
+              {siteConfig.cityLabel}{p.neighborhood ? ` — ${p.neighborhood}` : ''}
             </p>
             <div className="flex gap-2 flex-wrap">
               <Badge variant="mode">{modeLabel[p.consultation_mode]}</Badge>

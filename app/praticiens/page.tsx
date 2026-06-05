@@ -80,16 +80,6 @@ export default async function AnnuairePage({ searchParams }: Props) {
         </div>
       </div>
 
-      {/* Filter chips bar */}
-      <div className="bg-white border-b border-border px-10 py-3.5">
-        <div className="max-w-[1060px] mx-auto flex gap-2.5 items-center flex-wrap">
-          <span className="text-[11px] font-bold text-muted uppercase tracking-[1px] mr-1">Mode :</span>
-          <Suspense>
-            <ModeChips />
-          </Suspense>
-        </div>
-      </div>
-
       {/* Carte interactive */}
       <div className="max-w-[1060px] mx-auto px-10 py-6">
         <p className="text-[11px] font-bold text-muted uppercase tracking-[1px] mb-3">

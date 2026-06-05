@@ -7,10 +7,5 @@ export default function PatientsBadge({ accepting }: { accepting: boolean }) {
       </span>
     )
   }
-  return (
-    <span className="inline-flex items-center gap-1 text-[9px] font-bold px-2 py-1 rounded-[8px] bg-bg-alt text-muted border border-border whitespace-nowrap">
-      <span className="w-1.5 h-1.5 rounded-full bg-muted inline-block" />
-      Complet pour le moment
-    </span>
-  )
+  return null
 }
