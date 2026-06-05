@@ -9,8 +9,10 @@ const PractitionersMap = dynamic(
 
 interface Props {
   practitioners: Practitioner[]
+  cityLat: number
+  cityLng: number
 }
 
-export default function PractitionersMapClient({ practitioners }: Props) {
-  return <PractitionersMap practitioners={practitioners} />
+export default function PractitionersMapClient({ practitioners, cityLat, cityLng }: Props) {
+  return <PractitionersMap practitioners={practitioners} cityLat={cityLat} cityLng={cityLng} />
 }

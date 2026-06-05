@@ -4,9 +4,11 @@ import type { Practitioner } from '@/lib/types'
 
 interface Props {
   practitioners: Practitioner[]
+  cityLat: number
+  cityLng: number
 }
 
-export default function PractitionersMap({ practitioners }: Props) {
+export default function PractitionersMap({ practitioners, cityLat, cityLng }: Props) {
   const mapRef = useRef<HTMLDivElement>(null)
   const mapInstanceRef = useRef<import('leaflet').Map | null>(null)
 
@@ -29,7 +31,7 @@ export default function PractitionersMap({ practitioners }: Props) {
         shadowUrl:     'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
       })
 
-      const map = L.map(mapRef.current).setView([44.8378, -0.5792], 12)
+      const map = L.map(mapRef.current).setView([cityLat, cityLng], 13)
       mapInstanceRef.current = map
 
       L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {

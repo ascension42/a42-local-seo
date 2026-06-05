@@ -1,4 +1,4 @@
-import { getPractitioners } from '@/lib/queries'
+import { getPractitioners, getCityCenter } from '@/lib/queries'
 import { siteConfig } from '@/lib/config'
 import type { Metadata } from 'next'
 import PractitionerRow from '@/components/practitioners/PractitionerRow'
@@ -21,7 +21,7 @@ interface Props {
 
 export default async function AnnuairePage({ searchParams }: Props) {
   const params = await searchParams
-  const allPractitioners = await getPractitioners()
+  const [allPractitioners, cityCenter] = await Promise.all([getPractitioners(), getCityCenter()])
 
   // Apply filters
   let filtered = allPractitioners
@@ -95,7 +95,7 @@ export default async function AnnuairePage({ searchParams }: Props) {
         <p className="text-[11px] font-bold text-muted uppercase tracking-[1px] mb-3">
           Carte des praticiens
         </p>
-        <PractitionersMapWrapper practitioners={filtered} />
+        <PractitionersMapWrapper practitioners={filtered} cityLat={cityCenter.lat} cityLng={cityCenter.lng} />
       </div>
 
       <div

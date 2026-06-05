@@ -58,7 +58,9 @@ export async function getBlogPosts(): Promise<BlogPost[]> {
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('blog_posts')
-    .select('*')
+    .select('*, cities!inner(slug), specialties!inner(slug)')
+    .eq('cities.slug', siteConfig.city)
+    .eq('specialties.slug', siteConfig.specialty)
     .lte('published_at', new Date().toISOString())
     .order('published_at', { ascending: false })
 
@@ -76,6 +78,16 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> 
 
   if (error) return null
   return data as BlogPost
+}
+
+export async function getCityCenter(): Promise<{ lat: number; lng: number }> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('cities')
+    .select('lat, lng')
+    .eq('slug', siteConfig.city)
+    .single()
+  return { lat: data?.lat ?? 44.8378, lng: data?.lng ?? -0.5792 }
 }
 
 export interface NetworkCity {
