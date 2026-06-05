@@ -1,25 +1,13 @@
 import { siteConfig } from '@/lib/config'
-import { createServiceClient } from '@/lib/supabase/server'
 import type { Metadata } from 'next'
+import CountdownTimer from '@/components/inscription/CountdownTimer'
 
-export const revalidate = 60
+export const revalidate = 86400
 
 export const metadata: Metadata = {
   title: `Inscrire mon cabinet — ${siteConfig.siteName}`,
   description: `Soyez visible par les patients qui vous cherchent à ${siteConfig.cityLabel}. Profil complet, lien de réservation, visibilité Google garantie.`,
 }
-
-async function getInscriptionCount(): Promise<number> {
-  const supabase = createServiceClient()
-  const { count } = await supabase
-    .from('inscription_requests')
-    .select('*', { count: 'exact', head: true })
-    .neq('status', 'rejected')
-    .eq('city_slug', siteConfig.city)
-  return count ?? 0
-}
-
-const PROMO_SLOTS = 3
 
 const steps = [
   { n: '1', title: 'Envoyez votre demande',  desc: 'Remplissez le formulaire en 2 minutes — nom, spécialité, email, téléphone.' },
@@ -48,11 +36,7 @@ function Cross() {
   )
 }
 
-export default async function InscriptionPage() {
-  const inscriptionCount = await getInscriptionCount()
-  const promoRemaining = Math.max(0, PROMO_SLOTS - inscriptionCount)
-  const promoActive = promoRemaining > 0
-
+export default function InscriptionPage() {
   return (
     <>
       {/* Hero */}
@@ -95,35 +79,8 @@ export default async function InscriptionPage() {
           </h2>
           <p className="text-[13px] text-muted text-center mb-7">Sans engagement. Résiliable à tout moment.</p>
 
-          {/* Promo banner */}
-          {promoActive ? (
-            <div className="bg-surface border border-green rounded-xl px-5 py-4 mb-8 flex items-center justify-between gap-4">
-              <div>
-                <p className="text-sm font-bold text-green-dark">
-                  🎉 Offre de lancement — Premier mois offert !
-                </p>
-                <p className="text-[11px] text-muted mt-0.5">
-                  Pour les 3 premiers inscrits. Plus que{' '}
-                  <span className="font-bold text-green-dark">{promoRemaining} place{promoRemaining > 1 ? 's' : ''}</span> disponible{promoRemaining > 1 ? 's' : ''}.
-                </p>
-              </div>
-              <div className="shrink-0 text-center">
-                <div className="flex gap-1.5">
-                  {Array.from({ length: PROMO_SLOTS }).map((_, i) => (
-                    <div
-                      key={i}
-                      className={`w-4 h-4 rounded-full border-2 ${i < inscriptionCount ? 'bg-green border-green' : 'bg-white border-green/40'}`}
-                    />
-                  ))}
-                </div>
-                <p className="text-[9px] text-muted mt-1 font-medium">{inscriptionCount}/{PROMO_SLOTS} places prises</p>
-              </div>
-            </div>
-          ) : (
-            <div className="bg-[#fef2f2] border border-[#fecaca] rounded-xl px-5 py-3.5 mb-8 text-center">
-              <p className="text-sm font-bold text-[#991b1b]">Offre de lancement terminée — toutes les places sont prises.</p>
-            </div>
-          )}
+          {/* Countdown timer */}
+          <CountdownTimer />
 
           {/* 2 pricing cards */}
           <div className="grid grid-cols-2 gap-6 items-start">
@@ -131,6 +88,14 @@ export default async function InscriptionPage() {
             {/* Plan Standard */}
             <div className="bg-white rounded-2xl p-7 border-[1.5px] border-border">
               <p className="text-[10px] font-bold text-muted uppercase tracking-[1.5px] mb-1">Standard</p>
+
+              {/* Crossed-out price + promo */}
+              <div className="flex items-baseline gap-2 mb-0.5">
+                <span className="text-sm text-muted line-through">49 €/mois</span>
+                <span className="text-[10px] font-bold bg-green/10 text-green px-1.5 py-0.5 rounded">
+                  -51 %
+                </span>
+              </div>
               <div className="flex items-end gap-1 mb-1">
                 <span className="text-[42px] font-extrabold text-green-dark tracking-tight leading-none">24</span>
                 <span className="text-lg font-bold text-green-dark mb-1">€</span>
@@ -170,9 +135,6 @@ export default async function InscriptionPage() {
               >
                 Choisir le Standard
               </a>
-              {promoActive && (
-                <p className="text-center text-[10px] text-muted mt-2">Premier mois offert si vous êtes parmi les {PROMO_SLOTS} premiers</p>
-              )}
             </div>
 
             {/* Plan Mise en avant */}
@@ -182,6 +144,14 @@ export default async function InscriptionPage() {
               </div>
 
               <p className="text-[10px] font-bold text-green uppercase tracking-[1.5px] mb-1">Mise en avant</p>
+
+              {/* Crossed-out price + promo */}
+              <div className="flex items-baseline gap-2 mb-0.5">
+                <span className="text-sm text-muted line-through">99 €/mois</span>
+                <span className="text-[10px] font-bold bg-green/10 text-green px-1.5 py-0.5 rounded">
+                  -51 %
+                </span>
+              </div>
               <div className="flex items-end gap-1 mb-1">
                 <span className="text-[42px] font-extrabold text-green-dark tracking-tight leading-none">49</span>
                 <span className="text-lg font-bold text-green-dark mb-1">€</span>
@@ -214,9 +184,6 @@ export default async function InscriptionPage() {
               >
                 Choisir la Mise en avant
               </a>
-              {promoActive && (
-                <p className="text-center text-[10px] text-white/60 mt-2">Premier mois offert si vous êtes parmi les {PROMO_SLOTS} premiers</p>
-              )}
             </div>
           </div>
 
@@ -255,7 +222,7 @@ export default async function InscriptionPage() {
             ['Puis-je annuler à tout moment ?', 'Oui, sans frais ni préavis. Votre profil est retiré dans les 24h suivant votre résiliation.'],
             ['Comment est vérifiée ma certification ?', "Nous vous demandons de nous envoyer votre diplôme RNCP. Notre équipe valide sous 24h ouvrées."],
             ["Quelle est la différence entre Standard et Mise en avant ?", `La Mise en avant vous affiche sur la page d'accueil et dans les articles de blog. Si plus de 3 praticiens sont en Mise en avant, les profils tournent aléatoirement sur ces emplacements.`],
-            ["Qu'est-ce que l'offre de lancement ?", `Les ${PROMO_SLOTS} premiers praticiens à s'inscrire bénéficient du premier mois totalement offert, quel que soit le plan choisi.`],
+            ["Jusqu'à quand dure le tarif promotionnel ?", "Le tarif de lancement est valable jusqu'au 1er juillet 2026. Passé cette date, les prix reviendront à leur tarif standard."],
           ].map(([q, a]) => (
             <div key={String(q)} className="border-b border-border py-4">
               <p className="text-sm font-bold text-green-dark mb-2">{q}</p>
@@ -268,15 +235,10 @@ export default async function InscriptionPage() {
       {/* Bottom CTA */}
       <section className="bg-green-dark text-center py-[52px] px-10">
         <h2 className="text-[26px] font-extrabold text-white mb-2.5">Prêt à remplir votre agenda ?</h2>
-        <p className="text-[13px] text-white/70 mb-2">
+        <p className="text-[13px] text-white/70 mb-6">
           Rejoignez les praticiens déjà référencés sur {siteConfig.domain}
         </p>
-        {promoActive && (
-          <p className="text-[12px] text-green-light mb-6 font-semibold">
-            🎉 Offre de lancement — Premier mois offert · Plus que {promoRemaining} place{promoRemaining > 1 ? 's' : ''}
-          </p>
-        )}
-        <div className="flex justify-center gap-4 mt-6">
+        <div className="flex justify-center gap-4">
           <a href="/inscription/formulaire?plan=standard" className="inline-block bg-white/15 text-white font-bold text-sm px-7 py-3.5 rounded-lg hover:bg-white/25 transition-colors border border-white/30">
             Standard — 24 €/mois
           </a>

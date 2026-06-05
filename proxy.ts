@@ -2,7 +2,7 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const response = NextResponse.next()
 
   const supabase = createServerClient(
@@ -22,10 +22,11 @@ export async function middleware(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser()
 
-  // Protège /dashboard/* sauf /dashboard/login
-  if (request.nextUrl.pathname.startsWith('/dashboard') &&
-      !request.nextUrl.pathname.startsWith('/dashboard/login') &&
-      !user) {
+  if (
+    request.nextUrl.pathname.startsWith('/dashboard') &&
+    !request.nextUrl.pathname.startsWith('/dashboard/login') &&
+    !user
+  ) {
     return NextResponse.redirect(new URL('/dashboard/login', request.url))
   }
 

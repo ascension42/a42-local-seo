@@ -30,10 +30,14 @@ export async function generateMetadata(
 }
 
 function inlineRender(text: string): React.ReactNode {
-  const parts = text.split(/(\*\*[^*]+\*\*)/g)
+  // Split on **bold** and *italic* patterns
+  const parts = text.split(/(\*\*[^*]+\*\*|\*[^*]+\*)/g)
   return parts.map((part, i) => {
     if (part.startsWith('**') && part.endsWith('**') && part.length > 4) {
       return <strong key={i} className="font-bold text-green-dark">{part.slice(2, -2)}</strong>
+    }
+    if (part.startsWith('*') && part.endsWith('*') && part.length > 2) {
+      return <em key={i} className="italic">{part.slice(1, -1)}</em>
     }
     return <span key={i}>{part}</span>
   })
@@ -47,25 +51,25 @@ function renderMarkdown(content: string) {
   while (i < lines.length) {
     const line = lines[i]
 
-    if (line.startsWith('### ')) {
+    // Skip h1 — title is already rendered in the hero section
+    if (line.startsWith('# ')) {
+      i++
+      continue
+    }
+
+    if (line.match(/^###\s/)) {
       nodes.push(
         <h3 key={i} className="text-[15px] font-extrabold text-green-dark mt-7 mb-2">
-          {line.slice(4)}
+          {line.replace(/^###\s+/, '')}
         </h3>
       )
-    } else if (line.startsWith('## ')) {
+    } else if (line.match(/^##\s/)) {
       nodes.push(
         <h2 key={i} className="text-[19px] font-extrabold text-green-dark mt-9 mb-3 pb-2 border-b border-border">
-          {line.slice(3)}
+          {line.replace(/^##\s+/, '')}
         </h2>
       )
-    } else if (line.startsWith('# ')) {
-      nodes.push(
-        <h1 key={i} className="text-2xl font-extrabold text-green-dark mb-4">
-          {line.slice(2)}
-        </h1>
-      )
-    } else if (line === '---' || line === '***' || line === '---') {
+    } else if (line === '---' || line === '***') {
       nodes.push(<hr key={i} className="border-border my-7" />)
     } else if (line.startsWith('- ') || line.startsWith('* ')) {
       const listItems: string[] = []
@@ -85,7 +89,7 @@ function renderMarkdown(content: string) {
       )
       continue
     } else if (line.trim() === '') {
-      // skip — paragraph spacing is handled by mb on elements
+      // skip — paragraph spacing handled by mb on elements
     } else {
       nodes.push(
         <p key={i} className="text-[13px] leading-[1.85] text-ink mb-4">

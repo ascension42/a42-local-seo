@@ -120,36 +120,3 @@ export default async function AnnuairePage({ searchParams }: Props) {
     </>
   )
 }
-
-// Extracted to allow Suspense boundary (uses useSearchParams internally)
-function ModeChips() {
-  return (
-    <>
-      {[
-        { label: 'Tous', value: 'all' },
-        { label: 'Cabinet', value: 'cabinet' },
-        { label: 'En ligne', value: 'online' },
-        { label: 'Les deux', value: 'both' },
-      ].map((f) => (
-        <a
-          key={f.value}
-          href={f.value === 'all' ? '/praticiens' : `/praticiens?mode=${f.value}`}
-          className="px-3.5 py-1.5 rounded-full border-[1.5px] text-[11px] font-semibold transition-colors border-border text-muted bg-white hover:border-green hover:text-green-dark hover:bg-surface"
-        >
-          {f.label}
-        </a>
-      ))}
-      <div className="w-px h-4 bg-border mx-1" />
-      <span className="text-[11px] font-bold text-muted uppercase tracking-[1px] mr-1">Spécialité :</span>
-      {['Stress & Anxiété', 'Sommeil', 'Burn-out', 'Confiance en soi'].map((tag) => (
-        <a
-          key={tag}
-          href={`/praticiens?tag=${encodeURIComponent(tag)}`}
-          className="px-3.5 py-1.5 rounded-full border-[1.5px] text-[11px] font-semibold transition-colors border-border text-muted bg-white hover:border-green hover:text-green-dark hover:bg-surface"
-        >
-          {tag}
-        </a>
-      ))}
-    </>
-  )
-}
