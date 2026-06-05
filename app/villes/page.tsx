@@ -16,7 +16,7 @@ export default async function VillesPage() {
 
   return (
     <>
-      <div className="bg-green-dark px-10 py-12 text-center">
+      <div className="bg-green-dark px-4 md:px-10 py-10 md:py-12 text-center">
         <p className="text-[10px] font-bold text-green-light uppercase tracking-[2px] mb-3">
           Notre réseau
         </p>
@@ -28,7 +28,7 @@ export default async function VillesPage() {
         </p>
       </div>
 
-      <div className="max-w-[1060px] mx-auto px-10 py-12 grid grid-cols-2 gap-12 items-center">
+      <div className="max-w-[1060px] mx-auto px-4 md:px-10 py-8 md:py-12 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
         <div>
           <FranceMap cities={cities} />
         </div>

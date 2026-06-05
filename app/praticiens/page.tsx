@@ -66,7 +66,7 @@ export default async function AnnuairePage({ searchParams }: Props) {
 
   return (
     <>
-      <div className="bg-green-dark px-10 py-9">
+      <div className="bg-green-dark px-4 md:px-10 py-7 md:py-9">
         <div className="max-w-[1060px] mx-auto">
           <p className="text-[10px] font-bold text-green-light uppercase tracking-[2px] mb-2">
             {siteConfig.cityLabel} &amp; région
@@ -81,17 +81,14 @@ export default async function AnnuairePage({ searchParams }: Props) {
       </div>
 
       {/* Carte interactive */}
-      <div className="max-w-[1060px] mx-auto px-10 py-6">
+      <div className="max-w-[1060px] mx-auto px-4 md:px-10 py-4 md:py-6">
         <p className="text-[11px] font-bold text-muted uppercase tracking-[1px] mb-3">
           Carte des praticiens
         </p>
         <PractitionersMapWrapper practitioners={filtered} cityLat={cityCenter.lat} cityLng={cityCenter.lng} />
       </div>
 
-      <div
-        className="max-w-[1060px] mx-auto px-10 py-7 grid gap-7"
-        style={{ gridTemplateColumns: '220px 1fr' }}
-      >
+      <div className="max-w-[1060px] mx-auto px-4 md:px-10 py-5 md:py-7 grid grid-cols-1 md:grid-cols-[220px_1fr] gap-7">
         <Suspense fallback={<div className="text-sm text-muted">Chargement...</div>}>
           <FilterSidebar />
         </Suspense>

@@ -116,7 +116,7 @@ function FormContent() {
       </div>
 
       <form onSubmit={handleSubmit} className="bg-surface rounded-2xl p-6 shadow-sm space-y-4">
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Field label="Prénom *" value={form.first_name} onChange={v => setForm(f => ({ ...f, first_name: v }))} placeholder="Marie" />
           <Field label="Nom *" value={form.last_name} onChange={v => setForm(f => ({ ...f, last_name: v }))} placeholder="Dupont" />
         </div>

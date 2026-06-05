@@ -16,7 +16,7 @@ export default function CategoryGrid() {
   const router = useRouter()
 
   return (
-    <div className="grid grid-cols-4 gap-3">
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
       {categories.map((cat) => (
         <button
           key={cat.label}

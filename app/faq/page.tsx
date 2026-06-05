@@ -78,7 +78,7 @@ const faqs = [
 export default function FaqPage() {
   return (
     <>
-      <div className="bg-green-dark px-10 py-12">
+      <div className="bg-green-dark px-4 md:px-10 py-10 md:py-12">
         <div className="max-w-[760px] mx-auto">
           <p className="text-[10px] font-bold text-green-light uppercase tracking-[2px] mb-3">
             Questions fréquentes
@@ -92,7 +92,7 @@ export default function FaqPage() {
         </div>
       </div>
 
-      <div className="max-w-[760px] mx-auto px-10 py-12 space-y-10">
+      <div className="max-w-[760px] mx-auto px-4 md:px-10 py-10 md:py-12 space-y-10">
         {faqs.map((section) => (
           <div key={section.category}>
             <h2 className="text-base font-extrabold text-green-dark mb-4 pb-3 border-b-2 border-border tracking-tight">

@@ -89,18 +89,18 @@ export default async function ProfilePage(
       />
       {/* Header */}
       <div
-        className="px-10 pt-8 pb-0"
+        className="px-4 md:px-10 pt-6 md:pt-8 pb-0"
         style={{ background: 'linear-gradient(to bottom, #284a30 0%, #284a30 140px, #fbfaf8 140px)' }}
       >
         <div
-          className="max-w-[1060px] mx-auto grid gap-7 items-end"
+          className="max-w-[1060px] mx-auto flex flex-col md:grid md:gap-7 md:items-end"
           style={{ gridTemplateColumns: 'auto 1fr auto' }}
         >
           {p.photo_url ? (
             <img src={p.photo_url} alt={`${p.first_name} ${p.last_name}`}
-              className="w-[120px] h-[120px] rounded-full border-4 border-white object-cover -mb-5 shrink-0" />
+              className="w-[120px] h-[120px] rounded-full border-4 border-white object-cover mb-4 md:-mb-5 shrink-0" />
           ) : (
-            <div className={`w-[120px] h-[120px] rounded-full border-4 border-white bg-gradient-to-br ${grad} flex items-center justify-center text-[40px] font-extrabold text-white -mb-5 shrink-0`}>
+            <div className={`w-[120px] h-[120px] rounded-full border-4 border-white bg-gradient-to-br ${grad} flex items-center justify-center text-[40px] font-extrabold text-white mb-4 md:-mb-5 shrink-0`}>
               {initials}
             </div>
           )}
@@ -116,7 +116,7 @@ export default async function ProfilePage(
               <PatientsBadge accepting={p.accepting_patients} />
             </div>
           </div>
-          <div className="pb-6 flex flex-col gap-2.5 items-end">
+          <div className="pb-6 flex flex-col gap-2.5 items-start md:items-end">
             <a
               href={`mailto:contact@${siteConfig.domain}?subject=Contact ${encodeURIComponent(p.first_name + ' ' + p.last_name)}`}
               className="bg-green text-white font-bold text-[13px] px-7 py-3 rounded-lg whitespace-nowrap hover:bg-[#4faa73] transition-colors"
@@ -128,10 +128,7 @@ export default async function ProfilePage(
       </div>
 
       {/* Body */}
-      <div
-        className="max-w-[1060px] mx-auto px-10 py-8 grid gap-8"
-        style={{ gridTemplateColumns: '1fr 320px' }}
-      >
+      <div className="max-w-[1060px] mx-auto px-4 md:px-10 py-6 md:py-8 grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-8">
         {/* Left column */}
         <div className="space-y-[18px]">
           {p.bio && (
@@ -148,7 +145,7 @@ export default async function ProfilePage(
               <h2 className="text-base font-extrabold text-green-dark mb-3.5">
                 Domaines d&apos;intervention
               </h2>
-              <div className="grid grid-cols-2 gap-2.5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 {tags.map((t) => (
                   <div key={t.id} className="bg-surface border-l-[3px] border-green rounded-r-lg p-3">
                     <p className="text-xs font-bold text-green-dark">{t.label}</p>

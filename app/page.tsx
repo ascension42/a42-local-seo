@@ -22,7 +22,7 @@ export default async function HomePage() {
       <Hero practitionerCount={heroStats.practitionerCount} neighborhoodCount={heroStats.neighborhoodCount} tagCount={heroStats.tagCount} />
 
       <section className="py-[52px] pb-11">
-        <div className="max-w-[1060px] mx-auto px-10">
+        <div className="max-w-[1060px] mx-auto px-4 md:px-10">
           <SectionHeader
             eyebrow="Je cherche de l'aide pour..."
             title="Trouver le bon accompagnement"
@@ -33,13 +33,13 @@ export default async function HomePage() {
       </section>
 
       <section className="pb-[52px]">
-        <div className="max-w-[1060px] mx-auto px-10">
+        <div className="max-w-[1060px] mx-auto px-4 md:px-10">
           <SectionHeader
             eyebrow="Praticiens mis en avant"
             title={`Les ${siteConfig.specialtyLabel.toLowerCase()}s de ${siteConfig.cityLabel}`}
             subtitle="Certifiés et vérifiés par notre équipe"
           />
-          <div className="grid grid-cols-3 gap-[18px]">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[18px]">
             {displayedPractitioners.map((p) => (
               <PractitionerCard key={p.id} practitioner={p} />
             ))}

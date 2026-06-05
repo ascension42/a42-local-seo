@@ -124,12 +124,12 @@ export default async function BlogArticlePage(
   return (
     <>
       {/* Hero header */}
-      <div className="bg-green-dark px-10 py-11">
+      <div className="bg-green-dark px-4 md:px-10 py-9 md:py-11">
         <div className="max-w-[760px] mx-auto">
           <p className="text-[10px] font-bold text-green-light uppercase tracking-[2px] mb-3">
             Guide complet
           </p>
-          <h1 className="font-accent text-[34px] text-white leading-[1.2] mb-4">{post.title}</h1>
+          <h1 className="font-accent text-[26px] md:text-[34px] text-white leading-[1.2] mb-4">{post.title}</h1>
           {post.excerpt && (
             <p className="text-sm text-white/70 leading-[1.65] max-w-[600px]">{post.excerpt}</p>
           )}
@@ -139,10 +139,7 @@ export default async function BlogArticlePage(
         </div>
       </div>
 
-      <div
-        className="max-w-[1060px] mx-auto px-10 py-10 grid gap-12"
-        style={{ gridTemplateColumns: '1fr 280px' }}
-      >
+      <div className="max-w-[1060px] mx-auto px-4 md:px-10 py-8 md:py-10 grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-12">
         <article>
           {/* Cover image */}
           {post.cover_url ? (
@@ -218,11 +215,11 @@ export default async function BlogArticlePage(
 
       {/* Related posts */}
       {relatedPosts.length > 0 && (
-        <div className="max-w-[1060px] mx-auto px-10 pb-12">
+        <div className="max-w-[1060px] mx-auto px-4 md:px-10 pb-10 md:pb-12">
           <h2 className="text-lg font-extrabold text-green-dark mb-5 tracking-tight">
             Ces articles pourraient vous intéresser
           </h2>
-          <div className={`grid gap-5 ${relatedPosts.length === 1 ? 'grid-cols-1 max-w-sm' : 'grid-cols-2'}`}>
+          <div className={`grid gap-5 ${relatedPosts.length === 1 ? 'grid-cols-1 max-w-sm' : 'grid grid-cols-1 sm:grid-cols-2'}`}>
             {relatedPosts.map((p) => (
               <Link
                 key={p.id}
