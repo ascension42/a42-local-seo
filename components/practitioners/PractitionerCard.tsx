@@ -20,12 +20,12 @@ export default function PractitionerCard({ practitioner: p }: Props) {
     <Link
       href={`/praticiens/${p.slug}`}
       className={[
-        'block bg-white rounded-xl overflow-hidden transition-all duration-200',
+        'flex flex-col bg-white rounded-xl overflow-hidden transition-all duration-200',
         'hover:shadow-lg hover:-translate-y-0.5',
         p.is_premium ? 'border-[1.5px] border-green' : 'border-[1.5px] border-border',
       ].join(' ')}
     >
-      <div className="h-[130px] relative bg-bg-alt flex items-center justify-center">
+      <div className="h-[130px] relative bg-bg-alt flex items-center justify-center shrink-0">
         {p.photo_url ? (
           <img src={p.photo_url} alt={`${p.first_name} ${p.last_name}`}
             className="w-[72px] h-[72px] rounded-full border-[3px] border-white object-cover" />
@@ -43,7 +43,7 @@ export default function PractitionerCard({ practitioner: p }: Props) {
           <ModeTag mode={p.consultation_mode} />
         </span>
       </div>
-      <div className="p-4">
+      <div className="p-4 flex flex-col flex-1">
         <p className="text-[10px] font-bold text-green uppercase tracking-[1px] mb-0.5">
           {p.certification ?? 'Sophrologue'}
         </p>
@@ -63,13 +63,15 @@ export default function PractitionerCard({ practitioner: p }: Props) {
         <div className="mb-2">
           <PatientsBadge accepting={p.accepting_patients} />
         </div>
-        <div className="h-px bg-[#f0ede8] mb-3.5" />
-        <span className={[
-          'block text-center text-xs font-bold py-2 rounded-md w-full',
-          p.is_premium ? 'bg-green text-white' : 'bg-bg-alt text-green-dark border border-border',
-        ].join(' ')}>
-          {p.is_premium ? 'Prendre rendez-vous' : 'Voir le profil'}
-        </span>
+        <div className="mt-auto">
+          <div className="h-px bg-[#f0ede8] mb-3.5" />
+          <span className={[
+            'block text-center text-xs font-bold py-2 rounded-md w-full',
+            p.is_premium ? 'bg-green text-white' : 'bg-bg-alt text-green-dark border border-border',
+          ].join(' ')}>
+            {p.is_premium ? 'Prendre rendez-vous' : 'Voir le profil'}
+          </span>
+        </div>
       </div>
     </Link>
   )

@@ -1,30 +1,58 @@
 import { siteConfig } from '@/lib/config'
+import { createServiceClient } from '@/lib/supabase/server'
 import type { Metadata } from 'next'
+
+export const revalidate = 60
 
 export const metadata: Metadata = {
   title: `Inscrire mon cabinet — ${siteConfig.siteName}`,
-  description: `Soyez visible par les patients qui vous cherchent à ${siteConfig.cityLabel}. Profil complet, lien de réservation, visibilité Google.`,
+  description: `Soyez visible par les patients qui vous cherchent à ${siteConfig.cityLabel}. Profil complet, lien de réservation, visibilité Google garantie.`,
 }
 
-const features = [
-  { text: "Profil public dans l'annuaire",   active: true },
-  { text: 'Nom, spécialité, quartier',        active: true },
-  { text: 'Lien vers votre site',             active: true },
-  { text: 'Position mise en avant (top 3)',   active: true },
-  { text: 'Lien de réservation direct',       active: true },
-  { text: 'Badge "Certifié vérifié"',         active: true },
-  { text: 'Profil complet (bio, avis)',        active: true },
-  { text: 'Mis en avant dans les articles',   active: true },
-]
+async function getInscriptionCount(): Promise<number> {
+  const supabase = createServiceClient()
+  const { count } = await supabase
+    .from('inscription_requests')
+    .select('*', { count: 'exact', head: true })
+    .neq('status', 'rejected')
+    .eq('city_slug', siteConfig.city)
+  return count ?? 0
+}
+
+const PROMO_SLOTS = 3
 
 const steps = [
-  { n: '1', title: 'Créez votre compte',    desc: 'Remplissez votre profil — nom, spécialité, photo, bio, certifications.' },
-  { n: '2', title: 'Vérification',          desc: 'Notre équipe vérifie votre certification RNCP sous 24h.' },
-  { n: '3', title: 'Publication',           desc: 'Votre profil est publié et visible sur Google immédiatement.' },
-  { n: '4', title: 'Patients reçus',        desc: 'Les visiteurs cliquent sur votre lien de réservation.' },
+  { n: '1', title: 'Envoyez votre demande',  desc: 'Remplissez le formulaire en 2 minutes — nom, spécialité, email, téléphone.' },
+  { n: '2', title: 'Vérification 24h',        desc: 'Notre équipe vérifie votre certification RNCP sous 24h.' },
+  { n: '3', title: 'Profil publié',           desc: 'Votre profil est en ligne et visible sur Google immédiatement.' },
+  { n: '4', title: 'Patients reçus',          desc: 'Les visiteurs cliquent sur votre lien de réservation.' },
 ]
 
-export default function InscriptionPage() {
+function Check() {
+  return (
+    <span className="w-5 h-5 rounded-full bg-green flex items-center justify-center shrink-0">
+      <svg viewBox="0 0 10 8" width="10" fill="none">
+        <path d="M1 4l2.5 2.5L9 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    </span>
+  )
+}
+
+function Cross() {
+  return (
+    <span className="w-5 h-5 rounded-full bg-[#f3f4f6] flex items-center justify-center shrink-0">
+      <svg viewBox="0 0 10 10" width="10" fill="none">
+        <path d="M3 3l4 4M7 3l-4 4" stroke="#9ca3af" strokeWidth="1.5" strokeLinecap="round" />
+      </svg>
+    </span>
+  )
+}
+
+export default async function InscriptionPage() {
+  const inscriptionCount = await getInscriptionCount()
+  const promoRemaining = Math.max(0, PROMO_SLOTS - inscriptionCount)
+  const promoActive = promoRemaining > 0
+
   return (
     <>
       {/* Hero */}
@@ -42,7 +70,7 @@ export default function InscriptionPage() {
         </p>
       </div>
 
-      {/* Stats */}
+      {/* Stats bar */}
       <div className="bg-green-deep border-b border-white/10 py-5">
         <div className="max-w-[1060px] mx-auto flex justify-center gap-[60px]">
           {[
@@ -58,67 +86,150 @@ export default function InscriptionPage() {
         </div>
       </div>
 
-      {/* Offre unique */}
+      {/* Plans */}
       <section className="py-14 px-10">
-        <div className="max-w-[520px] mx-auto">
-          <p className="text-[10px] font-bold text-green uppercase tracking-[2px] text-center mb-2">Tarif</p>
+        <div className="max-w-[860px] mx-auto">
+          <p className="text-[10px] font-bold text-green uppercase tracking-[2px] text-center mb-2">Tarifs</p>
           <h2 className="text-2xl font-extrabold text-green-dark text-center mb-2 tracking-tight">
-            Une seule offre, tout inclus
+            Choisissez votre visibilité
           </h2>
-          <p className="text-[13px] text-muted text-center mb-6">Sans engagement. Résiliable à tout moment.</p>
+          <p className="text-[13px] text-muted text-center mb-7">Sans engagement. Résiliable à tout moment.</p>
 
-          {/* Bandeau promo */}
-          <div className="bg-surface border border-green rounded-xl px-5 py-3.5 mb-6 text-center">
-            <p className="text-sm font-bold text-green-dark">
-              Offre de lancement — Les 3 premiers inscrits bénéficient du premier mois offert !
-            </p>
-            <p className="text-[11px] text-muted mt-1">Plus que quelques places disponibles.</p>
-          </div>
-
-          {/* Plan unique */}
-          <div className="relative bg-white rounded-2xl p-8 border-2 border-green shadow-lg">
-            <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-green text-white text-[10px] font-extrabold px-4 py-1 rounded-[10px] whitespace-nowrap">
-              Accès complet
+          {/* Promo banner */}
+          {promoActive ? (
+            <div className="bg-surface border border-green rounded-xl px-5 py-4 mb-8 flex items-center justify-between gap-4">
+              <div>
+                <p className="text-sm font-bold text-green-dark">
+                  🎉 Offre de lancement — Premier mois offert !
+                </p>
+                <p className="text-[11px] text-muted mt-0.5">
+                  Pour les 3 premiers inscrits. Plus que{' '}
+                  <span className="font-bold text-green-dark">{promoRemaining} place{promoRemaining > 1 ? 's' : ''}</span> disponible{promoRemaining > 1 ? 's' : ''}.
+                </p>
+              </div>
+              <div className="shrink-0 text-center">
+                <div className="flex gap-1.5">
+                  {Array.from({ length: PROMO_SLOTS }).map((_, i) => (
+                    <div
+                      key={i}
+                      className={`w-4 h-4 rounded-full border-2 ${i < inscriptionCount ? 'bg-green border-green' : 'bg-white border-green/40'}`}
+                    />
+                  ))}
+                </div>
+                <p className="text-[9px] text-muted mt-1 font-medium">{inscriptionCount}/{PROMO_SLOTS} places prises</p>
+              </div>
             </div>
+          ) : (
+            <div className="bg-[#fef2f2] border border-[#fecaca] rounded-xl px-5 py-3.5 mb-8 text-center">
+              <p className="text-sm font-bold text-[#991b1b]">Offre de lancement terminée — toutes les places sont prises.</p>
+            </div>
+          )}
 
-            <div className="text-center mb-6">
-              <div className="flex items-end justify-center gap-1">
-                <span className="text-[48px] font-extrabold text-green-dark tracking-tight leading-none">24</span>
-                <span className="text-xl font-bold text-green-dark mb-1">€</span>
+          {/* 2 pricing cards */}
+          <div className="grid grid-cols-2 gap-6 items-start">
+
+            {/* Plan Standard */}
+            <div className="bg-white rounded-2xl p-7 border-[1.5px] border-border">
+              <p className="text-[10px] font-bold text-muted uppercase tracking-[1.5px] mb-1">Standard</p>
+              <div className="flex items-end gap-1 mb-1">
+                <span className="text-[42px] font-extrabold text-green-dark tracking-tight leading-none">24</span>
+                <span className="text-lg font-bold text-green-dark mb-1">€</span>
                 <span className="text-sm font-medium text-muted mb-2">/mois</span>
               </div>
-              <p className="text-[11px] text-muted mt-1">Soit moins de 1 € par jour</p>
+              <p className="text-[11px] text-muted mb-6">Visibilité essentielle dans l&apos;annuaire</p>
+
+              <ul className="space-y-3 mb-7">
+                {[
+                  "Profil dans l'annuaire local",
+                  'Nom, spécialité, quartier',
+                  'Lien de réservation direct',
+                  'Badge Certifié & Vérifié',
+                  'Profil complet (bio, avis, tarifs)',
+                  'Lien vers votre site personnel',
+                ].map((f) => (
+                  <li key={f} className="flex gap-3 items-center text-[13px] text-ink">
+                    <Check />
+                    {f}
+                  </li>
+                ))}
+                {[
+                  "Affiché sur la page d'accueil",
+                  'Présent dans les articles de blog',
+                  'Position Premium (top liste)',
+                ].map((f) => (
+                  <li key={f} className="flex gap-3 items-center text-[13px] text-muted/60">
+                    <Cross />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+
+              <a
+                href="/inscription/formulaire?plan=standard"
+                className="block w-full py-3 rounded-xl font-bold text-[14px] bg-bg-alt text-green-dark border border-border hover:border-green hover:bg-surface transition-colors text-center"
+              >
+                Choisir le Standard
+              </a>
+              {promoActive && (
+                <p className="text-center text-[10px] text-muted mt-2">Premier mois offert si vous êtes parmi les {PROMO_SLOTS} premiers</p>
+              )}
             </div>
 
-            <ul className="space-y-3 mb-8">
-              {features.map((f) => (
-                <li key={f.text} className="flex gap-3 items-center text-sm text-ink">
-                  <span className="w-5 h-5 rounded-full bg-green flex items-center justify-center shrink-0">
-                    <svg viewBox="0 0 10 8" width="10" fill="none">
-                      <path d="M1 4l2.5 2.5L9 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  </span>
-                  {f.text}
-                </li>
-              ))}
-            </ul>
+            {/* Plan Mise en avant */}
+            <div className="relative bg-white rounded-2xl p-7 border-2 border-green shadow-lg">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-green text-white text-[10px] font-extrabold px-4 py-1 rounded-[10px] whitespace-nowrap">
+                ★ Recommandé
+              </div>
 
-            <a href="/inscription/formulaire" className="block w-full py-4 rounded-xl font-bold text-[15px] bg-green text-white hover:bg-[#4faa73] transition-colors text-center">
-              Inscrire mon cabinet — 24 €/mois
-            </a>
-            <p className="text-center text-[11px] text-muted mt-3">
-              Sans engagement · Annulable à tout moment · Paiement sécurisé
-            </p>
+              <p className="text-[10px] font-bold text-green uppercase tracking-[1.5px] mb-1">Mise en avant</p>
+              <div className="flex items-end gap-1 mb-1">
+                <span className="text-[42px] font-extrabold text-green-dark tracking-tight leading-none">49</span>
+                <span className="text-lg font-bold text-green-dark mb-1">€</span>
+                <span className="text-sm font-medium text-muted mb-2">/mois</span>
+              </div>
+              <p className="text-[11px] text-muted mb-6">Visibilité maximale sur tout le site</p>
+
+              <ul className="space-y-3 mb-7">
+                {[
+                  "Profil dans l'annuaire local",
+                  'Nom, spécialité, quartier',
+                  'Lien de réservation direct',
+                  'Badge Certifié & Vérifié',
+                  'Profil complet (bio, avis, tarifs)',
+                  'Lien vers votre site personnel',
+                  "Affiché sur la page d'accueil",
+                  'Présent dans les articles de blog',
+                  'Position Premium (top liste)',
+                ].map((f) => (
+                  <li key={f} className="flex gap-3 items-center text-[13px] text-ink">
+                    <Check />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+
+              <a
+                href="/inscription/formulaire?plan=premium"
+                className="block w-full py-3 rounded-xl font-bold text-[14px] bg-green text-white hover:bg-[#4faa73] transition-colors text-center"
+              >
+                Choisir la Mise en avant
+              </a>
+              {promoActive && (
+                <p className="text-center text-[10px] text-white/60 mt-2">Premier mois offert si vous êtes parmi les {PROMO_SLOTS} premiers</p>
+              )}
+            </div>
           </div>
+
+          <p className="text-center text-[11px] text-muted mt-5">
+            Sans engagement · Annulable à tout moment · Paiement sécurisé
+          </p>
         </div>
       </section>
 
       {/* How it works */}
       <section className="bg-bg-alt py-[52px] px-10">
         <div className="max-w-[860px] mx-auto">
-          <p className="text-[10px] font-bold text-green uppercase tracking-[2px] text-center mb-2">
-            Comment ça marche
-          </p>
+          <p className="text-[10px] font-bold text-green uppercase tracking-[2px] text-center mb-2">Comment ça marche</p>
           <h2 className="text-2xl font-extrabold text-green-dark text-center mb-8 tracking-tight">
             En ligne en moins de 10 minutes
           </h2>
@@ -139,14 +250,12 @@ export default function InscriptionPage() {
       {/* FAQ */}
       <section className="py-[52px] px-10">
         <div className="max-w-[680px] mx-auto">
-          <h2 className="text-2xl font-extrabold text-green-dark text-center mb-8 tracking-tight">
-            Questions fréquentes
-          </h2>
+          <h2 className="text-2xl font-extrabold text-green-dark text-center mb-8 tracking-tight">Questions fréquentes</h2>
           {[
             ['Puis-je annuler à tout moment ?', 'Oui, sans frais ni préavis. Votre profil est retiré dans les 24h suivant votre résiliation.'],
-            ['Comment est vérifiée ma certification ?', 'Nous vous demandons de télécharger votre diplôme RNCP. Notre équipe valide sous 24h ouvrées.'],
-            ['Dois-je avoir un système de réservation en ligne ?', 'Non. Si vous n\'avez pas de Doctolib ou Cal.com, nous affichons votre numéro ou email.'],
-            ['Qu\'est-ce que l\'offre de lancement ?', 'Les 3 premiers praticiens à s\'inscrire bénéficient du premier mois totalement offert. Aucune carte bancaire requise pendant ce mois.'],
+            ['Comment est vérifiée ma certification ?', "Nous vous demandons de nous envoyer votre diplôme RNCP. Notre équipe valide sous 24h ouvrées."],
+            ["Quelle est la différence entre Standard et Mise en avant ?", `La Mise en avant vous affiche sur la page d'accueil et dans les articles de blog. Si plus de 3 praticiens sont en Mise en avant, les profils tournent aléatoirement sur ces emplacements.`],
+            ["Qu'est-ce que l'offre de lancement ?", `Les ${PROMO_SLOTS} premiers praticiens à s'inscrire bénéficient du premier mois totalement offert, quel que soit le plan choisi.`],
           ].map(([q, a]) => (
             <div key={String(q)} className="border-b border-border py-4">
               <p className="text-sm font-bold text-green-dark mb-2">{q}</p>
@@ -162,12 +271,19 @@ export default function InscriptionPage() {
         <p className="text-[13px] text-white/70 mb-2">
           Rejoignez les praticiens déjà référencés sur {siteConfig.domain}
         </p>
-        <p className="text-[12px] text-green-light mb-6 font-semibold">
-          Offre de lancement : premier mois offert pour les 3 premiers inscrits
-        </p>
-        <a href="/inscription/formulaire" className="inline-block bg-green text-white font-bold text-sm px-8 py-3.5 rounded-lg hover:bg-[#4faa73] transition-colors">
-          Inscrire mon cabinet — 24 €/mois
-        </a>
+        {promoActive && (
+          <p className="text-[12px] text-green-light mb-6 font-semibold">
+            🎉 Offre de lancement — Premier mois offert · Plus que {promoRemaining} place{promoRemaining > 1 ? 's' : ''}
+          </p>
+        )}
+        <div className="flex justify-center gap-4 mt-6">
+          <a href="/inscription/formulaire?plan=standard" className="inline-block bg-white/15 text-white font-bold text-sm px-7 py-3.5 rounded-lg hover:bg-white/25 transition-colors border border-white/30">
+            Standard — 24 €/mois
+          </a>
+          <a href="/inscription/formulaire?plan=premium" className="inline-block bg-green text-white font-bold text-sm px-7 py-3.5 rounded-lg hover:bg-[#4faa73] transition-colors">
+            Mise en avant — 49 €/mois ★
+          </a>
+        </div>
       </section>
     </>
   )

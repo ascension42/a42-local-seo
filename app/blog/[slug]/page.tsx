@@ -25,8 +25,84 @@ export async function generateMetadata(
   return {
     title: post.title,
     description: post.excerpt ?? undefined,
+    openGraph: post.cover_url ? { images: [post.cover_url] } : undefined,
   }
 }
+
+function inlineRender(text: string): React.ReactNode {
+  const parts = text.split(/(\*\*[^*]+\*\*)/g)
+  return parts.map((part, i) => {
+    if (part.startsWith('**') && part.endsWith('**') && part.length > 4) {
+      return <strong key={i} className="font-bold text-green-dark">{part.slice(2, -2)}</strong>
+    }
+    return <span key={i}>{part}</span>
+  })
+}
+
+function renderMarkdown(content: string) {
+  const lines = content.split('\n')
+  const nodes: React.ReactNode[] = []
+  let i = 0
+
+  while (i < lines.length) {
+    const line = lines[i]
+
+    if (line.startsWith('### ')) {
+      nodes.push(
+        <h3 key={i} className="text-[15px] font-extrabold text-green-dark mt-7 mb-2">
+          {line.slice(4)}
+        </h3>
+      )
+    } else if (line.startsWith('## ')) {
+      nodes.push(
+        <h2 key={i} className="text-[19px] font-extrabold text-green-dark mt-9 mb-3 pb-2 border-b border-border">
+          {line.slice(3)}
+        </h2>
+      )
+    } else if (line.startsWith('# ')) {
+      nodes.push(
+        <h1 key={i} className="text-2xl font-extrabold text-green-dark mb-4">
+          {line.slice(2)}
+        </h1>
+      )
+    } else if (line === '---' || line === '***' || line === '---') {
+      nodes.push(<hr key={i} className="border-border my-7" />)
+    } else if (line.startsWith('- ') || line.startsWith('* ')) {
+      const listItems: string[] = []
+      while (i < lines.length && (lines[i].startsWith('- ') || lines[i].startsWith('* '))) {
+        listItems.push(lines[i].slice(2))
+        i++
+      }
+      nodes.push(
+        <ul key={`list-${i}`} className="space-y-2 mb-5 pl-0">
+          {listItems.map((item, j) => (
+            <li key={j} className="flex gap-2.5 text-[13px] leading-[1.85] text-ink">
+              <span className="text-green font-bold mt-[3px] shrink-0">▸</span>
+              <span>{inlineRender(item)}</span>
+            </li>
+          ))}
+        </ul>
+      )
+      continue
+    } else if (line.trim() === '') {
+      // skip — paragraph spacing is handled by mb on elements
+    } else {
+      nodes.push(
+        <p key={i} className="text-[13px] leading-[1.85] text-ink mb-4">
+          {inlineRender(line)}
+        </p>
+      )
+    }
+    i++
+  }
+  return nodes
+}
+
+const avatarGradients = [
+  'from-green-dark to-green',
+  'from-[#3c6947] to-[#5cbe83]',
+  'from-[#467954] to-[#6ab885]',
+]
 
 export default async function BlogArticlePage(
   { params }: { params: Promise<{ slug: string }> }
@@ -43,6 +119,7 @@ export default async function BlogArticlePage(
 
   return (
     <>
+      {/* Hero header */}
       <div className="bg-green-dark px-10 py-11">
         <div className="max-w-[760px] mx-auto">
           <p className="text-[10px] font-bold text-green-light uppercase tracking-[2px] mb-3">
@@ -63,44 +140,60 @@ export default async function BlogArticlePage(
         style={{ gridTemplateColumns: '1fr 280px' }}
       >
         <article>
-          <div className="w-full h-[280px] rounded-xl bg-gradient-to-br from-green-dark via-[#467954] to-green flex items-center justify-center text-white/20 text-[11px] font-bold uppercase tracking-[2px] mb-8">
-            PHOTO ARTICLE
-          </div>
-          <div>
-            {post.content?.split('\n').map((line, i) => {
-              if (line.startsWith('## '))
-                return <h2 key={i} className="text-xl font-extrabold text-green-dark mt-7 mb-3">{line.slice(3)}</h2>
-              if (line.startsWith('# '))
-                return <h1 key={i} className="text-2xl font-extrabold text-green-dark mb-4">{line.slice(2)}</h1>
-              if (line.trim() === '')
-                return <br key={i} />
-              return <p key={i} className="text-[13px] leading-[1.85] text-ink mb-3.5">{line}</p>
-            })}
+          {/* Cover image */}
+          {post.cover_url ? (
+            <div className="w-full h-[280px] rounded-xl overflow-hidden mb-8">
+              <img
+                src={post.cover_url}
+                alt={post.title}
+                className="w-full h-full object-cover"
+              />
+            </div>
+          ) : (
+            <div className="w-full h-[280px] rounded-xl bg-gradient-to-br from-green-dark via-[#467954] to-green mb-8" />
+          )}
+
+          {/* Article content */}
+          <div className="prose-custom">
+            {post.content ? renderMarkdown(post.content) : null}
           </div>
         </article>
 
+        {/* Sidebar */}
         <aside className="space-y-4">
           <div className="bg-white border-[1.5px] border-border rounded-xl p-[18px]">
             <h3 className="text-[13px] font-extrabold text-green-dark mb-3 pb-2.5 border-b border-border">
               Praticiens recommandés
             </h3>
             <div className="space-y-3">
-              {featured.map((p) => (
-                <Link
-                  key={p.id}
-                  href={`/praticiens/${p.slug}`}
-                  className="flex gap-3 items-center py-2.5 border-b border-bg-alt last:border-0"
-                >
-                  <div className="w-11 h-11 rounded-full bg-gradient-to-br from-green-dark to-green flex items-center justify-center text-sm font-extrabold text-white shrink-0">
-                    {p.first_name[0]}{p.last_name[0]}
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-xs font-bold text-green-dark">{p.first_name} {p.last_name}</p>
-                    <p className="text-[10px] text-muted">{p.hourly_rate} €/séance</p>
-                  </div>
-                  <span className="text-[10px] font-bold text-green ml-auto whitespace-nowrap">Voir le profil →</span>
-                </Link>
-              ))}
+              {featured.map((p) => {
+                const initials = `${p.first_name[0]}${p.last_name[0]}`
+                const grad = avatarGradients[p.first_name.charCodeAt(0) % avatarGradients.length]
+                return (
+                  <Link
+                    key={p.id}
+                    href={`/praticiens/${p.slug}`}
+                    className="flex gap-3 items-center py-2.5 border-b border-bg-alt last:border-0"
+                  >
+                    {p.photo_url ? (
+                      <img
+                        src={p.photo_url}
+                        alt={`${p.first_name} ${p.last_name}`}
+                        className="w-11 h-11 rounded-full object-cover shrink-0"
+                      />
+                    ) : (
+                      <div className={`w-11 h-11 rounded-full bg-gradient-to-br ${grad} flex items-center justify-center text-sm font-extrabold text-white shrink-0`}>
+                        {initials}
+                      </div>
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-bold text-green-dark truncate">{p.first_name} {p.last_name}</p>
+                      <p className="text-[10px] text-muted">{p.hourly_rate} €/séance</p>
+                    </div>
+                    <span className="text-[10px] font-bold text-green ml-auto whitespace-nowrap">Voir →</span>
+                  </Link>
+                )
+              })}
             </div>
           </div>
 
@@ -119,6 +212,7 @@ export default async function BlogArticlePage(
         </aside>
       </div>
 
+      {/* Related posts */}
       {relatedPosts.length > 0 && (
         <div className="max-w-[1060px] mx-auto px-10 pb-12">
           <h2 className="text-lg font-extrabold text-green-dark mb-5 tracking-tight">
@@ -131,12 +225,18 @@ export default async function BlogArticlePage(
                 href={`/blog/${p.slug}`}
                 className="flex gap-4 p-4 bg-white border-[1.5px] border-border rounded-xl hover:border-green hover:shadow-md transition-all duration-150"
               >
-                <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-green-dark to-green shrink-0" />
-                <div>
+                {p.cover_url ? (
+                  <div className="w-16 h-16 rounded-lg overflow-hidden shrink-0">
+                    <img src={p.cover_url} alt={p.title} className="w-full h-full object-cover" />
+                  </div>
+                ) : (
+                  <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-green-dark to-green shrink-0" />
+                )}
+                <div className="min-w-0">
                   <p className="text-[10px] font-bold text-green uppercase tracking-[1px] mb-1">
                     {p.reading_time_min} min de lecture
                   </p>
-                  <p className="text-sm font-bold text-green-dark leading-[1.35]">{p.title}</p>
+                  <p className="text-sm font-bold text-green-dark leading-[1.35] line-clamp-2">{p.title}</p>
                 </div>
               </Link>
             ))}
