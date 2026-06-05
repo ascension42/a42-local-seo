@@ -3,58 +3,32 @@ import { NextResponse } from 'next/server'
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json()
-    const {
-      first_name, last_name, email, phone,
-      certification, school, years_active,
-      consultation_mode, neighborhood, hourly_rate,
-      website_url, booking_url, bio, tags,
-    } = body
+    const { first_name, last_name, specialty_slug, email, phone } = await req.json()
 
-    if (!first_name || !last_name || !email) {
+    if (!first_name || !last_name || !specialty_slug || !email) {
       return NextResponse.json({ error: 'Champs obligatoires manquants' }, { status: 400 })
     }
 
     const supabase = createServiceClient()
     const { data: row, error } = await supabase
       .from('inscription_requests')
-      .insert({
-        first_name, last_name, email,
-        phone: phone || null,
-        certification: certification || null,
-        school: school || null,
-        years_active: years_active ? parseInt(years_active) : null,
-        consultation_mode: consultation_mode || 'cabinet',
-        neighborhood: neighborhood || null,
-        hourly_rate: hourly_rate ? parseInt(hourly_rate) : null,
-        website_url: website_url || null,
-        booking_url: booking_url || null,
-        bio: bio || null,
-        tags: tags?.length ? tags : null,
-      })
+      .insert({ first_name, last_name, specialty_slug, email, phone: phone || null })
       .select('id')
       .single()
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
-    // Trigger n8n verification workflow (fire-and-forget)
-    const n8nWebhookUrl = process.env.N8N_INSCRIPTION_WEBHOOK_URL
-    if (n8nWebhookUrl) {
-      fetch(n8nWebhookUrl, {
+    // Notifier les admins via n8n (fire-and-forget)
+    const n8nUrl = process.env.N8N_INSCRIPTION_WEBHOOK_URL
+    if (n8nUrl) {
+      fetch(n8nUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          inscription_id: row.id,
-          first_name, last_name, email, phone,
-          certification, school, years_active,
-          consultation_mode, neighborhood, hourly_rate,
-          website_url, booking_url, bio,
-          tags: tags ?? [],
-        }),
-      }).catch(() => {}) // non-blocking
+        body: JSON.stringify({ inscription_id: row.id, first_name, last_name, specialty_slug, email, phone: phone || '' }),
+      }).catch(() => {})
     }
 
-    return NextResponse.json({ ok: true, id: row.id })
+    return NextResponse.json({ ok: true })
   } catch {
     return NextResponse.json({ ok: false }, { status: 500 })
   }
