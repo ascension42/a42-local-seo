@@ -85,7 +85,7 @@ export async function POST(req: Request) {
       consultation_mode: req_.consultation_mode ?? 'cabinet',
       neighborhood: req_.neighborhood ?? null,
       website_url: req_.website_url ?? null,
-      doctolib_url: req_.doctolib_url ?? null,
+      doctolib_url: req_.booking_url ?? null,
       is_premium: false,
       is_verified: false,   // Admin sets this to true after certification check
       accepting_patients: true,
