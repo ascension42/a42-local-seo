@@ -4,8 +4,19 @@ import HeroCTAs from './HeroCTAs'
 export default function Hero({ practitionerCount, neighborhoodCount, tagCount }: { practitionerCount: number; neighborhoodCount: number; tagCount: number }) {
   return (
     <div className="relative min-h-[420px] md:h-[420px] overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-green-dark via-[#3c6947] to-green" />
-      <div className="absolute inset-0 bg-gradient-to-r from-green-deep/90 via-green-deep/60 to-transparent" />
+      {/* Background image or gradient */}
+      {siteConfig.heroImageUrl ? (
+        <img
+          src={siteConfig.heroImageUrl}
+          alt={`${siteConfig.cityLabel} — ${siteConfig.specialtyLabel}`}
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+      ) : (
+        <div className="absolute inset-0 bg-gradient-to-br from-green-dark via-[#3c6947] to-green" />
+      )}
+      {/* Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-r from-green-deep/90 via-green-deep/70 to-green-deep/30" />
+
       <div className="absolute inset-0 flex flex-col justify-center px-5 md:px-12 text-white w-full md:w-[60%]">
         <p className="text-[10px] font-semibold uppercase tracking-[2.5px] text-green-light mb-3.5">
           {siteConfig.cityLabel} &amp; région

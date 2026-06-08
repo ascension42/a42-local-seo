@@ -6,4 +6,5 @@ export const siteConfig = {
   specialtyPlural: process.env.NEXT_PUBLIC_SPECIALTY_LABEL_PLURAL ?? 'Sophrologues',
   domain:          process.env.NEXT_PUBLIC_SITE_DOMAIN      ?? 'sophrologue-bordeaux.fr',
   siteName:        process.env.NEXT_PUBLIC_SITE_NAME        ?? 'Sophrologue Bordeaux',
+  heroImageUrl:    process.env.NEXT_PUBLIC_HERO_IMAGE_URL   ?? null,
 } as const
