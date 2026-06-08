@@ -1,20 +1,34 @@
 import { siteConfig } from '@/lib/config'
 import type { Metadata } from 'next'
-import InscriptionPlanCTA from '@/components/inscription/InscriptionPlanCTA'
 import CountdownTimer from '@/components/inscription/CountdownTimer'
+import { getPractitioners } from '@/lib/queries'
 
-export const revalidate = 86400
+export const revalidate = 3600
 
 export const metadata: Metadata = {
-  title: `Inscrire mon cabinet — ${siteConfig.siteName}`,
-  description: `Soyez visible par les patients qui vous cherchent à ${siteConfig.cityLabel}. Profil complet, lien de réservation, visibilité Google garantie.`,
+  title: `Rejoindre le réseau — ${siteConfig.siteName}`,
+  description: `Intégrez un réseau sélectif de ${siteConfig.specialtyPlural} à ${siteConfig.cityLabel}. 5 places maximum. Candidature examinée sous 48h.`,
 }
 
+const MAX_SPOTS = 5
+
 const steps = [
-  { n: '1', title: 'Envoyez votre demande',  desc: 'Remplissez le formulaire en 2 minutes — nom, spécialité, email, téléphone.' },
-  { n: '2', title: 'Vérification 24h',        desc: 'Notre équipe vérifie votre certification RNCP sous 24h.' },
-  { n: '3', title: 'Profil publié',           desc: 'Votre profil est en ligne et visible sur Google immédiatement.' },
-  { n: '4', title: 'Patients reçus',          desc: 'Les visiteurs cliquent sur votre lien de réservation.' },
+  { n: '1', title: 'Envoyez votre candidature', desc: 'Remplissez le formulaire en 2 minutes — nom, spécialité, email, téléphone.' },
+  { n: '2', title: 'Vérification sous 48h',     desc: 'Notre équipe vérifie votre certification RNCP et examine votre profil.' },
+  { n: '3', title: 'Recevez votre lien',        desc: 'Une fois approuvé·e, vous recevez votre lien de paiement par email.' },
+  { n: '4', title: 'Profil en ligne',           desc: 'Votre profil est publié et visible sur Google immédiatement.' },
+]
+
+const benefits = [
+  "Profil complet dans l'annuaire local",
+  'Badge Certifié & Vérifié',
+  'Lien de réservation direct',
+  'Présent sur la page d\'accueil et dans les articles de blog',
+  'Accès au groupe WhatsApp privé des praticiens de votre ville',
+  'Afterworks trimestriels avec vos confrères',
+  'Référent de ville nommé pour animer le réseau',
+  'Newsletter mensuelle avec conseils SEO exclusifs',
+  'Lien vers votre site personnel',
 ]
 
 function Check() {
@@ -27,31 +41,26 @@ function Check() {
   )
 }
 
-function Cross() {
-  return (
-    <span className="w-5 h-5 rounded-full bg-[#f3f4f6] flex items-center justify-center shrink-0">
-      <svg viewBox="0 0 10 10" width="10" fill="none">
-        <path d="M3 3l4 4M7 3l-4 4" stroke="#9ca3af" strokeWidth="1.5" strokeLinecap="round" />
-      </svg>
-    </span>
-  )
-}
+export default async function InscriptionPage() {
+  const practitioners = await getPractitioners()
+  const spotsUsed = practitioners.length
+  const spotsLeft = Math.max(0, MAX_SPOTS - spotsUsed)
+  const isFull = spotsLeft === 0
 
-export default function InscriptionPage() {
   return (
     <>
       {/* Hero */}
       <div className="bg-green-dark text-center px-4 md:px-10 py-[52px]">
         <span className="inline-block bg-surface text-green-dark text-[10px] font-bold px-3.5 py-[5px] rounded-xl uppercase tracking-[1px] mb-4">
-          Pour les praticiens
+          Réseau sélectif · {MAX_SPOTS} places par ville
         </span>
         <h1 className="text-[34px] font-extrabold text-white leading-[1.2] mb-3 tracking-tight">
-          Soyez visible par<br />les patients qui vous cherchent<br />
-          <span className="text-green-light">à {siteConfig.cityLabel}</span>
+          Rejoignez le réseau des<br />
+          <span className="text-green-light">{siteConfig.specialtyPlural} de {siteConfig.cityLabel}</span>
         </h1>
         <p className="text-sm text-white/70 max-w-[560px] mx-auto leading-[1.65]">
-          Inscrivez votre cabinet sur le premier annuaire de praticiens.
-          Profil complet, lien de réservation direct, visibilité Google garantie.
+          Un réseau fermé, sélectif et limité. Pas de concurrence entre membres —
+          chaque praticien est unique et complémentaire.
         </p>
       </div>
 
@@ -71,129 +80,74 @@ export default function InscriptionPage() {
         </div>
       </div>
 
-      {/* Plans */}
+      {/* Pricing */}
       <section className="py-14 px-4 md:px-10">
-        <div className="max-w-[860px] mx-auto">
-          <p className="text-[10px] font-bold text-green uppercase tracking-[2px] text-center mb-2">Tarifs</p>
+        <div className="max-w-[560px] mx-auto">
+          <p className="text-[10px] font-bold text-green uppercase tracking-[2px] text-center mb-2">Offre unique</p>
           <h2 className="text-2xl font-extrabold text-green-dark text-center mb-2 tracking-tight">
-            Choisissez votre visibilité
+            Accès complet au réseau
           </h2>
           <p className="text-[13px] text-muted text-center mb-7">Sans engagement. Résiliable à tout moment.</p>
 
-          {/* Countdown timer */}
           <CountdownTimer />
 
-          {/* 2 pricing cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+          {/* Single plan card */}
+          <div className="bg-white rounded-2xl p-7 border-2 border-green shadow-lg">
+            <p className="text-[10px] font-bold text-green uppercase tracking-[1.5px] mb-1">Accès Réseau</p>
 
-            {/* Plan Standard */}
-            <div className="bg-white rounded-2xl p-7 border-[1.5px] border-border">
-              <p className="text-[10px] font-bold text-muted uppercase tracking-[1.5px] mb-1">Standard</p>
+            <div className="flex items-baseline gap-2 mb-0.5">
+              <span className="text-sm text-muted line-through">49 €/mois</span>
+              <span className="text-[10px] font-bold bg-green/10 text-green px-1.5 py-0.5 rounded">
+                -51 %
+              </span>
+            </div>
+            <div className="flex items-end gap-1 mb-1">
+              <span className="text-[42px] font-extrabold text-green-dark tracking-tight leading-none">24</span>
+              <span className="text-lg font-bold text-green-dark mb-1">€</span>
+              <span className="text-sm font-medium text-muted mb-2">/mois</span>
+            </div>
+            <p className="text-[11px] text-muted mb-5">Tarif de lancement — valable jusqu&apos;au 1er juillet 2026</p>
 
-              {/* Crossed-out price + promo */}
-              <div className="flex items-baseline gap-2 mb-0.5">
-                <span className="text-sm text-muted line-through">49 €/mois</span>
-                <span className="text-[10px] font-bold bg-green/10 text-green px-1.5 py-0.5 rounded">
-                  -51 %
-                </span>
-              </div>
-              <div className="flex items-end gap-1 mb-1">
-                <span className="text-[42px] font-extrabold text-green-dark tracking-tight leading-none">24</span>
-                <span className="text-lg font-bold text-green-dark mb-1">€</span>
-                <span className="text-sm font-medium text-muted mb-2">/mois</span>
-              </div>
-              <p className="text-[11px] text-muted mb-6">Visibilité essentielle dans l&apos;annuaire</p>
-
-              <ul className="space-y-3 mb-7">
-                {[
-                  "Profil dans l'annuaire local",
-                  'Nom, spécialité, quartier',
-                  'Lien de réservation direct',
-                  'Badge Certifié & Vérifié',
-                  'Profil complet (bio, avis, tarifs)',
-                  'Lien vers votre site personnel',
-                ].map((f) => (
-                  <li key={f} className="flex gap-3 items-center text-[13px] text-ink">
-                    <Check />
-                    {f}
-                  </li>
+            {/* Spots counter — inside card */}
+            <div className={`rounded-xl px-4 py-3 mb-6 ${isFull ? 'bg-red-50 border border-red-200' : spotsLeft === 1 ? 'bg-orange-50 border border-orange-200' : 'bg-green/8 border border-green/20'}`}>
+              <div className="flex gap-1.5 mb-2">
+                {Array.from({ length: MAX_SPOTS }).map((_, i) => (
+                  <div key={i} className={`h-1.5 flex-1 rounded-full ${i < spotsUsed ? (isFull ? 'bg-red-400' : 'bg-green') : 'bg-border'}`} />
                 ))}
-                {[
-                  "Affiché sur la page d'accueil",
-                  'Présent dans les articles de blog',
-                  'Position Premium (top liste)',
-                ].map((f) => (
-                  <li key={f} className="flex gap-3 items-center text-[13px] text-muted/60">
-                    <Cross />
-                    {f}
-                  </li>
-                ))}
-              </ul>
-
-              <InscriptionPlanCTA
-                plan="standard"
-                location="cards"
-                href="/inscription/formulaire?plan=standard"
-                className="block w-full py-3 rounded-xl font-bold text-[14px] bg-bg-alt text-green-dark border border-border hover:border-green hover:bg-surface transition-colors text-center"
-              >
-                Choisir le Standard
-              </InscriptionPlanCTA>
+              </div>
+              <p className={`text-[12px] font-bold ${isFull ? 'text-red-700' : spotsLeft === 1 ? 'text-orange-700' : 'text-green-dark'}`}>
+                {isFull ? 'Complet — liste d\'attente ouverte' : spotsLeft === 1 ? '⚠ Dernière place disponible' : `${spotsLeft} place${spotsLeft > 1 ? 's' : ''} restante${spotsLeft > 1 ? 's' : ''} sur ${MAX_SPOTS}`}
+              </p>
             </div>
 
-            {/* Plan Mise en avant */}
-            <div className="relative bg-white rounded-2xl p-7 border-2 border-green shadow-lg">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-green text-white text-[10px] font-extrabold px-4 py-1 rounded-[10px] whitespace-nowrap">
-                ★ Recommandé
-              </div>
+            <ul className="space-y-3 mb-7">
+              {benefits.map((f) => (
+                <li key={f} className="flex gap-3 items-start text-[13px] text-ink">
+                  <Check />
+                  <span>{f}</span>
+                </li>
+              ))}
+            </ul>
 
-              <p className="text-[10px] font-bold text-green uppercase tracking-[1.5px] mb-1">Mise en avant</p>
-
-              {/* Crossed-out price + promo */}
-              <div className="flex items-baseline gap-2 mb-0.5">
-                <span className="text-sm text-muted line-through">99 €/mois</span>
-                <span className="text-[10px] font-bold bg-green/10 text-green px-1.5 py-0.5 rounded">
-                  -51 %
-                </span>
-              </div>
-              <div className="flex items-end gap-1 mb-1">
-                <span className="text-[42px] font-extrabold text-green-dark tracking-tight leading-none">49</span>
-                <span className="text-lg font-bold text-green-dark mb-1">€</span>
-                <span className="text-sm font-medium text-muted mb-2">/mois</span>
-              </div>
-              <p className="text-[11px] text-muted mb-6">Visibilité maximale sur tout le site</p>
-
-              <ul className="space-y-3 mb-7">
-                {[
-                  "Profil dans l'annuaire local",
-                  'Nom, spécialité, quartier',
-                  'Lien de réservation direct',
-                  'Badge Certifié & Vérifié',
-                  'Profil complet (bio, avis, tarifs)',
-                  'Lien vers votre site personnel',
-                  "Affiché sur la page d'accueil",
-                  'Présent dans les articles de blog',
-                  'Position Premium (top liste)',
-                ].map((f) => (
-                  <li key={f} className="flex gap-3 items-center text-[13px] text-ink">
-                    <Check />
-                    {f}
-                  </li>
-                ))}
-              </ul>
-
-              <InscriptionPlanCTA
-                plan="premium"
-                location="cards"
-                href="/inscription/formulaire?plan=premium"
+            {isFull ? (
+              <a
+                href="/inscription/formulaire"
+                className="block w-full py-3 rounded-xl font-bold text-[14px] bg-bg-alt text-muted border border-border text-center cursor-default"
+              >
+                Rejoindre la liste d&apos;attente
+              </a>
+            ) : (
+              <a
+                href="/inscription/formulaire"
                 className="block w-full py-3 rounded-xl font-bold text-[14px] bg-green text-white hover:bg-[#4faa73] transition-colors text-center"
               >
-                Choisir la Mise en avant
-              </InscriptionPlanCTA>
-            </div>
+                Soumettre ma candidature →
+              </a>
+            )}
           </div>
 
           <p className="text-center text-[11px] text-muted mt-5">
-            Sans engagement · Annulable à tout moment · Paiement sécurisé
+            Sans engagement · Annulable à tout moment · Paiement après validation
           </p>
         </div>
       </section>
@@ -202,9 +156,10 @@ export default function InscriptionPage() {
       <section className="bg-bg-alt py-[52px] px-4 md:px-10">
         <div className="max-w-[860px] mx-auto">
           <p className="text-[10px] font-bold text-green uppercase tracking-[2px] text-center mb-2">Comment ça marche</p>
-          <h2 className="text-2xl font-extrabold text-green-dark text-center mb-8 tracking-tight">
-            En ligne en moins de 10 minutes
+          <h2 className="text-2xl font-extrabold text-green-dark text-center mb-2 tracking-tight">
+            Un processus en 4 étapes
           </h2>
+          <p className="text-[13px] text-muted text-center mb-8">Votre profil n&apos;est activé qu&apos;après validation — pour garantir la qualité du réseau.</p>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
             {steps.map((s) => (
               <div key={s.n} className="text-center">
@@ -224,10 +179,12 @@ export default function InscriptionPage() {
         <div className="max-w-[680px] mx-auto">
           <h2 className="text-2xl font-extrabold text-green-dark text-center mb-8 tracking-tight">Questions fréquentes</h2>
           {[
+            ['Pourquoi seulement 5 places ?', `Pour éviter la concurrence entre membres et garantir la valeur du réseau. Chaque praticien référencé est unique dans sa position — pas de mise en concurrence directe.`],
+            ['Que se passe-t-il si le réseau est complet ?', `Vous pouvez rejoindre la liste d'attente. Vous serez contacté en priorité si une place se libère ou si nous ouvrons des places supplémentaires.`],
+            ['Comment est vérifiée ma candidature ?', "Notre équipe examine votre certification RNCP et votre activité sous 48h ouvrées. Vous recevez ensuite votre lien de paiement par email."],
             ['Puis-je annuler à tout moment ?', 'Oui, sans frais ni préavis. Votre profil est retiré dans les 24h suivant votre résiliation.'],
-            ['Comment est vérifiée ma certification ?', "Nous vous demandons de nous envoyer votre diplôme RNCP. Notre équipe valide sous 24h ouvrées."],
-            ["Quelle est la différence entre Standard et Mise en avant ?", `La Mise en avant vous affiche sur la page d'accueil et dans les articles de blog. Si plus de 3 praticiens sont en Mise en avant, les profils tournent aléatoirement sur ces emplacements.`],
-            ["Jusqu'à quand dure le tarif promotionnel ?", "Le tarif de lancement est valable jusqu'au 1er juillet 2026. Passé cette date, les prix reviendront à leur tarif standard."],
+            ["Jusqu'à quand dure le tarif promotionnel ?", "Le tarif de lancement à 24€/mois est valable jusqu'au 1er juillet 2026. Passé cette date, le tarif passera à 49€/mois."],
+            ['Que comprend le groupe WhatsApp ?', `Un groupe privé réservé aux praticiens référencés de votre ville. Échanges professionnels, co-références de patients, entraide et organisation des afterworks.`],
           ].map(([q, a]) => (
             <div key={String(q)} className="border-b border-border py-4">
               <p className="text-sm font-bold text-green-dark mb-2">{q}</p>
@@ -239,18 +196,21 @@ export default function InscriptionPage() {
 
       {/* Bottom CTA */}
       <section className="bg-green-dark text-center py-[52px] px-4 md:px-10">
-        <h2 className="text-[26px] font-extrabold text-white mb-2.5">Prêt à remplir votre agenda ?</h2>
+        <h2 className="text-[26px] font-extrabold text-white mb-2.5">
+          {isFull ? 'Réseau complet — rejoignez la liste d\'attente' : 'Prêt à rejoindre le réseau ?'}
+        </h2>
         <p className="text-[13px] text-white/70 mb-6">
-          Rejoignez les praticiens déjà référencés sur {siteConfig.domain}
+          {isFull
+            ? `Soyez alerté en priorité à la prochaine ouverture de place à ${siteConfig.cityLabel}.`
+            : `${spotsLeft} place${spotsLeft > 1 ? 's' : ''} restante${spotsLeft > 1 ? 's' : ''} sur ${MAX_SPOTS} — candidature examinée sous 48h.`
+          }
         </p>
-        <div className="flex justify-center gap-4">
-          <InscriptionPlanCTA plan="standard" location="bottom_cta" href="/inscription/formulaire?plan=standard" className="inline-block bg-white/15 text-white font-bold text-sm px-7 py-3.5 rounded-lg hover:bg-white/25 transition-colors border border-white/30">
-            Standard — 24 €/mois
-          </InscriptionPlanCTA>
-          <InscriptionPlanCTA plan="premium" location="bottom_cta" href="/inscription/formulaire?plan=premium" className="inline-block bg-green text-white font-bold text-sm px-7 py-3.5 rounded-lg hover:bg-[#4faa73] transition-colors">
-            Mise en avant — 49 €/mois ★
-          </InscriptionPlanCTA>
-        </div>
+        <a
+          href="/inscription/formulaire"
+          className="inline-block bg-green text-white font-bold text-sm px-8 py-3.5 rounded-lg hover:bg-[#4faa73] transition-colors"
+        >
+          {isFull ? 'Rejoindre la liste d\'attente →' : 'Soumettre ma candidature →'}
+        </a>
       </section>
     </>
   )

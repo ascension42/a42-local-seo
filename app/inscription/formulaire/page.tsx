@@ -1,23 +1,12 @@
 'use client'
 
 import { useState, useEffect, Suspense } from 'react'
-import { useSearchParams } from 'next/navigation'
 import { siteConfig } from '@/lib/config'
 import { track } from '@/lib/analytics'
 
 type Specialty = { slug: string; name: string }
-type Plan = 'standard' | 'premium'
-
-const PLAN_LABELS: Record<Plan, { name: string; price: string; desc: string }> = {
-  standard:  { name: 'Standard',        price: '24 €/mois', desc: "Profil dans l'annuaire local" },
-  premium:   { name: 'Mise en avant',   price: '49 €/mois', desc: "Affiché sur la page d'accueil et dans les articles" },
-}
 
 function FormContent() {
-  const searchParams = useSearchParams()
-  const planParam = (searchParams.get('plan') ?? 'standard') as Plan
-  const validPlan: Plan = planParam === 'premium' ? 'premium' : 'standard'
-
   const [specialties, setSpecialties] = useState<Specialty[]>([])
   const [form, setForm] = useState({
     first_name: '',
@@ -25,7 +14,7 @@ function FormContent() {
     specialty_slug: '',
     email: '',
     phone: '',
-    plan: validPlan,
+    plan: 'standard',
   })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -78,54 +67,69 @@ function FormContent() {
   }
 
   if (submitted) {
-    const planInfo = PLAN_LABELS[form.plan as Plan]
     return (
       <div className="min-h-[calc(100vh-58px)] flex items-center justify-center px-5 py-16">
-        <div className="max-w-[680px] w-full text-center bg-surface rounded-2xl p-10 shadow-sm">
+        <div className="max-w-[560px] w-full text-center">
           <div className="w-14 h-14 bg-green/15 rounded-full flex items-center justify-center mx-auto mb-5">
             <svg className="w-7 h-7 text-green" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <h2 className="text-xl font-bold text-foreground mb-2">Demande envoyée !</h2>
-          <p className="text-[11px] font-semibold text-green uppercase tracking-[1px] mb-3">{planInfo.name} — {planInfo.price}</p>
-          <p className="text-muted text-sm leading-relaxed">
-            Merci {form.first_name}, nous avons bien reçu votre demande d&apos;inscription.
-            Notre équipe vérifiera votre profil et vous contactera par email sous peu.
+          <h2 className="text-xl font-bold text-foreground mb-2">Candidature reçue !</h2>
+          <p className="text-muted text-sm leading-relaxed mb-8">
+            Merci {form.first_name}, votre dossier a bien été transmis à notre équipe.
           </p>
+
+          {/* Next steps */}
+          <div className="bg-surface rounded-2xl p-6 text-left space-y-4">
+            <p className="text-[10px] font-bold text-green uppercase tracking-[2px] mb-4 text-center">La suite</p>
+            {[
+              { icon: '✓', label: 'Candidature reçue', desc: 'Votre dossier est entre nos mains.', done: true },
+              { icon: '2', label: 'Vérification sous 48h', desc: 'Notre équipe examine votre certification RNCP.', done: false },
+              { icon: '3', label: 'Lien de paiement par email', desc: `Vous recevrez un email sur ${form.email} pour activer votre profil.`, done: false },
+              { icon: '4', label: 'Profil en ligne', desc: 'Visible sur Google dès activation.', done: false },
+            ].map((step) => (
+              <div key={step.label} className="flex gap-3 items-start">
+                <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-extrabold shrink-0 mt-0.5 ${step.done ? 'bg-green text-white' : 'bg-border text-muted'}`}>
+                  {step.done ? '✓' : step.icon}
+                </span>
+                <div>
+                  <p className={`text-sm font-bold ${step.done ? 'text-green-dark' : 'text-muted'}`}>{step.label}</p>
+                  <p className="text-[11px] text-muted leading-[1.6]">{step.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     )
   }
 
-  const planInfo = PLAN_LABELS[form.plan as Plan]
-
   return (
-    <div className="max-w-[680px] mx-auto px-5 py-12">
-      {/* Plan badge */}
-      <div className={`flex items-center justify-between mb-6 px-4 py-3 rounded-xl border-[1.5px] ${form.plan === 'premium' ? 'bg-green/5 border-green' : 'bg-surface border-border'}`}>
-        <div>
-          <p className={`text-[11px] font-bold uppercase tracking-[1px] mb-0.5 ${form.plan === 'premium' ? 'text-green' : 'text-muted'}`}>
-            Plan sélectionné {form.plan === 'premium' ? '★' : ''}
-          </p>
-          <p className="text-sm font-bold text-green-dark">{planInfo.name} — {planInfo.price}</p>
-          <p className="text-[11px] text-muted">{planInfo.desc}</p>
+    <div className="max-w-[560px] mx-auto px-5 py-12">
+      {/* Offer badge */}
+      <div className="flex items-center gap-3 mb-6 px-4 py-3 rounded-xl border-[1.5px] bg-green/5 border-green">
+        <div className="w-8 h-8 rounded-full bg-green/15 flex items-center justify-center shrink-0">
+          <svg viewBox="0 0 10 8" width="10" fill="none">
+            <path d="M1 4l2.5 2.5L9 1" stroke="#3a8f5c" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
         </div>
-        <a
-          href="/inscription"
-          className="text-[10px] font-semibold text-green underline underline-offset-2 whitespace-nowrap"
-        >
-          Changer de plan
+        <div className="flex-1 min-w-0">
+          <p className="text-[11px] font-bold text-green uppercase tracking-[1px]">Accès Réseau — offre de lancement</p>
+          <p className="text-sm font-bold text-green-dark">24 €/mois <span className="text-xs font-normal text-muted line-through">49 €</span></p>
+        </div>
+        <a href="/inscription" className="text-[10px] font-semibold text-green underline underline-offset-2 whitespace-nowrap shrink-0">
+          En savoir plus
         </a>
       </div>
 
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-foreground mb-2">
-          Rejoindre l&apos;annuaire des{' '}
+          Rejoindre le réseau des{' '}
           <span className="text-green">{siteConfig.specialtyPlural} de {siteConfig.cityLabel}</span>
         </h1>
         <p className="text-muted text-sm leading-relaxed">
-          Remplissez ce formulaire, nous vérifions votre profil et vous recontactons pour finaliser votre inscription.
+          Remplissez ce formulaire. Notre équipe examine votre dossier et vous envoie votre lien d&apos;activation sous 48h.
         </p>
       </div>
 
@@ -160,11 +164,11 @@ function FormContent() {
           disabled={loading}
           className="w-full bg-green text-white font-semibold py-3 rounded-xl text-sm hover:bg-green-dark transition-colors disabled:opacity-60"
         >
-          {loading ? 'Envoi en cours…' : `Envoyer ma demande — ${planInfo.name}`}
+          {loading ? 'Envoi en cours…' : 'Envoyer ma candidature →'}
         </button>
 
         <p className="text-center text-[11px] text-muted">
-          Pas de carte bancaire requise. Vous serez recontacté par email.
+          Aucun paiement maintenant · Vous serez contacté sous 48h
         </p>
       </form>
     </div>
