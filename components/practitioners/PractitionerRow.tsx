@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import type { Practitioner } from '@/lib/types'
 import ModeTag from './ModeTag'
-import PatientsBadge from './PatientsBadge'
 import { siteConfig } from '@/lib/config'
 
 interface Props { practitioner: Practitioner }
@@ -21,11 +20,7 @@ export default function PractitionerRow({ practitioner: p }: Props) {
   return (
     <Link
       href={`/praticiens/${p.slug}`}
-      className={[
-        'flex flex-col sm:grid sm:gap-4 sm:items-center p-4 sm:p-[18px] rounded-xl bg-white transition-all duration-150',
-        'hover:shadow-md hover:-translate-y-px',
-        p.is_premium ? 'border-[1.5px] border-green' : 'border-[1.5px] border-border',
-      ].join(' ')}
+      className="flex flex-col sm:grid sm:gap-4 sm:items-center p-4 sm:p-[18px] rounded-xl bg-white border-[1.5px] border-border transition-all duration-150 hover:shadow-md hover:-translate-y-px hover:border-green/40"
       style={{ gridTemplateColumns: '72px 1fr auto' }}
     >
       <div className="flex gap-3 sm:contents">
@@ -38,15 +33,8 @@ export default function PractitionerRow({ practitioner: p }: Props) {
           </div>
         )}
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-0.5">
-            <span className="text-[15px] font-extrabold text-green-dark">{p.first_name} {p.last_name}</span>
-            {p.is_premium && (
-              <span className="text-[9px] font-bold bg-green text-white px-1.5 py-0.5 rounded-lg uppercase tracking-[0.3px]">
-                Premium
-              </span>
-            )}
-          </div>
-          <p className="text-[10px] font-bold text-green uppercase tracking-[0.8px] mb-1.5">
+          <span className="text-[15px] font-extrabold text-green-dark">{p.first_name} {p.last_name}</span>
+          <p className="text-[10px] font-bold text-green uppercase tracking-[0.8px] mb-1.5 mt-0.5">
             {siteConfig.specialtyLabel} certifié
           </p>
           <div className="flex flex-wrap gap-1 mb-1.5">
@@ -57,11 +45,8 @@ export default function PractitionerRow({ practitioner: p }: Props) {
             ))}
           </div>
           <p className="text-[11px] text-muted">
-            {p.neighborhood}{p.hourly_rate ? ` · ${p.hourly_rate} €/séance` : ''}{p.years_active ? ` · En activité depuis ${p.years_active}` : ''}
+            {p.neighborhood}{p.hourly_rate ? ` · ${p.hourly_rate} €/séance` : ''}{p.years_active ? ` · ${p.years_active}` : ''}
           </p>
-          <div className="mt-1.5">
-            <PatientsBadge accepting={p.accepting_patients} />
-          </div>
         </div>
       </div>
       <div className="flex flex-row sm:flex-col gap-2 items-start sm:items-end mt-3 sm:mt-0">

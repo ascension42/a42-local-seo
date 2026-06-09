@@ -3,8 +3,6 @@ import { getPractitionerBySlug } from '@/lib/queries'
 import { createStaticClient } from '@/lib/supabase/static'
 import { siteConfig } from '@/lib/config'
 import type { Metadata } from 'next'
-import Badge from '@/components/ui/Badge'
-import PatientsBadge from '@/components/practitioners/PatientsBadge'
 import ProfileViewTracker from '@/components/practitioners/ProfileViewTracker'
 import BookingButton from '@/components/practitioners/BookingButton'
 
@@ -44,6 +42,12 @@ const modeLabel: Record<string, string> = {
   both: 'Cabinet & En ligne',
 }
 
+const modeIcon: Record<string, string> = {
+  cabinet: '🏢',
+  online: '💻',
+  both: '🏢💻',
+}
+
 export default async function ProfilePage(
   { params }: { params: Promise<{ slug: string }> }
 ) {
@@ -57,7 +61,6 @@ export default async function ProfilePage(
     name: `${p.first_name} ${p.last_name} — ${siteConfig.specialtyLabel}`,
     description: p.bio ?? `${siteConfig.specialtyLabel} certifié à ${siteConfig.cityLabel}`,
     url: `https://${siteConfig.domain}/praticiens/${p.slug}`,
-    telephone: undefined,
     priceRange: p.hourly_rate ? `${p.hourly_rate}€` : undefined,
     address: {
       '@type': 'PostalAddress',
@@ -65,13 +68,7 @@ export default async function ProfilePage(
       addressCountry: 'FR',
       streetAddress: p.neighborhood ?? undefined,
     },
-    ...(p.lat && p.lng ? {
-      geo: {
-        '@type': 'GeoCoordinates',
-        latitude: p.lat,
-        longitude: p.lng,
-      },
-    } : {}),
+    ...(p.lat && p.lng ? { geo: { '@type': 'GeoCoordinates', latitude: p.lat, longitude: p.lng } } : {}),
     sameAs: [p.website_url, p.instagram_url ? `https://instagram.com/${p.instagram_url.replace('@', '')}` : null].filter(Boolean),
   }
 
@@ -79,51 +76,63 @@ export default async function ProfilePage(
   const testimonials = p.testimonials ?? []
   const initials = `${p.first_name[0]}${p.last_name[0]}`
   const grad = gradients[p.first_name.charCodeAt(0) % gradients.length]
+  const bookingHref = p.booking_url ?? p.doctolib_url ?? '#'
 
   return (
     <>
       <ProfileViewTracker practitionerId={p.id} />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
-      {/* Header */}
-      <div
-        className="px-4 md:px-10 pt-6 md:pt-8 pb-0"
-        style={{ background: 'linear-gradient(to bottom, #284a30 0%, #284a30 140px, #fbfaf8 140px)' }}
-      >
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+
+      {/* Header — green section */}
+      <div className="px-4 md:px-10 pt-6 md:pt-8 pb-0 bg-green-dark">
         <div
           className="max-w-[1060px] mx-auto flex flex-col md:grid md:gap-7 md:items-end"
-          style={{ gridTemplateColumns: 'auto 1fr auto' }}
+          style={{ gridTemplateColumns: 'auto 1fr' }}
         >
           {p.photo_url ? (
             <img src={p.photo_url} alt={`${p.first_name} ${p.last_name}`}
-              className="w-[120px] h-[120px] rounded-full border-4 border-white object-cover mb-4 md:-mb-5 shrink-0" />
+              className="w-[120px] h-[120px] rounded-full border-4 border-white object-cover mb-4 md:-mb-6 shrink-0" />
           ) : (
-            <div className={`w-[120px] h-[120px] rounded-full border-4 border-white bg-gradient-to-br ${grad} flex items-center justify-center text-[40px] font-extrabold text-white mb-4 md:-mb-5 shrink-0`}>
+            <div className={`w-[120px] h-[120px] rounded-full border-4 border-white bg-gradient-to-br ${grad} flex items-center justify-center text-[40px] font-extrabold text-white mb-4 md:-mb-6 shrink-0`}>
               {initials}
             </div>
           )}
-          <div className="pb-6">
-            <h1 className="text-[28px] font-extrabold text-white tracking-tight mb-1.5">
+          <div className="pb-6 md:pb-8">
+            <h1 className="text-[28px] font-extrabold text-white tracking-tight mb-1">
               {p.first_name} {p.last_name}
             </h1>
-            <p className="text-[13px] text-white/70 mb-2.5">
+            <p className="text-[13px] text-white/70">
               {siteConfig.cityLabel}{p.neighborhood ? ` — ${p.neighborhood}` : ''}
             </p>
-            <div className="flex gap-2 flex-wrap">
-              <Badge variant="mode">{modeLabel[p.consultation_mode]}</Badge>
-              <PatientsBadge accepting={p.accepting_patients} />
-            </div>
           </div>
-          <div className="pb-6 flex flex-col gap-2.5 items-start md:items-end">
-            <a
-              href={`mailto:contact@${siteConfig.domain}?subject=Contact ${encodeURIComponent(p.first_name + ' ' + p.last_name)}`}
-              className="bg-green text-white font-bold text-[13px] px-7 py-3 rounded-lg whitespace-nowrap hover:bg-[#4faa73] transition-colors"
-            >
-              Contacter le praticien
-            </a>
-          </div>
+        </div>
+      </div>
+
+      {/* Action strip — straddling green / white */}
+      <div className="bg-white border-b border-border px-4 md:px-10 py-3">
+        <div className="max-w-[1060px] mx-auto flex flex-wrap items-center gap-2.5">
+          {/* Mode tag */}
+          <span className="inline-flex items-center gap-1.5 text-[11px] font-bold px-3 py-1.5 rounded-full bg-green-dark/8 text-green-dark border border-green-dark/15">
+            <span>{modeIcon[p.consultation_mode]}</span>
+            {modeLabel[p.consultation_mode]}
+          </span>
+          {/* Certified badge */}
+          {p.is_verified && (
+            <span className="inline-flex items-center gap-1.5 text-[11px] font-bold px-3 py-1.5 rounded-full bg-green/10 text-green border border-green/20">
+              <svg viewBox="0 0 12 12" width="12" fill="none">
+                <circle cx="6" cy="6" r="5.5" stroke="currentColor" strokeWidth="1"/>
+                <path d="M3.5 6l1.5 1.5L8.5 4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              Certifié &amp; Vérifié
+            </span>
+          )}
+          {/* Contact button */}
+          <a
+            href={`mailto:contact@${siteConfig.domain}?subject=Contact ${encodeURIComponent(p.first_name + ' ' + p.last_name)}`}
+            className="ml-auto bg-green text-white font-bold text-[13px] px-6 py-2.5 rounded-lg whitespace-nowrap hover:bg-[#4faa73] transition-colors"
+          >
+            Contacter le praticien
+          </a>
         </div>
       </div>
 
@@ -133,18 +142,14 @@ export default async function ProfilePage(
         <div className="space-y-[18px]">
           {p.bio && (
             <div className="bg-white border-[1.5px] border-border rounded-xl p-[22px]">
-              <h2 className="text-base font-extrabold text-green-dark mb-3.5">
-                À propos de {p.first_name}
-              </h2>
+              <h2 className="text-base font-extrabold text-green-dark mb-3.5">À propos de {p.first_name}</h2>
               <p className="text-[13px] leading-[1.8] text-ink">{p.bio}</p>
             </div>
           )}
 
           {tags.length > 0 && (
             <div className="bg-white border-[1.5px] border-border rounded-xl p-[22px]">
-              <h2 className="text-base font-extrabold text-green-dark mb-3.5">
-                Domaines d&apos;intervention
-              </h2>
+              <h2 className="text-base font-extrabold text-green-dark mb-3.5">Domaines d&apos;intervention</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 {tags.map((t) => (
                   <div key={t.id} className="bg-surface border-l-[3px] border-green rounded-r-lg p-3">
@@ -156,9 +161,7 @@ export default async function ProfilePage(
           )}
 
           <div className="bg-white border-[1.5px] border-border rounded-xl p-[22px]">
-            <h2 className="text-base font-extrabold text-green-dark mb-3.5">
-              Comment se déroule un suivi ?
-            </h2>
+            <h2 className="text-base font-extrabold text-green-dark mb-3.5">Comment se déroule un suivi ?</h2>
             <div className="space-y-3.5">
               {[
                 ['Séance de bilan (gratuite, 20 min)', 'Échange pour comprendre votre situation et vos objectifs.'],
@@ -167,9 +170,7 @@ export default async function ProfilePage(
                 ['Autonomie & bilan final', 'Vous disposez des outils pour pratiquer seul(e).'],
               ].map(([title, desc], i) => (
                 <div key={i} className="flex gap-3.5 items-start">
-                  <span className="w-7 h-7 rounded-full bg-green text-white text-[11px] font-extrabold flex items-center justify-center shrink-0">
-                    {i + 1}
-                  </span>
+                  <span className="w-7 h-7 rounded-full bg-green text-white text-[11px] font-extrabold flex items-center justify-center shrink-0">{i + 1}</span>
                   <div>
                     <p className="text-xs font-bold text-green-dark mb-0.5">{title}</p>
                     <p className="text-[11px] text-muted leading-[1.5]">{desc}</p>
@@ -181,18 +182,12 @@ export default async function ProfilePage(
 
           {testimonials.length > 0 && (
             <div className="bg-white border-[1.5px] border-border rounded-xl p-[22px]">
-              <h2 className="text-base font-extrabold text-green-dark mb-3.5">
-                Ce que disent mes patients
-              </h2>
+              <h2 className="text-base font-extrabold text-green-dark mb-3.5">Ce que disent mes patients</h2>
               <div className="space-y-3">
                 {testimonials.map((t) => (
                   <div key={t.id} className="bg-bg-alt rounded-lg p-3.5 border-l-[3px] border-green-light">
-                    <p className="text-xs italic leading-[1.6] text-ink mb-2">
-                      &laquo; {t.content} &raquo;
-                    </p>
-                    <p className="text-[10px] font-bold text-muted">
-                      {t.author_name}{t.author_location ? ` — ${t.author_location}` : ''}
-                    </p>
+                    <p className="text-xs italic leading-[1.6] text-ink mb-2">&laquo; {t.content} &raquo;</p>
+                    <p className="text-[10px] font-bold text-muted">{t.author_name}{t.author_location ? ` — ${t.author_location}` : ''}</p>
                   </div>
                 ))}
               </div>
@@ -208,19 +203,17 @@ export default async function ProfilePage(
               Réservation directe sur l&apos;agenda de {p.first_name}.
             </p>
             <BookingButton
-              href={p.booking_url ?? p.doctolib_url ?? '#'}
+              href={bookingHref}
               practitionerId={p.id}
               className="block bg-green text-white text-center font-bold text-[13px] py-3 rounded-lg mb-2.5 hover:bg-[#4faa73] transition-colors"
             >
               Réserver une séance →
             </BookingButton>
-            <p className="text-[10px] text-white/50 text-center">Via Doctolib / Cal.com / site personnel</p>
+            <p className="text-[10px] text-white/50 text-center">Via Doctolib / Calendly / site personnel</p>
           </div>
 
           <div className="bg-white border-[1.5px] border-border rounded-xl p-5">
-            <h3 className="text-[13px] font-extrabold text-green-dark mb-3.5 pb-2.5 border-b border-border">
-              Infos pratiques
-            </h3>
+            <h3 className="text-[13px] font-extrabold text-green-dark mb-3.5 pb-2.5 border-b border-border">Infos pratiques</h3>
             {[
               ['Tarif séance', p.hourly_rate ? `${p.hourly_rate} €` : '—', true],
               ['Modalités', modeLabel[p.consultation_mode], false],
@@ -235,11 +228,9 @@ export default async function ProfilePage(
             ))}
           </div>
 
-          {(p.website_url || p.doctolib_url || p.instagram_url || p.facebook_url) && (
+          {(p.website_url || p.doctolib_url || (p as {calendly_url?: string}).calendly_url || p.instagram_url) && (
             <div className="bg-white border-[1.5px] border-border rounded-xl p-5">
-              <h3 className="text-[13px] font-extrabold text-green-dark mb-3 pb-2.5 border-b border-border">
-                Retrouver {p.first_name}
-              </h3>
+              <h3 className="text-[13px] font-extrabold text-green-dark mb-3 pb-2.5 border-b border-border">Retrouver {p.first_name}</h3>
               <div className="space-y-2">
                 {p.website_url && (
                   <a href={p.website_url} target="_blank" rel="noopener noreferrer"
@@ -255,6 +246,13 @@ export default async function ProfilePage(
                     <div><div>Doctolib</div><div className="text-[10px] text-muted font-normal">Réservation en ligne</div></div>
                   </a>
                 )}
+                {(p as {calendly_url?: string}).calendly_url && (
+                  <a href={(p as {calendly_url?: string}).calendly_url!} target="_blank" rel="noopener noreferrer"
+                    className="flex items-center gap-2.5 p-2.5 rounded-lg border border-border hover:border-green text-xs font-semibold text-ink transition-colors">
+                    <span className="w-7 h-7 rounded-md bg-[#e8f5e9] text-[#2e7d32] text-xs font-extrabold flex items-center justify-center">C</span>
+                    <div><div>Calendly</div><div className="text-[10px] text-muted font-normal">Réservation en ligne</div></div>
+                  </a>
+                )}
                 {p.instagram_url && (
                   <a href={`https://instagram.com/${p.instagram_url.replace('@', '')}`} target="_blank" rel="noopener noreferrer"
                     className="flex items-center gap-2.5 p-2.5 rounded-lg border border-border hover:border-green text-xs font-semibold text-ink transition-colors">
@@ -267,9 +265,7 @@ export default async function ProfilePage(
           )}
 
           <div className="bg-white border-[1.5px] border-border rounded-xl p-5">
-            <h3 className="text-[13px] font-extrabold text-green-dark mb-3.5 pb-2.5 border-b border-border">
-              Certifications
-            </h3>
+            <h3 className="text-[13px] font-extrabold text-green-dark mb-3.5 pb-2.5 border-b border-border">Certifications</h3>
             {[
               ['Diplôme', p.certification ?? '—'],
               ['École', p.school ?? '—'],

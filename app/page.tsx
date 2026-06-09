@@ -35,7 +35,7 @@ export default async function HomePage() {
       <section className="pb-[52px]">
         <div className="max-w-[1060px] mx-auto px-4 md:px-10">
           <SectionHeader
-            eyebrow="Praticiens mis en avant"
+            eyebrow="Praticiens du réseau"
             title={`Les ${siteConfig.specialtyLabel.toLowerCase()}s de ${siteConfig.cityLabel}`}
             subtitle="Certifiés et vérifiés par notre équipe"
           />

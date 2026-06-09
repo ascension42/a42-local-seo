@@ -14,7 +14,6 @@ export async function getPractitioners(): Promise<Practitioner[]> {
     `)
     .eq('cities.slug', siteConfig.city)
     .eq('specialties.slug', siteConfig.specialty)
-    .order('is_premium', { ascending: false })
     .order('created_at', { ascending: true })
 
   if (error) throw new Error(error.message)
@@ -23,7 +22,7 @@ export async function getPractitioners(): Promise<Practitioner[]> {
 
 export async function getFeaturedPractitioners(): Promise<Practitioner[]> {
   const all = await getPractitioners()
-  return all.filter((p) => p.is_premium).slice(0, 3)
+  return all.slice(0, 3)
 }
 
 export async function getRotatingPractitioners(count: number = 3): Promise<Practitioner[]> {
