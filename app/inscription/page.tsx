@@ -65,8 +65,8 @@ export default async function InscriptionPage() {
       </div>
 
       {/* Stats bar */}
-      <div className="bg-green-deep border-b border-white/10 py-5">
-        <div className="max-w-[1060px] mx-auto flex flex-wrap justify-center gap-6 md:gap-[60px]">
+      <div className="bg-green-deep border-b border-white/10 py-5 px-6 md:px-10">
+        <div className="max-w-[1060px] mx-auto flex flex-wrap justify-center gap-x-8 gap-y-3 md:gap-[60px]">
           {[
             ['1 200', 'visites / mois'],
             ['340', 'clics vers les praticiens'],

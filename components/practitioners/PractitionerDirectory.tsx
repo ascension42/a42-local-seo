@@ -41,37 +41,42 @@ export default function PractitionerDirectory({ practitioners, allTags, cityLat,
     <div>
       {/* Filters + Showcase — constrained */}
       <div className="max-w-[760px] mx-auto px-4 md:px-10 py-8 md:py-10">
-        <div className="flex flex-nowrap gap-2 mb-6 items-center overflow-x-auto scrollbar-none">
-          <button
-            onClick={() => { setActiveTag(''); setDropdownOpen(false); router.push('/praticiens', { scroll: false }) }}
-            className={`text-[11px] font-bold px-4 py-2 rounded-full border-[1.5px] transition-all ${
-              activeTag === ''
-                ? 'bg-green text-white border-green shadow-sm shadow-green/20'
-                : 'bg-white text-green-dark border-border hover:border-green/40 hover:bg-surface'
-            }`}
-          >
-            Tous
-          </button>
-
-          {pillTags.map(tag => (
+        {/* Filters row — pills scrollable, "+" button outside the overflow container */}
+        <div className="relative flex items-center gap-2 mb-6">
+          {/* Scrollable pills */}
+          <div className="flex flex-nowrap gap-2 items-center overflow-x-auto scrollbar-none flex-1 min-w-0">
             <button
-              key={tag}
-              onClick={() => toggleTag(tag)}
-              className={`text-[11px] font-bold px-4 py-2 rounded-full border-[1.5px] transition-all ${
-                activeTag === tag
+              onClick={() => { setActiveTag(''); setDropdownOpen(false); router.push('/praticiens', { scroll: false }) }}
+              className={`shrink-0 whitespace-nowrap text-[11px] font-bold px-3.5 py-[7px] rounded-full border-[1.5px] transition-all ${
+                activeTag === ''
                   ? 'bg-green text-white border-green shadow-sm shadow-green/20'
                   : 'bg-white text-green-dark border-border hover:border-green/40 hover:bg-surface'
               }`}
             >
-              {tag}
+              Tous
             </button>
-          ))}
 
+            {pillTags.map(tag => (
+              <button
+                key={tag}
+                onClick={() => toggleTag(tag)}
+                className={`shrink-0 whitespace-nowrap text-[11px] font-bold px-3.5 py-[7px] rounded-full border-[1.5px] transition-all ${
+                  activeTag === tag
+                    ? 'bg-green text-white border-green shadow-sm shadow-green/20'
+                    : 'bg-white text-green-dark border-border hover:border-green/40 hover:bg-surface'
+                }`}
+              >
+                {tag}
+              </button>
+            ))}
+          </div>
+
+          {/* "+" button — outside overflow so dropdown is never clipped */}
           {overflowTags.length > 0 && (
-            <div className="relative">
+            <div className="relative shrink-0">
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
-                className={`flex items-center gap-1.5 text-[11px] font-bold px-4 py-2 rounded-full border-[1.5px] transition-all ${
+                className={`flex items-center gap-1.5 whitespace-nowrap text-[11px] font-bold px-3.5 py-[7px] rounded-full border-[1.5px] transition-all ${
                   dropdownOpen
                     ? 'bg-green-dark text-white border-green-dark'
                     : 'bg-white text-green-dark border-border hover:border-green/40 hover:bg-surface'
@@ -85,12 +90,12 @@ export default function PractitionerDirectory({ practitioners, allTags, cityLat,
               {dropdownOpen && (
                 <>
                   <div className="fixed inset-0 z-20" onClick={() => setDropdownOpen(false)} />
-                  <div className="absolute top-full mt-2 left-0 z-30 bg-white border border-border rounded-xl shadow-xl py-1.5 min-w-[160px] max-w-[calc(100vw-32px)]">
+                  <div className="absolute top-full mt-2 right-0 z-30 bg-white border border-border rounded-xl shadow-xl py-1.5 min-w-[180px] max-w-[calc(100vw-32px)]">
                     {overflowTags.map(tag => (
                       <button
                         key={tag}
                         onClick={() => toggleTag(tag)}
-                        className={`w-full text-left px-4 py-2.5 text-[12px] font-semibold transition-colors hover:bg-surface ${
+                        className={`w-full text-left px-4 py-3 text-[12px] font-semibold transition-colors hover:bg-surface ${
                           activeTag === tag ? 'text-green' : 'text-ink'
                         }`}
                       >
