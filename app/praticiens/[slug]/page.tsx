@@ -40,11 +40,11 @@ export async function generateMetadata(
   return {
     title: `${p.first_name} ${p.last_name} — ${siteConfig.specialtyLabel} à ${locationStr}`,
     description: p.bio?.slice(0, 155)
-      ?? `${p.first_name} ${p.last_name}, ${sp} certifié RNCP à ${locationStr}. Consultations ${modeStr}.${p.hourly_rate ? ` Tarif : ${p.hourly_rate}€/séance.` : ''}`,
+      ?? `${p.first_name} ${p.last_name}, ${sp} certifié à ${locationStr}. Consultations ${modeStr}.${p.hourly_rate ? ` Tarif : ${p.hourly_rate}€/séance.` : ''}`,
     alternates: { canonical: `${siteUrl}/praticiens/${p.slug}` },
     openGraph: {
       title: `${p.first_name} ${p.last_name} — ${siteConfig.specialtyLabel} à ${city}`,
-      description: p.bio?.slice(0, 155) ?? `${sp} certifié RNCP à ${city}.`,
+      description: p.bio?.slice(0, 155) ?? `${sp} certifié à ${city}.`,
       url: `${siteUrl}/praticiens/${p.slug}`,
       type: 'profile',
       locale: 'fr_FR',
@@ -93,7 +93,7 @@ export default async function ProfilePage(
     '@type': 'HealthAndBeautyBusiness',
     '@id': `${siteUrl}/praticiens/${p.slug}`,
     name: `${p.first_name} ${p.last_name} — ${siteConfig.specialtyLabel} à ${city}`,
-    description: p.bio ?? `${sp} certifié RNCP à ${city}.`,
+    description: p.bio ?? `${sp} certifié à ${city}.`,
     url: `${siteUrl}/praticiens/${p.slug}`,
     ...(p.photo_url ? { image: p.photo_url } : {}),
     priceRange: p.hourly_rate ? `${p.hourly_rate}€` : '50€ – 90€',

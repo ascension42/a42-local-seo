@@ -24,7 +24,7 @@ export default function InscriptionSuccesPage() {
         <p className="text-[13px] text-muted leading-[1.75] mb-6">
           Votre abonnement est actif. Notre équipe publie votre profil sous
           <strong className="text-green-dark"> 24h ouvrées</strong> après vérification
-          de votre certification RNCP.
+          de votre certification.
         </p>
 
         <div className="bg-surface border border-green rounded-2xl p-6 text-left space-y-3 mb-8">

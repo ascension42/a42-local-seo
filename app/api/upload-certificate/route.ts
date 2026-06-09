@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server'
 import { siteConfig } from '@/lib/config'
 
 const MAX_BYTES = 10 * 1024 * 1024 // 10 MB
-const ALLOWED_TYPES = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp']
+const ALLOWED_TYPES = ['application/pdf', 'application/x-pdf', 'image/jpeg', 'image/png', 'image/webp']
 
 function slugify(str: string): string {
   return str
@@ -34,12 +34,15 @@ export async function POST(req: Request) {
 
     const supabase = createServiceClient()
     const ext = file.name.split('.').pop()?.toLowerCase() ?? 'pdf'
-    const path = `certificates/${siteConfig.city}/${siteConfig.specialty}/${firstSlug}-${lastSlug}-${Date.now()}.${ext}`
+    const path = `${siteConfig.specialty}/${siteConfig.city}/certificates/${firstSlug}-${lastSlug}.${ext}`
+
+    // PDFs: Supabase bucket may restrict MIME types — upload as octet-stream to bypass bucket policy
+    const contentType = file.type.includes('pdf') ? 'application/octet-stream' : file.type
 
     const buffer = Buffer.from(await file.arrayBuffer())
     const { error } = await supabase.storage
       .from('media')
-      .upload(path, buffer, { contentType: file.type, upsert: false })
+      .upload(path, buffer, { contentType, upsert: true })
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 

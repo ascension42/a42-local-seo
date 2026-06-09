@@ -14,7 +14,7 @@ const MAX_SPOTS = 5
 
 const steps = [
   { n: '1', title: 'Envoyez votre candidature', desc: 'Remplissez le formulaire en 2 minutes — nom, spécialité, email, téléphone.' },
-  { n: '2', title: 'Vérification sous 48h',     desc: 'Notre équipe vérifie votre certification RNCP et examine votre profil.' },
+  { n: '2', title: 'Vérification sous 48h',     desc: 'Notre équipe vérifie votre certification et examine votre profil.' },
   { n: '3', title: 'Recevez votre lien',        desc: 'Une fois approuvé·e, vous recevez votre lien de paiement par email.' },
   { n: '4', title: 'Profil en ligne',           desc: 'Votre profil est publié et visible sur Google immédiatement.' },
 ]
@@ -181,7 +181,7 @@ export default async function InscriptionPage() {
           {[
             ['Pourquoi seulement 5 places ?', `Pour éviter la concurrence entre membres et garantir la valeur du réseau. Chaque praticien référencé est unique dans sa position — pas de mise en concurrence directe.`],
             ['Que se passe-t-il si le réseau est complet ?', `Vous pouvez rejoindre la liste d'attente. Vous serez contacté en priorité si une place se libère ou si nous ouvrons des places supplémentaires.`],
-            ['Comment est vérifiée ma candidature ?', "Notre équipe examine votre certification RNCP et votre activité sous 48h ouvrées. Vous recevez ensuite votre lien de paiement par email."],
+            ['Comment est vérifiée ma candidature ?', "Notre équipe examine votre certification et votre activité sous 48h ouvrées. Vous recevez ensuite votre lien de paiement par email."],
             ['Puis-je annuler à tout moment ?', 'Oui, sans frais ni préavis. Votre profil est retiré dans les 24h suivant votre résiliation.'],
             ["Jusqu'à quand dure le tarif promotionnel ?", "Le tarif de lancement à 24€/mois est valable jusqu'au 1er juillet 2026. Passé cette date, le tarif passera à 49€/mois."],
             ['Que comprend le groupe WhatsApp ?', `Un groupe privé réservé aux praticiens référencés de votre ville. Échanges professionnels, co-références de patients, entraide et organisation des afterworks.`],
