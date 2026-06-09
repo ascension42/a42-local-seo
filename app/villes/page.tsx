@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { getNetworkCities } from '@/lib/queries'
 import FranceMap from '@/components/network/FranceMap'
+import Link from 'next/link'
 
 export const metadata: Metadata = {
   title: 'Réseau Sophrologues France — Annuaires certifiés par ville',
@@ -44,13 +45,14 @@ export default async function VillesPage() {
           </h2>
           <div className="space-y-3">
             {cities.map((city) => (
-              <div
+              <Link
                 key={city.id}
+                href={`/villes/${city.slug}`}
                 className={[
-                  'flex items-center justify-between p-4 rounded-xl border-[1.5px]',
+                  'flex items-center justify-between p-4 rounded-xl border-[1.5px] transition-all duration-150',
                   city.is_live
-                    ? 'border-green bg-surface'
-                    : 'border-border bg-white opacity-60',
+                    ? 'border-green bg-surface hover:shadow-md hover:border-green'
+                    : 'border-border bg-white opacity-60 hover:opacity-80',
                 ].join(' ')}
               >
                 <div className="flex items-center gap-3">
@@ -60,19 +62,22 @@ export default async function VillesPage() {
                     <p className="text-[10px] text-muted">{city.domain}</p>
                   </div>
                 </div>
-                <div className="text-right">
-                  {city.is_live ? (
-                    <>
-                      <p className="text-sm font-bold text-green">{city.practitioner_count}</p>
-                      <p className="text-[10px] text-muted">praticien{city.practitioner_count > 1 ? 's' : ''}</p>
-                    </>
-                  ) : (
-                    <span className="text-[10px] font-semibold text-muted bg-bg-alt px-2 py-1 rounded-lg">
-                      Bientôt
-                    </span>
-                  )}
+                <div className="flex items-center gap-3">
+                  <div className="text-right">
+                    {city.is_live ? (
+                      <>
+                        <p className="text-sm font-bold text-green">{city.practitioner_count}</p>
+                        <p className="text-[10px] text-muted">praticien{city.practitioner_count > 1 ? 's' : ''}</p>
+                      </>
+                    ) : (
+                      <span className="text-[10px] font-semibold text-muted bg-bg-alt px-2 py-1 rounded-lg">
+                        Bientôt
+                      </span>
+                    )}
+                  </div>
+                  <span className="text-[11px] font-bold text-green whitespace-nowrap">→</span>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>

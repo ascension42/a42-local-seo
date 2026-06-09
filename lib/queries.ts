@@ -129,6 +129,8 @@ export interface NetworkCity {
   domain: string
   practitioner_count: number
   is_live: boolean
+  region?: string | null
+  population?: number | null
 }
 
 export async function getNetworkCities(): Promise<NetworkCity[]> {
@@ -140,4 +142,15 @@ export async function getNetworkCities(): Promise<NetworkCity[]> {
     .order('name')
   if (error) throw new Error(error.message)
   return (data ?? []) as NetworkCity[]
+}
+
+export async function getNetworkCityBySlug(slug: string): Promise<NetworkCity | null> {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('network_cities')
+    .select('*')
+    .eq('slug', slug)
+    .single()
+  if (error) return null
+  return data as NetworkCity
 }
