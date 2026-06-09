@@ -4,8 +4,19 @@ import HeroCTAs from './HeroCTAs'
 export default function Hero({ practitionerCount, neighborhoodCount, tagCount }: { practitionerCount: number; neighborhoodCount: number; tagCount: number }) {
   return (
     <div className="relative min-h-[420px] md:h-[420px] overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-green-dark via-[#3c6947] to-green" />
-      <div className="absolute inset-0 bg-gradient-to-r from-green-deep/90 via-green-deep/60 to-transparent" />
+      {/* Background image or gradient */}
+      {siteConfig.heroImageUrl ? (
+        <img
+          src={siteConfig.heroImageUrl}
+          alt={`${siteConfig.cityLabel} — ${siteConfig.specialtyLabel}`}
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+      ) : (
+        <div className="absolute inset-0 bg-gradient-to-br from-green-dark via-[#3c6947] to-green" />
+      )}
+      {/* Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-r from-green-deep/90 via-green-deep/70 to-green-deep/30" />
+
       <div className="absolute inset-0 flex flex-col justify-center px-5 md:px-12 text-white w-full md:w-[60%]">
         <p className="text-[10px] font-semibold uppercase tracking-[2.5px] text-green-light mb-3.5">
           {siteConfig.cityLabel} &amp; région
@@ -20,15 +31,17 @@ export default function Hero({ practitionerCount, neighborhoodCount, tagCount }:
         </p>
         <HeroCTAs />
       </div>
-      <div className="absolute bottom-5 right-5 md:bottom-7 md:right-10 flex gap-4 md:gap-7">
+
+      {/* Stats — bottom right */}
+      <div className="absolute bottom-4 right-3 md:bottom-7 md:right-10 flex gap-1 md:gap-2">
         {[
           { num: practitionerCount, label: 'Praticiens' },
           { num: tagCount, label: 'Spécialités' },
           { num: neighborhoodCount, label: 'Zones' },
         ].map(({ num, label }) => (
-          <div key={label} className="text-center text-white">
-            <span className="block text-[22px] font-extrabold text-green-light">{num}</span>
-            <span className="text-[10px] font-medium text-white/65 uppercase tracking-[1px]">{label}</span>
+          <div key={label} className="text-center bg-black/30 backdrop-blur-sm px-1.5 py-1 md:px-4 md:py-2.5 rounded-md md:rounded-xl border border-white/10">
+            <span className="block text-[13px] md:text-[24px] font-extrabold text-white leading-tight">{num}</span>
+            <span className="text-[7px] md:text-[10px] font-semibold text-white/70 uppercase tracking-[0.3px] md:tracking-[1px]">{label}</span>
           </div>
         ))}
       </div>

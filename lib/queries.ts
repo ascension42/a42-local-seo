@@ -14,7 +14,6 @@ export async function getPractitioners(): Promise<Practitioner[]> {
     `)
     .eq('cities.slug', siteConfig.city)
     .eq('specialties.slug', siteConfig.specialty)
-    .order('is_premium', { ascending: false })
     .order('created_at', { ascending: true })
 
   if (error) throw new Error(error.message)
@@ -23,7 +22,7 @@ export async function getPractitioners(): Promise<Practitioner[]> {
 
 export async function getFeaturedPractitioners(): Promise<Practitioner[]> {
   const all = await getPractitioners()
-  return all.filter((p) => p.is_premium).slice(0, 3)
+  return all.slice(0, 3)
 }
 
 export async function getRotatingPractitioners(count: number = 3): Promise<Practitioner[]> {
@@ -87,7 +86,6 @@ export async function getHeroStats(): Promise<{ practitionerCount: number; neigh
     .select('neighborhood, practitioner_tags(label), cities!inner(slug), specialties!inner(slug)')
     .eq('cities.slug', siteConfig.city)
     .eq('specialties.slug', siteConfig.specialty)
-    .eq('is_verified', true)
 
   const all = practitioners ?? []
   const neighborhoods = new Set(all.map((p: { neighborhood: string | null }) => p.neighborhood).filter(Boolean))
@@ -95,6 +93,20 @@ export async function getHeroStats(): Promise<{ practitionerCount: number; neigh
     all.flatMap((p: { practitioner_tags?: { label: string }[] }) => (p.practitioner_tags ?? []).map((t) => t.label))
   )
   return { practitionerCount: all.length, neighborhoodCount: neighborhoods.size, tagCount: tags.size }
+}
+
+export async function getTopTags(limit = 8): Promise<string[]> {
+  const practitioners = await getPractitioners()
+  const counts = new Map<string, number>()
+  for (const p of practitioners) {
+    for (const t of p.practitioner_tags ?? []) {
+      counts.set(t.label, (counts.get(t.label) ?? 0) + 1)
+    }
+  }
+  return Array.from(counts.entries())
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, limit)
+    .map(([label]) => label)
 }
 
 export async function getCityCenter(): Promise<{ lat: number; lng: number }> {

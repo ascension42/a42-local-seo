@@ -8,6 +8,7 @@ import Link from 'next/link'
 export const revalidate = 3600
 
 export async function generateStaticParams() {
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) return []
   const supabase = createStaticClient()
   const { data } = await supabase
     .from('blog_posts')
@@ -15,6 +16,8 @@ export async function generateStaticParams() {
     .lte('published_at', new Date().toISOString())
   return (data ?? []).map((p: { slug: string }) => ({ slug: p.slug }))
 }
+
+const siteUrl = `https://${siteConfig.domain}`
 
 export async function generateMetadata(
   { params }: { params: Promise<{ slug: string }> }
@@ -24,8 +27,25 @@ export async function generateMetadata(
   if (!post) return {}
   return {
     title: post.title,
-    description: post.excerpt ?? undefined,
-    openGraph: post.cover_url ? { images: [post.cover_url] } : undefined,
+    description: post.excerpt?.slice(0, 160) ?? undefined,
+    keywords: [
+      `sophrologie ${siteConfig.cityLabel}`,
+      `sophrologue ${siteConfig.cityLabel}`,
+      'sophrologie',
+      post.title,
+    ],
+    alternates: { canonical: `${siteUrl}/blog/${slug}` },
+    openGraph: {
+      title: post.title,
+      description: post.excerpt ?? undefined,
+      url: `${siteUrl}/blog/${slug}`,
+      type: 'article',
+      locale: 'fr_FR',
+      publishedTime: post.published_at ?? undefined,
+      modifiedTime: post.updated_at,
+      authors: [siteConfig.siteName],
+      ...(post.cover_url ? { images: [{ url: post.cover_url, alt: post.title }] } : {}),
+    },
   }
 }
 
@@ -121,15 +141,51 @@ export default async function BlogArticlePage(
 
   const relatedPosts = allPosts.filter((p) => p.slug !== slug).slice(0, 2)
 
+  const articleJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: post.title,
+    description: post.excerpt ?? undefined,
+    url: `${siteUrl}/blog/${slug}`,
+    inLanguage: 'fr-FR',
+    ...(post.cover_url ? { image: post.cover_url } : {}),
+    ...(post.published_at ? { datePublished: post.published_at } : {}),
+    dateModified: post.updated_at,
+    author: {
+      '@type': 'Organization',
+      name: siteConfig.siteName,
+      url: siteUrl,
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: siteConfig.siteName,
+      url: siteUrl,
+    },
+    about: { '@type': 'Thing', name: 'Sophrologie' },
+    keywords: `sophrologie, sophrologue, ${siteConfig.cityLabel}, bien-être, relaxation`,
+  }
+
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Accueil', item: siteUrl },
+      { '@type': 'ListItem', position: 2, name: 'Blog', item: `${siteUrl}/blog` },
+      { '@type': 'ListItem', position: 3, name: post.title, item: `${siteUrl}/blog/${slug}` },
+    ],
+  }
+
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
       {/* Hero header */}
       <div className="bg-green-dark px-4 md:px-10 py-9 md:py-11">
         <div className="max-w-[760px] mx-auto">
           <p className="text-[10px] font-bold text-green-light uppercase tracking-[2px] mb-3">
             Guide complet
           </p>
-          <h1 className="font-accent text-[26px] md:text-[34px] text-white leading-[1.2] mb-4">{post.title}</h1>
+          <h1 className="font-accent text-[22px] md:text-[34px] text-white leading-[1.2] mb-4">{post.title}</h1>
           {post.excerpt && (
             <p className="text-sm text-white/70 leading-[1.65] max-w-[600px]">{post.excerpt}</p>
           )}
@@ -143,7 +199,7 @@ export default async function BlogArticlePage(
         <article>
           {/* Cover image */}
           {post.cover_url ? (
-            <div className="w-full h-[280px] rounded-xl overflow-hidden mb-8">
+            <div className="w-full h-[170px] sm:h-[220px] md:h-[280px] rounded-xl overflow-hidden mb-6 md:mb-8">
               <img
                 src={post.cover_url}
                 alt={post.title}
@@ -151,7 +207,7 @@ export default async function BlogArticlePage(
               />
             </div>
           ) : (
-            <div className="w-full h-[280px] rounded-xl bg-gradient-to-br from-green-dark via-[#467954] to-green mb-8" />
+            <div className="w-full h-[170px] sm:h-[220px] md:h-[280px] rounded-xl bg-gradient-to-br from-green-dark via-[#467954] to-green mb-6 md:mb-8" />
           )}
 
           {/* Article content */}

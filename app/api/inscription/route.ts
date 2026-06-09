@@ -3,16 +3,21 @@ import { NextResponse } from 'next/server'
 
 export async function POST(req: Request) {
   try {
-    const { first_name, last_name, specialty_slug, email, phone, plan } = await req.json()
+    const {
+      first_name, last_name, specialty_slug, email, phone,
+      cabinet_address, neighborhood, hourly_rate, website_url,
+      booking_url, calendly_url,
+      siret, years_experience, training_description,
+      selected_tags, custom_tag, certificate_url,
+    } = await req.json()
 
     if (!first_name || !last_name || !specialty_slug || !email) {
       return NextResponse.json({ error: 'Champs obligatoires manquants' }, { status: 400 })
     }
 
-    const validPlan = plan === 'premium' ? 'premium' : 'standard'
     const citySlug = process.env.NEXT_PUBLIC_CITY_SLUG ?? 'pezenas'
-
     const supabase = createServiceClient()
+
     const { data: row, error } = await supabase
       .from('inscription_requests')
       .insert({
@@ -21,7 +26,7 @@ export async function POST(req: Request) {
         specialty_slug,
         email,
         phone: phone || null,
-        plan: validPlan,
+        plan: 'standard',
         city_slug: citySlug,
       })
       .select('id')
@@ -29,13 +34,27 @@ export async function POST(req: Request) {
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
-    // Notifier les admins via n8n (fire-and-forget)
     const n8nUrl = process.env.N8N_INSCRIPTION_WEBHOOK_URL
     if (n8nUrl) {
       fetch(n8nUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ inscription_id: row.id, first_name, last_name, specialty_slug, email, phone: phone || '', plan: validPlan }),
+        body: JSON.stringify({
+          inscription_id: row.id,
+          first_name, last_name, specialty_slug, email,
+          phone: phone || '',
+          cabinet_address: cabinet_address || '',
+          neighborhood: neighborhood || '',
+          hourly_rate: hourly_rate || '',
+          website_url: website_url || '',
+          booking_url: booking_url || '',
+          calendly_url: calendly_url || '',
+          siret: siret || '',
+          years_experience: years_experience || '',
+          training_description: training_description || '',
+          tags: [...(Array.isArray(selected_tags) ? selected_tags : []), custom_tag].filter(Boolean).join(', '),
+          certificate_url: certificate_url || '',
+        }),
       }).catch(() => {})
     }
 

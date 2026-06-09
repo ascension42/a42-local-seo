@@ -3,8 +3,13 @@ import { getNetworkCities } from '@/lib/queries'
 import FranceMap from '@/components/network/FranceMap'
 
 export const metadata: Metadata = {
-  title: 'Notre réseau — Sophrologues partout en France',
-  description: 'Découvrez les villes couvertes par notre réseau d\'annuaires de sophrologues certifiés.',
+  title: 'Réseau Sophrologues France — Annuaires certifiés par ville',
+  description: 'Découvrez notre réseau d\'annuaires de sophrologues certifiés RNCP en France. Trouvez un sophrologue près de chez vous dans votre ville.',
+  openGraph: {
+    title: 'Réseau Sophrologues France — Annuaires certifiés par ville',
+    description: 'Annuaires de sophrologues certifiés dans toutes les grandes villes françaises.',
+    type: 'website',
+  },
 }
 
 export const revalidate = 3600
@@ -20,7 +25,7 @@ export default async function VillesPage() {
         <p className="text-[10px] font-bold text-green-light uppercase tracking-[2px] mb-3">
           Notre réseau
         </p>
-        <h1 className="text-[30px] font-extrabold text-white leading-[1.2] mb-3 tracking-tight">
+        <h1 className="text-[24px] md:text-[30px] font-extrabold text-white leading-[1.2] mb-3 tracking-tight">
           Des sophrologues certifiés<br />partout en France
         </h1>
         <p className="text-sm text-white/70 max-w-[480px] mx-auto leading-[1.65]">

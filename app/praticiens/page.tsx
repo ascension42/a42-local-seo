@@ -1,119 +1,100 @@
+import { Suspense } from 'react'
 import { getPractitioners, getCityCenter } from '@/lib/queries'
 import { siteConfig } from '@/lib/config'
 import type { Metadata } from 'next'
-import PractitionerRow from '@/components/practitioners/PractitionerRow'
-import FilterSidebar from '@/components/practitioners/FilterSidebar'
-import SortSelect from '@/components/practitioners/SortSelect'
-import { Suspense } from 'react'
-import type { ConsultationMode } from '@/lib/types'
-import PractitionersMapWrapper from '@/components/practitioners/PractitionersMapWrapper'
+import PractitionerDirectory from '@/components/practitioners/PractitionerDirectory'
 
 export const revalidate = 3600
 
-export const metadata: Metadata = {
-  title: `${siteConfig.specialtyPlural} à ${siteConfig.cityLabel}`,
-  description: `Trouvez votre ${siteConfig.specialtyLabel.toLowerCase()} à ${siteConfig.cityLabel}. Certifiés, consultations en cabinet ou en ligne.`,
+const siteUrl = `https://${siteConfig.domain}`
+const sp = siteConfig.specialtyLabel.toLowerCase()
+const city = siteConfig.cityLabel
+
+export async function generateMetadata(): Promise<Metadata> {
+  const practitioners = await getPractitioners()
+  const count = practitioners.length
+  return {
+    title: `${count} ${siteConfig.specialtyLabel.toLowerCase()}${count > 1 ? 's' : ''} à ${city} — Annuaire certifié`,
+    description: `Trouvez votre ${sp} certifié RNCP à ${city}. ${count} praticien${count > 1 ? 's' : ''} vérifiés — consultations en cabinet, en ligne ou les deux. Prise de rendez-vous directe.`,
+    alternates: { canonical: `${siteUrl}/praticiens` },
+    openGraph: {
+      title: `${count} ${sp}${count > 1 ? 's' : ''} à ${city} — Annuaire complet`,
+      description: `${count} ${sp}${count > 1 ? 's' : ''} certifiés RNCP à ${city}. Consultations en cabinet ou en ligne.`,
+      url: `${siteUrl}/praticiens`,
+      type: 'website',
+    },
+  }
 }
 
-interface Props {
-  searchParams: Promise<{ mode?: string; quartier?: string; prix?: string; tag?: string; sort?: string }>
-}
+export default async function AnnuairePage({ searchParams }: { searchParams: Promise<{ tag?: string }> }) {
+  const [practitioners, cityCenter] = await Promise.all([getPractitioners(), getCityCenter()])
 
-export default async function AnnuairePage({ searchParams }: Props) {
-  const params = await searchParams
-  const [allPractitioners, cityCenter] = await Promise.all([getPractitioners(), getCityCenter()])
+  // All tags sorted by frequency
+  const tagCounts = new Map<string, number>()
+  for (const p of practitioners) {
+    for (const t of p.practitioner_tags ?? []) {
+      tagCounts.set(t.label, (tagCounts.get(t.label) ?? 0) + 1)
+    }
+  }
+  const allTags = Array.from(tagCounts.entries())
+    .sort((a, b) => b[1] - a[1])
+    .map(([label]) => label)
 
-  // Apply filters
-  let filtered = allPractitioners
+  const initialTag = (await searchParams).tag ?? ''
 
-  if (params.mode && params.mode !== 'all') {
-    filtered = filtered.filter((p) => p.consultation_mode === (params.mode as ConsultationMode))
+  const itemListJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: `${siteConfig.specialtyPlural} certifiés à ${city}`,
+    description: `Liste des ${sp}s certifiés RNCP à ${city}`,
+    url: `${siteUrl}/praticiens`,
+    numberOfItems: practitioners.length,
+    itemListElement: practitioners.map((p, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: `${p.first_name} ${p.last_name} — ${siteConfig.specialtyLabel} à ${city}`,
+      url: `${siteUrl}/praticiens/${p.slug}`,
+    })),
   }
 
-  if (params.quartier) {
-    filtered = filtered.filter((p) =>
-      p.neighborhood?.toLowerCase().includes(params.quartier!.toLowerCase())
-    )
-  }
-
-  if (params.prix === 'lt60') {
-    filtered = filtered.filter((p) => p.hourly_rate !== null && p.hourly_rate < 60)
-  } else if (params.prix === '60-80') {
-    filtered = filtered.filter((p) => p.hourly_rate !== null && p.hourly_rate >= 60 && p.hourly_rate <= 80)
-  } else if (params.prix === 'gt80') {
-    filtered = filtered.filter((p) => p.hourly_rate !== null && p.hourly_rate > 80)
-  }
-
-  if (params.tag) {
-    filtered = filtered.filter((p) =>
-      p.practitioner_tags?.some((t) =>
-        t.label.toLowerCase().includes(params.tag!.toLowerCase())
-      )
-    )
-  }
-
-  // Tri
-  if (params.sort === 'alpha') {
-    filtered = [...filtered].sort((a, b) =>
-      `${a.last_name} ${a.first_name}`.localeCompare(`${b.last_name} ${b.first_name}`)
-    )
-  } else if (params.sort === 'price') {
-    filtered = [...filtered].sort((a, b) => (a.hourly_rate ?? 999) - (b.hourly_rate ?? 999))
-  } else {
-    // Par défaut : premium en premier
-    filtered = [...filtered].sort((a, b) => (b.is_premium ? 1 : 0) - (a.is_premium ? 1 : 0))
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Accueil', item: siteUrl },
+      { '@type': 'ListItem', position: 2, name: `${siteConfig.specialtyPlural} à ${city}`, item: `${siteUrl}/praticiens` },
+    ],
   }
 
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
+      {/* Green header */}
       <div className="bg-green-dark px-4 md:px-10 py-7 md:py-9">
-        <div className="max-w-[1060px] mx-auto">
+        <div className="max-w-[760px] mx-auto">
           <p className="text-[10px] font-bold text-green-light uppercase tracking-[2px] mb-2">
             {siteConfig.cityLabel} &amp; région
           </p>
-          <h1 className="text-[26px] font-extrabold text-white tracking-tight mb-1.5">
-            {allPractitioners.length} {siteConfig.specialtyLabel.toLowerCase()}s à {siteConfig.cityLabel}
+          <h1 className="text-[22px] md:text-[26px] font-extrabold text-white tracking-tight mb-1.5">
+            {practitioners.length} {siteConfig.specialtyLabel.toLowerCase()}{practitioners.length > 1 ? 's' : ''} à {siteConfig.cityLabel}
           </h1>
           <p className="text-[13px] text-white/65">
-            Praticiens certifiés — en cabinet, en ligne ou les deux
+            Praticiens certifiés &amp; vérifiés — en cabinet, en ligne ou les deux
           </p>
         </div>
       </div>
 
-      {/* Carte interactive */}
-      <div className="max-w-[1060px] mx-auto px-4 md:px-10 py-4 md:py-6">
-        <p className="text-[11px] font-bold text-muted uppercase tracking-[1px] mb-3">
-          Carte des praticiens
-        </p>
-        <PractitionersMapWrapper practitioners={filtered} cityLat={cityCenter.lat} cityLng={cityCenter.lng} />
-      </div>
-
-      <div className="max-w-[1060px] mx-auto px-4 md:px-10 py-5 md:py-7 grid grid-cols-1 md:grid-cols-[220px_1fr] gap-7">
-        <Suspense fallback={<div className="text-sm text-muted">Chargement...</div>}>
-          <FilterSidebar />
-        </Suspense>
-
-        <div>
-          <div className="flex justify-between items-center mb-[18px]">
-            <p className="text-[13px] font-semibold text-green-dark">
-              {filtered.length} praticien{filtered.length > 1 ? 's' : ''} trouvé{filtered.length > 1 ? 's' : ''}
-            </p>
-            <Suspense>
-              <SortSelect />
-            </Suspense>
-          </div>
-          <div className="flex flex-col gap-3.5">
-            {filtered.length === 0 ? (
-              <div className="text-center py-12 text-muted">
-                <p className="text-sm font-medium">Aucun praticien ne correspond à ces filtres.</p>
-                <a href="/praticiens" className="text-green text-xs mt-2 inline-block">Réinitialiser les filtres</a>
-              </div>
-            ) : (
-              filtered.map((p) => <PractitionerRow key={p.id} practitioner={p} />)
-            )}
-          </div>
-        </div>
-      </div>
+      {/* Directory — manages its own layout */}
+      <Suspense fallback={<div className="animate-pulse h-64 bg-surface mx-4 md:mx-10 mt-8 rounded-xl" />}>
+        <PractitionerDirectory
+          practitioners={practitioners}
+          allTags={allTags}
+          cityLat={cityCenter.lat}
+          cityLng={cityCenter.lng}
+          initialTag={initialTag}
+        />
+      </Suspense>
     </>
   )
 }

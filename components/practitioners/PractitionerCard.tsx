@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import type { Practitioner } from '@/lib/types'
 import ModeTag from './ModeTag'
-import PatientsBadge from './PatientsBadge'
 
 interface Props { practitioner: Practitioner }
 
@@ -19,25 +18,16 @@ export default function PractitionerCard({ practitioner: p }: Props) {
   return (
     <Link
       href={`/praticiens/${p.slug}`}
-      className={[
-        'flex flex-col bg-white rounded-xl overflow-hidden transition-all duration-200',
-        'hover:shadow-lg hover:-translate-y-0.5',
-        p.is_premium ? 'border-[1.5px] border-green' : 'border-[1.5px] border-border',
-      ].join(' ')}
+      className="flex flex-col bg-white rounded-xl border-[1.5px] border-border overflow-hidden transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5"
     >
-      <div className="h-[130px] relative bg-bg-alt flex items-center justify-center shrink-0">
+      <div className="h-[100px] md:h-[130px] relative bg-bg-alt flex items-center justify-center shrink-0">
         {p.photo_url ? (
           <img src={p.photo_url} alt={`${p.first_name} ${p.last_name}`}
-            className="w-[72px] h-[72px] rounded-full border-[3px] border-white object-cover" />
+            className="w-[60px] h-[60px] md:w-[72px] md:h-[72px] rounded-full border-[3px] border-white object-cover" />
         ) : (
-          <div className={`w-[72px] h-[72px] rounded-full border-[3px] border-white bg-gradient-to-br ${avatarGradients[idx]} flex items-center justify-center text-[26px] font-extrabold text-white`}>
+          <div className={`w-[60px] h-[60px] md:w-[72px] md:h-[72px] rounded-full border-[3px] border-white bg-gradient-to-br ${avatarGradients[idx]} flex items-center justify-center text-[22px] md:text-[26px] font-extrabold text-white`}>
             {initials}
           </div>
-        )}
-        {p.is_premium && (
-          <span className="absolute top-2.5 left-2.5 bg-green-dark text-white text-[9px] font-bold px-2 py-0.5 rounded-[10px] uppercase tracking-[0.5px]">
-            Premium
-          </span>
         )}
         <span className="absolute top-2.5 right-2.5">
           <ModeTag mode={p.consultation_mode} />
@@ -45,7 +35,7 @@ export default function PractitionerCard({ practitioner: p }: Props) {
       </div>
       <div className="p-4 flex flex-col flex-1">
         <p className="text-[10px] font-bold text-green uppercase tracking-[1px] mb-0.5">
-          {p.certification ?? 'Sophrologue'}
+          {p.certification ?? 'Sophrologue certifié'}
         </p>
         <h3 className="text-[15px] font-extrabold text-green-dark mb-0.5">
           {p.first_name} {p.last_name}
@@ -60,16 +50,10 @@ export default function PractitionerCard({ practitioner: p }: Props) {
             </span>
           ))}
         </div>
-        <div className="mb-2">
-          <PatientsBadge accepting={p.accepting_patients} />
-        </div>
         <div className="mt-auto">
           <div className="h-px bg-[#f0ede8] mb-3.5" />
-          <span className={[
-            'block text-center text-xs font-bold py-2 rounded-md w-full',
-            p.is_premium ? 'bg-green text-white' : 'bg-bg-alt text-green-dark border border-border',
-          ].join(' ')}>
-            {p.is_premium ? 'Prendre rendez-vous' : 'Voir le profil'}
+          <span className="block text-center text-xs font-bold py-2 rounded-md w-full bg-bg-alt text-green-dark border border-border">
+            Voir le profil
           </span>
         </div>
       </div>
