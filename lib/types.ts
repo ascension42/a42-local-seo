@@ -48,6 +48,8 @@ export interface Practitioner {
   website_url: string | null
   doctolib_url: string | null
   booking_url: string | null
+  calendly_url?: string | null
+  cabinet_address?: string | null
   instagram_url: string | null
   facebook_url: string | null
   is_premium: boolean

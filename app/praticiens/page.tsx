@@ -1,7 +1,7 @@
 import { getPractitioners, getCityCenter } from '@/lib/queries'
 import { siteConfig } from '@/lib/config'
 import type { Metadata } from 'next'
-import PractitionerRow from '@/components/practitioners/PractitionerRow'
+import PractitionerCarousel from '@/components/practitioners/PractitionerCarousel'
 import PractitionersMapWrapper from '@/components/practitioners/PractitionersMapWrapper'
 
 export const revalidate = 3600
@@ -31,7 +31,7 @@ export default async function AnnuairePage() {
         </div>
       </div>
 
-      {/* Practitioner list */}
+      {/* Practitioner carousel */}
       <div className="max-w-[760px] mx-auto px-4 md:px-10 py-8 md:py-10">
         {practitioners.length === 0 ? (
           <div className="text-center py-16 text-muted">
@@ -39,14 +39,10 @@ export default async function AnnuairePage() {
             <a href="/inscription" className="text-green text-xs">Rejoindre le réseau →</a>
           </div>
         ) : (
-          <div className="flex flex-col gap-3.5">
-            {practitioners.map((p) => (
-              <PractitionerRow key={p.id} practitioner={p} />
-            ))}
-          </div>
+          <PractitionerCarousel practitioners={practitioners} />
         )}
 
-        <div className="mt-8 text-center">
+        <div className="mt-14 text-center">
           <a
             href="/inscription"
             className="inline-block text-[13px] font-semibold text-green border-b-2 border-green pb-px hover:text-green-dark transition-colors"
@@ -59,8 +55,11 @@ export default async function AnnuairePage() {
       {/* Map — at bottom */}
       <div className="bg-bg-alt border-t border-border py-8 px-4 md:px-10">
         <div className="max-w-[760px] mx-auto">
-          <p className="text-[11px] font-bold text-muted uppercase tracking-[1px] mb-3">
+          <p className="text-[11px] font-bold text-muted uppercase tracking-[1px] mb-1">
             Carte des praticiens
+          </p>
+          <p className="text-[13px] text-ink mb-4">
+            Trouvez votre {siteConfig.specialtyLabel.toLowerCase()} le plus proche sur la carte — cabinet ou en ligne.
           </p>
           <PractitionersMapWrapper
             practitioners={practitioners}

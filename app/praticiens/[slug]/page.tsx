@@ -36,13 +36,13 @@ const gradients = [
   'from-[#467954] to-[#6ab885]',
 ]
 
-const modeLabel: Record<string, string> = {
+const modeLabelMap: Record<string, string> = {
   cabinet: 'Cabinet uniquement',
   online: 'En ligne uniquement',
   both: 'Cabinet & En ligne',
 }
 
-const modeIcon: Record<string, string> = {
+const modeIconMap: Record<string, string> = {
   cabinet: '🏢',
   online: '💻',
   both: '🏢💻',
@@ -66,7 +66,7 @@ export default async function ProfilePage(
       '@type': 'PostalAddress',
       addressLocality: siteConfig.cityLabel,
       addressCountry: 'FR',
-      streetAddress: p.neighborhood ?? undefined,
+      streetAddress: p.cabinet_address ?? p.neighborhood ?? undefined,
     },
     ...(p.lat && p.lng ? { geo: { '@type': 'GeoCoordinates', latitude: p.lat, longitude: p.lng } } : {}),
     sameAs: [p.website_url, p.instagram_url ? `https://instagram.com/${p.instagram_url.replace('@', '')}` : null].filter(Boolean),
@@ -76,63 +76,65 @@ export default async function ProfilePage(
   const testimonials = p.testimonials ?? []
   const initials = `${p.first_name[0]}${p.last_name[0]}`
   const grad = gradients[p.first_name.charCodeAt(0) % gradients.length]
-  const bookingHref = p.booking_url ?? p.doctolib_url ?? '#'
+  const bookingHref = p.booking_url ?? p.doctolib_url ?? p.calendly_url ?? '#'
 
   return (
     <>
       <ProfileViewTracker practitionerId={p.id} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      {/* Header — green section */}
-      <div className="px-4 md:px-10 pt-6 md:pt-8 pb-0 bg-green-dark">
-        <div
-          className="max-w-[1060px] mx-auto flex flex-col md:grid md:gap-7 md:items-end"
-          style={{ gridTemplateColumns: 'auto 1fr' }}
-        >
-          {p.photo_url ? (
-            <img src={p.photo_url} alt={`${p.first_name} ${p.last_name}`}
-              className="w-[120px] h-[120px] rounded-full border-4 border-white object-cover mb-4 md:-mb-6 shrink-0" />
-          ) : (
-            <div className={`w-[120px] h-[120px] rounded-full border-4 border-white bg-gradient-to-br ${grad} flex items-center justify-center text-[40px] font-extrabold text-white mb-4 md:-mb-6 shrink-0`}>
-              {initials}
-            </div>
-          )}
-          <div className="pb-6 md:pb-8">
-            <h1 className="text-[28px] font-extrabold text-white tracking-tight mb-1">
-              {p.first_name} {p.last_name}
-            </h1>
-            <p className="text-[13px] text-white/70">
-              {siteConfig.cityLabel}{p.neighborhood ? ` — ${p.neighborhood}` : ''}
-            </p>
-          </div>
+      {/* Green banner — name + city only */}
+      <div className="bg-green-dark px-4 md:px-10 pt-8 pb-12">
+        <div className="max-w-[1060px] mx-auto">
+          <h1 className="text-[28px] font-extrabold text-white tracking-tight mb-1">
+            {p.first_name} {p.last_name}
+          </h1>
+          <p className="text-[13px] text-white/70">
+            {siteConfig.cityLabel}{p.neighborhood ? ` — ${p.neighborhood}` : ''}
+          </p>
         </div>
       </div>
 
-      {/* Action strip — straddling green / white */}
-      <div className="bg-white border-b border-border px-4 md:px-10 py-3">
-        <div className="max-w-[1060px] mx-auto flex flex-wrap items-center gap-2.5">
-          {/* Mode tag */}
-          <span className="inline-flex items-center gap-1.5 text-[11px] font-bold px-3 py-1.5 rounded-full bg-green-dark/8 text-green-dark border border-green-dark/15">
-            <span>{modeIcon[p.consultation_mode]}</span>
-            {modeLabel[p.consultation_mode]}
-          </span>
-          {/* Certified badge */}
-          {p.is_verified && (
-            <span className="inline-flex items-center gap-1.5 text-[11px] font-bold px-3 py-1.5 rounded-full bg-green/10 text-green border border-green/20">
-              <svg viewBox="0 0 12 12" width="12" fill="none">
-                <circle cx="6" cy="6" r="5.5" stroke="currentColor" strokeWidth="1"/>
-                <path d="M3.5 6l1.5 1.5L8.5 4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-              Certifié &amp; Vérifié
+      {/* À cheval strip — photo + mode tag + contact button */}
+      <div className="px-4 md:px-10 -mt-12 relative z-10 mb-4 md:mb-6">
+        <div className="max-w-[1060px] mx-auto flex flex-col md:flex-row md:items-end gap-3 md:gap-4">
+          {/* Photo — straddles green/content boundary */}
+          <div className="self-start shrink-0">
+            {p.photo_url ? (
+              <img
+                src={p.photo_url}
+                alt={`${p.first_name} ${p.last_name}`}
+                className="w-24 h-24 rounded-full border-4 border-white object-cover shadow-md"
+              />
+            ) : (
+              <div className={`w-24 h-24 rounded-full border-4 border-white bg-gradient-to-br ${grad} flex items-center justify-center text-[32px] font-extrabold text-white shadow-md`}>
+                {initials}
+              </div>
+            )}
+          </div>
+
+          {/* Action strip */}
+          <div className="flex-1 bg-white rounded-xl shadow-md border border-border/60 px-3 md:px-4 py-3 flex flex-wrap items-center gap-2 min-w-0">
+            <span className="inline-flex items-center gap-1.5 text-[11px] font-bold px-3 py-1.5 rounded-full bg-green-dark/8 text-green-dark border border-green-dark/15">
+              <span>{modeIconMap[p.consultation_mode]}</span>
+              {modeLabelMap[p.consultation_mode]}
             </span>
-          )}
-          {/* Contact button */}
-          <a
-            href={`mailto:contact@${siteConfig.domain}?subject=Contact ${encodeURIComponent(p.first_name + ' ' + p.last_name)}`}
-            className="ml-auto bg-green text-white font-bold text-[13px] px-6 py-2.5 rounded-lg whitespace-nowrap hover:bg-[#4faa73] transition-colors"
-          >
-            Contacter le praticien
-          </a>
+            {p.is_verified && (
+              <span className="inline-flex items-center gap-1.5 text-[11px] font-bold px-3 py-1.5 rounded-full bg-green/10 text-green border border-green/20">
+                <svg viewBox="0 0 12 12" width="12" fill="none">
+                  <circle cx="6" cy="6" r="5.5" stroke="currentColor" strokeWidth="1" />
+                  <path d="M3.5 6l1.5 1.5L8.5 4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                Certifié &amp; Vérifié
+              </span>
+            )}
+            <a
+              href={`mailto:contact@${siteConfig.domain}?subject=Contact ${encodeURIComponent(p.first_name + ' ' + p.last_name)}`}
+              className="ml-auto bg-green text-white font-bold text-[13px] px-5 py-2.5 rounded-lg whitespace-nowrap hover:bg-[#4faa73] transition-colors"
+            >
+              Contacter le praticien
+            </a>
+          </div>
         </div>
       </div>
 
@@ -215,48 +217,43 @@ export default async function ProfilePage(
           <div className="bg-white border-[1.5px] border-border rounded-xl p-5">
             <h3 className="text-[13px] font-extrabold text-green-dark mb-3.5 pb-2.5 border-b border-border">Infos pratiques</h3>
             {[
+              p.cabinet_address && ['Adresse', p.cabinet_address, false],
+              p.neighborhood && ['Quartier', p.neighborhood, false],
               ['Tarif séance', p.hourly_rate ? `${p.hourly_rate} €` : '—', true],
-              ['Modalités', modeLabel[p.consultation_mode], false],
-              ['Bilan préalable', 'Gratuit', true],
-              ['Quartier', p.neighborhood ?? '—', false],
-              ['En activité depuis', p.years_active ? `${p.years_active}` : '—', false],
-            ].map(([label, value, highlight]) => (
-              <div key={String(label)} className="flex justify-between items-center py-1.5 border-b border-bg-alt last:border-0 text-xs">
-                <span className="text-muted font-medium">{label}</span>
-                <span className={`font-semibold ${highlight ? 'text-green-dark' : 'text-ink'}`}>{value}</span>
-              </div>
-            ))}
+              ['Modalités', modeLabelMap[p.consultation_mode], false],
+            ].filter(Boolean).map((row) => {
+              const [label, value, highlight] = row as [string, string, boolean]
+              return (
+                <div key={label} className="flex justify-between items-center py-1.5 border-b border-bg-alt last:border-0 text-xs">
+                  <span className="text-muted font-medium">{label}</span>
+                  <span className={`font-semibold text-right max-w-[180px] ${highlight ? 'text-green-dark' : 'text-ink'}`}>{value}</span>
+                </div>
+              )
+            })}
           </div>
 
-          {(p.website_url || p.doctolib_url || (p as {calendly_url?: string}).calendly_url || p.instagram_url) && (
+          {(p.website_url || p.doctolib_url || p.booking_url || p.calendly_url || p.instagram_url) && (
             <div className="bg-white border-[1.5px] border-border rounded-xl p-5">
               <h3 className="text-[13px] font-extrabold text-green-dark mb-3 pb-2.5 border-b border-border">Retrouver {p.first_name}</h3>
               <div className="space-y-2">
                 {p.website_url && (
                   <a href={p.website_url} target="_blank" rel="noopener noreferrer"
                     className="flex items-center gap-2.5 p-2.5 rounded-lg border border-border hover:border-green text-xs font-semibold text-ink transition-colors">
-                    <span className="w-7 h-7 rounded-md bg-surface text-green-dark text-xs font-extrabold flex items-center justify-center">W</span>
+                    <span className="w-7 h-7 rounded-md bg-surface text-green-dark text-xs font-extrabold flex items-center justify-center shrink-0">W</span>
                     <div><div>Site personnel</div><div className="text-[10px] text-muted font-normal">{p.website_url.replace('https://', '')}</div></div>
                   </a>
                 )}
-                {p.doctolib_url && (
-                  <a href={p.doctolib_url} target="_blank" rel="noopener noreferrer"
+                {(p.booking_url ?? p.doctolib_url) && (
+                  <a href={(p.booking_url ?? p.doctolib_url)!} target="_blank" rel="noopener noreferrer"
                     className="flex items-center gap-2.5 p-2.5 rounded-lg border border-border hover:border-green text-xs font-semibold text-ink transition-colors">
-                    <span className="w-7 h-7 rounded-md bg-[#e0f2fe] text-[#0369a1] text-xs font-extrabold flex items-center justify-center">D</span>
-                    <div><div>Doctolib</div><div className="text-[10px] text-muted font-normal">Réservation en ligne</div></div>
-                  </a>
-                )}
-                {(p as {calendly_url?: string}).calendly_url && (
-                  <a href={(p as {calendly_url?: string}).calendly_url!} target="_blank" rel="noopener noreferrer"
-                    className="flex items-center gap-2.5 p-2.5 rounded-lg border border-border hover:border-green text-xs font-semibold text-ink transition-colors">
-                    <span className="w-7 h-7 rounded-md bg-[#e8f5e9] text-[#2e7d32] text-xs font-extrabold flex items-center justify-center">C</span>
-                    <div><div>Calendly</div><div className="text-[10px] text-muted font-normal">Réservation en ligne</div></div>
+                    <span className="w-7 h-7 rounded-md bg-[#e0f2fe] text-[#0369a1] text-xs font-extrabold flex items-center justify-center shrink-0">R</span>
+                    <div><div>Réservation en ligne</div><div className="text-[10px] text-muted font-normal">Doctolib / Calendly</div></div>
                   </a>
                 )}
                 {p.instagram_url && (
                   <a href={`https://instagram.com/${p.instagram_url.replace('@', '')}`} target="_blank" rel="noopener noreferrer"
                     className="flex items-center gap-2.5 p-2.5 rounded-lg border border-border hover:border-green text-xs font-semibold text-ink transition-colors">
-                    <span className="w-7 h-7 rounded-md bg-[#fce7f3] text-[#9d174d] text-xs font-extrabold flex items-center justify-center">In</span>
+                    <span className="w-7 h-7 rounded-md bg-[#fce7f3] text-[#9d174d] text-xs font-extrabold flex items-center justify-center shrink-0">In</span>
                     <div><div>Instagram</div><div className="text-[10px] text-muted font-normal">{p.instagram_url}</div></div>
                   </a>
                 )}
