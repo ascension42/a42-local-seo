@@ -15,11 +15,11 @@ export async function generateMetadata(): Promise<Metadata> {
   const count = practitioners.length
   return {
     title: `${count} ${siteConfig.specialtyLabel.toLowerCase()}${count > 1 ? 's' : ''} à ${city} — Annuaire certifié`,
-    description: `Trouvez votre ${sp} certifié RNCP à ${city}. ${count} praticien${count > 1 ? 's' : ''} vérifiés — consultations en cabinet, en ligne ou les deux. Prise de rendez-vous directe.`,
+    description: `Trouvez votre ${sp} certifié à ${city}. ${count} praticien${count > 1 ? 's' : ''} vérifiés — consultations en cabinet, en ligne ou les deux. Prise de rendez-vous directe.`,
     alternates: { canonical: `${siteUrl}/praticiens` },
     openGraph: {
       title: `${count} ${sp}${count > 1 ? 's' : ''} à ${city} — Annuaire complet`,
-      description: `${count} ${sp}${count > 1 ? 's' : ''} certifiés RNCP à ${city}. Consultations en cabinet ou en ligne.`,
+      description: `${count} ${sp}${count > 1 ? 's' : ''} certifiés à ${city}. Consultations en cabinet ou en ligne.`,
       url: `${siteUrl}/praticiens`,
       type: 'website',
     },
@@ -46,7 +46,7 @@ export default async function AnnuairePage({ searchParams }: { searchParams: Pro
     '@context': 'https://schema.org',
     '@type': 'ItemList',
     name: `${siteConfig.specialtyPlural} certifiés à ${city}`,
-    description: `Liste des ${sp}s certifiés RNCP à ${city}`,
+    description: `Liste des ${sp}s certifiés à ${city}`,
     url: `${siteUrl}/praticiens`,
     numberOfItems: practitioners.length,
     itemListElement: practitioners.map((p, i) => ({

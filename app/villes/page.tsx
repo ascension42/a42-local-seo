@@ -4,7 +4,7 @@ import FranceMap from '@/components/network/FranceMap'
 
 export const metadata: Metadata = {
   title: 'Réseau Sophrologues France — Annuaires certifiés par ville',
-  description: 'Découvrez notre réseau d\'annuaires de sophrologues certifiés RNCP en France. Trouvez un sophrologue près de chez vous dans votre ville.',
+  description: 'Découvrez notre réseau d\'annuaires de sophrologues certifiés en France. Trouvez un sophrologue près de chez vous dans votre ville.',
   openGraph: {
     title: 'Réseau Sophrologues France — Annuaires certifiés par ville',
     description: 'Annuaires de sophrologues certifiés dans toutes les grandes villes françaises.',

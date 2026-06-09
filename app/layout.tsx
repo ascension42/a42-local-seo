@@ -27,10 +27,10 @@ const city = siteConfig.cityLabel
 
 export const metadata: Metadata = {
   title: {
-    default: `${siteConfig.specialtyLabel} ${city} — Annuaire certifié RNCP`,
+    default: `${siteConfig.specialtyLabel} ${city} — Annuaire certifié`,
     template: `%s | ${siteConfig.siteName}`,
   },
-  description: `Trouvez un ${sp} certifié RNCP à ${city}. Praticiens vérifiés, consultations en cabinet ou en ligne. Prise de rendez-vous directe, sans ordonnance.`,
+  description: `Trouvez un ${sp} certifié à ${city}. Praticiens vérifiés, consultations en cabinet ou en ligne. Prise de rendez-vous directe, sans ordonnance.`,
   keywords: [
     `${sp} ${city}`,
     sp,
@@ -50,13 +50,13 @@ export const metadata: Metadata = {
     locale: 'fr_FR',
     url: siteUrl,
     siteName: siteConfig.siteName,
-    title: `${siteConfig.specialtyLabel} ${city} — Annuaire certifié RNCP`,
-    description: `Annuaire des ${sp}s certifiés RNCP à ${city}. Praticiens vérifiés, disponibles en cabinet ou en ligne.`,
+    title: `${siteConfig.specialtyLabel} ${city} — Annuaire certifié`,
+    description: `Annuaire des ${sp}s certifiés à ${city}. Praticiens vérifiés, disponibles en cabinet ou en ligne.`,
   },
   twitter: {
     card: 'summary_large_image',
     title: `${siteConfig.specialtyLabel} ${city} — Annuaire certifié`,
-    description: `Trouvez votre ${sp} certifié RNCP à ${city}. Praticiens vérifiés.`,
+    description: `Trouvez votre ${sp} certifié à ${city}. Praticiens vérifiés.`,
   },
   robots: {
     index: true,
@@ -83,7 +83,7 @@ const orgJsonLd = {
   '@id': `${siteUrl}/#organization`,
   name: siteConfig.siteName,
   url: siteUrl,
-  description: `Annuaire certifié de ${sp}s à ${city}. Praticiens vérifiés RNCP, consultations en cabinet ou en ligne.`,
+  description: `Annuaire certifié de ${sp}s à ${city}. Praticiens vérifiés, consultations en cabinet ou en ligne.`,
   areaServed: { '@type': 'City', name: city },
 }
 
