@@ -33,7 +33,7 @@ export default function Hero({ practitionerCount, neighborhoodCount, tagCount }:
       </div>
 
       {/* Stats — bottom right */}
-      <div className="absolute bottom-5 right-4 md:bottom-7 md:right-10 flex gap-1.5 md:gap-2">
+      <div className="absolute bottom-5 right-4 md:bottom-7 md:right-10 flex gap-1.5 md:gap-2 max-w-[calc(100vw-32px)]">
         {[
           { num: practitionerCount, label: 'Praticiens' },
           { num: tagCount, label: 'Spécialités' },

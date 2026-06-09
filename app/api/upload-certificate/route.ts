@@ -1,8 +1,18 @@
 import { createServiceClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
+import { siteConfig } from '@/lib/config'
 
 const MAX_BYTES = 10 * 1024 * 1024 // 10 MB
 const ALLOWED_TYPES = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp']
+
+function slugify(str: string): string {
+  return str
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+}
 
 export async function POST(req: Request) {
   try {
@@ -17,10 +27,14 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Format non supporté — PDF, JPG ou PNG uniquement' }, { status: 400 })
     }
 
+    const firstName = (formData.get('first_name') as string | null) ?? ''
+    const lastName = (formData.get('last_name') as string | null) ?? ''
+    const firstSlug = slugify(firstName) || 'praticien'
+    const lastSlug = slugify(lastName) || 'inconnu'
+
     const supabase = createServiceClient()
     const ext = file.name.split('.').pop()?.toLowerCase() ?? 'pdf'
-    const safeName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
-    const path = `certificates/${safeName}`
+    const path = `certificates/${siteConfig.city}/${siteConfig.specialty}/${firstSlug}-${lastSlug}-${Date.now()}.${ext}`
 
     const buffer = Buffer.from(await file.arrayBuffer())
     const { error } = await supabase.storage

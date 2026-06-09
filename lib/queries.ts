@@ -86,7 +86,6 @@ export async function getHeroStats(): Promise<{ practitionerCount: number; neigh
     .select('neighborhood, practitioner_tags(label), cities!inner(slug), specialties!inner(slug)')
     .eq('cities.slug', siteConfig.city)
     .eq('specialties.slug', siteConfig.specialty)
-    .eq('is_verified', true)
 
   const all = practitioners ?? []
   const neighborhoods = new Set(all.map((p: { neighborhood: string | null }) => p.neighborhood).filter(Boolean))

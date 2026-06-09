@@ -23,10 +23,35 @@ const fraunces = Fraunces({
 
 export const metadata: Metadata = {
   title: {
-    default: `${siteConfig.specialtyPlural} à ${siteConfig.cityLabel} — Trouvez votre praticien`,
+    default: `${siteConfig.specialtyPlural} à ${siteConfig.cityLabel} — Annuaire certifié`,
     template: `%s | ${siteConfig.siteName}`,
   },
-  description: `Annuaire des ${siteConfig.specialtyLabel.toLowerCase()}s certifiés à ${siteConfig.cityLabel}. Consultations en cabinet ou en ligne.`,
+  description: `Trouvez votre ${siteConfig.specialtyLabel.toLowerCase()} certifié à ${siteConfig.cityLabel}. Praticiens vérifiés, consultations en cabinet ou en ligne. Réservation directe.`,
+  keywords: [`${siteConfig.specialtyLabel}`, `${siteConfig.specialtyLabel} ${siteConfig.cityLabel}`, 'praticien certifié', siteConfig.cityLabel],
+  openGraph: {
+    type: 'website',
+    locale: 'fr_FR',
+    url: `https://${siteConfig.domain}`,
+    siteName: siteConfig.siteName,
+    title: `${siteConfig.specialtyPlural} à ${siteConfig.cityLabel} — Annuaire certifié`,
+    description: `Annuaire des ${siteConfig.specialtyLabel.toLowerCase()}s certifiés à ${siteConfig.cityLabel}. Praticiens vérifiés, disponibles en cabinet ou en ligne.`,
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: `${siteConfig.specialtyPlural} à ${siteConfig.cityLabel}`,
+    description: `Trouvez votre ${siteConfig.specialtyLabel.toLowerCase()} certifié à ${siteConfig.cityLabel}.`,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true },
+  },
+  alternates: {
+    canonical: `https://${siteConfig.domain}`,
+  },
+  icons: {
+    icon: '/favicon.ico',
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
