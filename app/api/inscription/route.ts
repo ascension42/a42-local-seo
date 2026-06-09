@@ -8,7 +8,7 @@ export async function POST(req: Request) {
       cabinet_address, neighborhood, hourly_rate, website_url,
       booking_url, calendly_url,
       siret, years_experience, training_description,
-      selected_tags, custom_tag,
+      selected_tags, custom_tag, certificate_url,
     } = await req.json()
 
     if (!first_name || !last_name || !specialty_slug || !email) {
@@ -53,6 +53,7 @@ export async function POST(req: Request) {
           years_experience: years_experience || '',
           training_description: training_description || '',
           tags: [...(Array.isArray(selected_tags) ? selected_tags : []), custom_tag].filter(Boolean).join(', '),
+          certificate_url: certificate_url || '',
         }),
       }).catch(() => {})
     }
