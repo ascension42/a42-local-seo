@@ -3,9 +3,9 @@ import { siteConfig } from '@/lib/config'
 
 export default function Footer() {
   return (
-    <footer className="bg-green-deep text-white/65 px-5 md:px-10 py-6 md:py-7 flex flex-col md:flex-row justify-between items-start md:items-center gap-5 md:gap-0">
+    <footer className="bg-green-deep text-white/65 px-5 md:px-10 py-6 md:py-7 flex flex-col md:flex-row md:justify-between md:items-center gap-4 md:gap-0">
       <div>
-        <Link href="/" className="text-white font-extrabold text-sm no-underline">
+        <Link href="/" className="block text-white font-extrabold text-sm no-underline">
           {siteConfig.specialty}
           <span className="text-green-light">{siteConfig.cityLabel.toLowerCase()}</span>
           .fr
@@ -17,7 +17,7 @@ export default function Footer() {
         href="https://www.instagram.com/ascension42_/"
         target="_blank"
         rel="noopener noreferrer"
-        className="flex items-center gap-2 hover:opacity-100 transition-opacity opacity-75 self-center md:self-auto"
+        className="flex items-center gap-2 hover:opacity-100 transition-opacity opacity-75 w-fit mx-auto md:mx-0"
       >
         <span className="text-[11px] text-white/60">Powered by</span>
         <svg viewBox="0 0 24 24" width="20" height="20" fill="white" aria-label="Ascension 42 Instagram">
