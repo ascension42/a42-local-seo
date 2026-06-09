@@ -95,6 +95,20 @@ export async function getHeroStats(): Promise<{ practitionerCount: number; neigh
   return { practitionerCount: all.length, neighborhoodCount: neighborhoods.size, tagCount: tags.size }
 }
 
+export async function getTopTags(limit = 8): Promise<string[]> {
+  const practitioners = await getPractitioners()
+  const counts = new Map<string, number>()
+  for (const p of practitioners) {
+    for (const t of p.practitioner_tags ?? []) {
+      counts.set(t.label, (counts.get(t.label) ?? 0) + 1)
+    }
+  }
+  return Array.from(counts.entries())
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, limit)
+    .map(([label]) => label)
+}
+
 export async function getCityCenter(): Promise<{ lat: number; lng: number }> {
   const supabase = await createClient()
   const { data } = await supabase
