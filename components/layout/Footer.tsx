@@ -17,7 +17,7 @@ export default function Footer() {
         href="https://www.instagram.com/ascension42_/"
         target="_blank"
         rel="noopener noreferrer"
-        className="flex items-center gap-2 hover:opacity-100 transition-opacity opacity-75 w-fit mx-auto md:mx-0"
+        className="flex items-center gap-2 hover:opacity-100 transition-opacity opacity-75"
       >
         <span className="text-[11px] text-white/60">Powered by</span>
         <svg viewBox="0 0 24 24" width="20" height="20" fill="white" aria-label="Ascension 42 Instagram">
