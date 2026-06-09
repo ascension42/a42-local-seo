@@ -3,9 +3,19 @@ import { siteConfig } from '@/lib/config'
 import Link from 'next/link'
 import FaqAccordion from '@/components/ui/FaqAccordion'
 
+const siteUrl = `https://${siteConfig.domain}`
+const city = siteConfig.cityLabel
+
 export const metadata: Metadata = {
-  title: `FAQ — La sophrologie à ${siteConfig.cityLabel} : toutes vos questions`,
-  description: `Tout savoir sur la sophrologie à ${siteConfig.cityLabel} : définition, tarifs, remboursements, nombre de séances, différences avec la psychologie.`,
+  title: `FAQ Sophrologie ${city} — Tarifs, séances, remboursement`,
+  description: `Tout savoir sur la sophrologie à ${city} : tarifs (50–90€), remboursement mutuelle, nombre de séances, différences avec la psychologie. Réponses claires.`,
+  alternates: { canonical: `${siteUrl}/faq` },
+  openGraph: {
+    title: `FAQ Sophrologie ${city} — Tarifs, séances, remboursement`,
+    description: `Questions fréquentes sur la sophrologie à ${city} : tarifs, remboursement, comment choisir son sophrologue.`,
+    url: `${siteUrl}/faq`,
+    type: 'website',
+  },
 }
 
 const faqs = [
@@ -75,9 +85,32 @@ const faqs = [
   },
 ]
 
+const allQuestions = faqs.flatMap((s) => s.questions)
+
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: allQuestions.map(({ q, a }) => ({
+    '@type': 'Question',
+    name: q,
+    acceptedAnswer: { '@type': 'Answer', text: a },
+  })),
+}
+
+const breadcrumbJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Accueil', item: siteUrl },
+    { '@type': 'ListItem', position: 2, name: `FAQ Sophrologie ${city}`, item: `${siteUrl}/faq` },
+  ],
+}
+
 export default function FaqPage() {
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
       <div className="bg-green-dark px-4 md:px-10 py-10 md:py-12">
         <div className="max-w-[760px] mx-auto">
           <p className="text-[10px] font-bold text-green-light uppercase tracking-[2px] mb-3">

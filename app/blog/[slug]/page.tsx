@@ -16,6 +16,8 @@ export async function generateStaticParams() {
   return (data ?? []).map((p: { slug: string }) => ({ slug: p.slug }))
 }
 
+const siteUrl = `https://${siteConfig.domain}`
+
 export async function generateMetadata(
   { params }: { params: Promise<{ slug: string }> }
 ): Promise<Metadata> {
@@ -24,8 +26,25 @@ export async function generateMetadata(
   if (!post) return {}
   return {
     title: post.title,
-    description: post.excerpt ?? undefined,
-    openGraph: post.cover_url ? { images: [post.cover_url] } : undefined,
+    description: post.excerpt?.slice(0, 160) ?? undefined,
+    keywords: [
+      `sophrologie ${siteConfig.cityLabel}`,
+      `sophrologue ${siteConfig.cityLabel}`,
+      'sophrologie',
+      post.title,
+    ],
+    alternates: { canonical: `${siteUrl}/blog/${slug}` },
+    openGraph: {
+      title: post.title,
+      description: post.excerpt ?? undefined,
+      url: `${siteUrl}/blog/${slug}`,
+      type: 'article',
+      locale: 'fr_FR',
+      publishedTime: post.published_at ?? undefined,
+      modifiedTime: post.updated_at,
+      authors: [siteConfig.siteName],
+      ...(post.cover_url ? { images: [{ url: post.cover_url, alt: post.title }] } : {}),
+    },
   }
 }
 
@@ -121,8 +140,44 @@ export default async function BlogArticlePage(
 
   const relatedPosts = allPosts.filter((p) => p.slug !== slug).slice(0, 2)
 
+  const articleJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: post.title,
+    description: post.excerpt ?? undefined,
+    url: `${siteUrl}/blog/${slug}`,
+    inLanguage: 'fr-FR',
+    ...(post.cover_url ? { image: post.cover_url } : {}),
+    ...(post.published_at ? { datePublished: post.published_at } : {}),
+    dateModified: post.updated_at,
+    author: {
+      '@type': 'Organization',
+      name: siteConfig.siteName,
+      url: siteUrl,
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: siteConfig.siteName,
+      url: siteUrl,
+    },
+    about: { '@type': 'Thing', name: 'Sophrologie' },
+    keywords: `sophrologie, sophrologue, ${siteConfig.cityLabel}, bien-être, relaxation`,
+  }
+
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Accueil', item: siteUrl },
+      { '@type': 'ListItem', position: 2, name: 'Blog', item: `${siteUrl}/blog` },
+      { '@type': 'ListItem', position: 3, name: post.title, item: `${siteUrl}/blog/${slug}` },
+    ],
+  }
+
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
       {/* Hero header */}
       <div className="bg-green-dark px-4 md:px-10 py-9 md:py-11">
         <div className="max-w-[760px] mx-auto">

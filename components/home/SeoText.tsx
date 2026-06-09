@@ -1,37 +1,90 @@
 import { siteConfig } from '@/lib/config'
+import Link from 'next/link'
 
 export default function SeoText() {
   const sp = siteConfig.specialtyLabel.toLowerCase()
   const city = siteConfig.cityLabel
   return (
-    <section className="py-12">
-      <div className="max-w-[1060px] mx-auto px-10 grid grid-cols-2 gap-10">
-        <div>
-          <h2 className="text-xl font-extrabold text-green-dark mb-3.5 tracking-tight">
-            La {sp} à {city}
-          </h2>
-          <p className="text-xs text-muted leading-[1.8]">
-            La sophrologie est une méthode de relaxation dynamique combinant des techniques de respiration,
-            de décontraction musculaire progressive et de visualisation positive. À {city}, de nombreux
-            praticiens certifiés RNCP vous accompagnent dans tous les quartiers.
-          </p>
-          <p className="text-xs text-muted leading-[1.8] mt-2.5">
-            Que ce soit en cabinet, en ligne ou en ateliers collectifs, l&apos;offre est riche et accessible.
-          </p>
+    <section className="py-12 border-t border-border">
+      <div className="max-w-[1060px] mx-auto px-4 md:px-10">
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-10">
+          <div>
+            <h2 className="text-xl font-extrabold text-green-dark mb-3.5 tracking-tight">
+              La {sp} à {city}
+            </h2>
+            <p className="text-xs text-muted leading-[1.8]">
+              La sophrologie est une méthode de relaxation dynamique créée par Alfonso Caycedo, combinant
+              respiration contrôlée, décontraction musculaire progressive et visualisation positive.
+              À {city}, nos praticiens certifiés RNCP de niveau 5 vous accompagnent dans tous les
+              quartiers — Chartrons, Bastide, Saint-Michel, Mériadeck, Victoire, Caudéran et au-delà.
+            </p>
+            <p className="text-xs text-muted leading-[1.8] mt-2.5">
+              Que ce soit en cabinet ou en séance de sophrologie en ligne, l&apos;offre est large et adaptée
+              à tous les profils : adultes, adolescents, femmes enceintes, sportifs.
+            </p>
+          </div>
+          <div>
+            <h2 className="text-xl font-extrabold text-green-dark mb-3.5 tracking-tight">
+              Pourquoi consulter un {sp} ?
+            </h2>
+            <p className="text-xs text-muted leading-[1.8]">
+              Les motifs de consultation sont nombreux : gestion du stress au travail, troubles du sommeil,
+              anxiété et crises d&apos;angoisse, phobies, préparation mentale à un examen ou à un accouchement,
+              accompagnement du burn-out, confiance en soi. Le praticien adapte chaque suivi à votre situation.
+            </p>
+            <p className="text-xs text-muted leading-[1.8] mt-2.5">
+              Un suivi type comprend 6 à 10 séances. Les premiers effets se ressentent dès la 3ème séance.
+              Le tarif moyen d&apos;un {sp} à {city} se situe entre 50 et 90 €.
+            </p>
+          </div>
         </div>
-        <div>
-          <h2 className="text-xl font-extrabold text-green-dark mb-3.5 tracking-tight">
-            Pourquoi consulter un {sp} ?
-          </h2>
-          <p className="text-xs text-muted leading-[1.8]">
-            Les motifs de consultation sont nombreux : stress professionnel, troubles du sommeil, phobies,
-            préparation à un examen ou à un accouchement, accompagnement des enfants. Le praticien adapte
-            son approche à chaque situation.
-          </p>
-          <p className="text-xs text-muted leading-[1.8] mt-2.5">
-            Le tarif moyen à {city} se situe entre 50 et 80 € la séance.
-          </p>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+          <div>
+            <h2 className="text-base font-extrabold text-green-dark mb-3 tracking-tight">
+              Comment choisir son {sp} ?
+            </h2>
+            <p className="text-xs text-muted leading-[1.8]">
+              Vérifiez que le praticien est titulaire d&apos;un titre RNCP de niveau 5 minimum. Méfiez-vous des
+              formations courtes sans certification reconnue. Tous les praticiens de notre annuaire sont
+              vérifiés par notre équipe avant publication.
+            </p>
+            <p className="text-xs text-muted leading-[1.8] mt-2">
+              Vous pouvez consulter sans ordonnance et sans délai d&apos;attente.
+            </p>
+          </div>
+          <div>
+            <h2 className="text-base font-extrabold text-green-dark mb-3 tracking-tight">
+              Sophrologie en ligne à {city}
+            </h2>
+            <p className="text-xs text-muted leading-[1.8]">
+              Plusieurs sophrologues de notre annuaire proposent des séances de sophrologie en visioconférence.
+              Aussi efficaces qu&apos;en cabinet, elles offrent plus de flexibilité : pas de déplacement,
+              créneaux élargis, pratique depuis chez vous.
+            </p>
+            <p className="text-xs text-muted leading-[1.8] mt-2">
+              Idéal si vous êtes à Bordeaux Métropole, en périphérie ou si votre agenda est chargé.
+            </p>
+          </div>
+          <div>
+            <h2 className="text-base font-extrabold text-green-dark mb-3 tracking-tight">
+              Remboursement & tarifs
+            </h2>
+            <p className="text-xs text-muted leading-[1.8]">
+              La sophrologie n&apos;est pas remboursée par la Sécurité Sociale. En revanche, de nombreuses
+              mutuelles (Harmonie, MGEN, Alan…) proposent un forfait médecines douces couvrant une partie
+              des séances. Renseignez-vous auprès de votre mutuelle.
+            </p>
+            <p className="text-xs text-muted leading-[1.8] mt-2">
+              Tarifs à {city} : entre 50 € et 90 € la séance individuelle.{' '}
+              <Link href="/faq" className="text-green hover:underline font-semibold">
+                Voir la FAQ
+              </Link>
+            </p>
+          </div>
         </div>
+
       </div>
     </section>
   )
