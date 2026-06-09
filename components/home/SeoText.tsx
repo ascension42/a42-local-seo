@@ -16,11 +16,11 @@ export default function SeoText() {
             <p className="text-xs text-muted leading-[1.8]">
               La sophrologie est une méthode de relaxation dynamique créée par Alfonso Caycedo, combinant
               respiration contrôlée, décontraction musculaire progressive et visualisation positive.
-              À {city}, nos praticiens certifiés RNCP de niveau 5 vous accompagnent dans tous les
-              quartiers — Chartrons, Bastide, Saint-Michel, Mériadeck, Victoire, Caudéran et au-delà.
+              À {city}, nos praticiens certifiés RNCP de niveau 5 vous accompagnent à votre rythme,
+              en cabinet ou en ligne.
             </p>
             <p className="text-xs text-muted leading-[1.8] mt-2.5">
-              Que ce soit en cabinet ou en séance de sophrologie en ligne, l&apos;offre est large et adaptée
+              Que ce soit pour un suivi individuel ou des ateliers collectifs, l&apos;offre est large et adaptée
               à tous les profils : adultes, adolescents, femmes enceintes, sportifs.
             </p>
           </div>
@@ -64,7 +64,7 @@ export default function SeoText() {
               créneaux élargis, pratique depuis chez vous.
             </p>
             <p className="text-xs text-muted leading-[1.8] mt-2">
-              Idéal si vous êtes à Bordeaux Métropole, en périphérie ou si votre agenda est chargé.
+              Idéal si vous êtes à {city} ou dans les communes environnantes, ou si votre agenda est chargé.
             </p>
           </div>
           <div>
