@@ -8,6 +8,7 @@ import Link from 'next/link'
 export const revalidate = 3600
 
 export async function generateStaticParams() {
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) return []
   const supabase = createStaticClient()
   const { data } = await supabase
     .from('blog_posts')
