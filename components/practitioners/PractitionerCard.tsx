@@ -20,12 +20,12 @@ export default function PractitionerCard({ practitioner: p }: Props) {
       href={`/praticiens/${p.slug}`}
       className="flex flex-col bg-white rounded-xl border-[1.5px] border-border overflow-hidden transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5"
     >
-      <div className="h-[130px] relative bg-bg-alt flex items-center justify-center shrink-0">
+      <div className="h-[100px] md:h-[130px] relative bg-bg-alt flex items-center justify-center shrink-0">
         {p.photo_url ? (
           <img src={p.photo_url} alt={`${p.first_name} ${p.last_name}`}
-            className="w-[72px] h-[72px] rounded-full border-[3px] border-white object-cover" />
+            className="w-[60px] h-[60px] md:w-[72px] md:h-[72px] rounded-full border-[3px] border-white object-cover" />
         ) : (
-          <div className={`w-[72px] h-[72px] rounded-full border-[3px] border-white bg-gradient-to-br ${avatarGradients[idx]} flex items-center justify-center text-[26px] font-extrabold text-white`}>
+          <div className={`w-[60px] h-[60px] md:w-[72px] md:h-[72px] rounded-full border-[3px] border-white bg-gradient-to-br ${avatarGradients[idx]} flex items-center justify-center text-[22px] md:text-[26px] font-extrabold text-white`}>
             {initials}
           </div>
         )}

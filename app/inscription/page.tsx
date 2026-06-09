@@ -54,7 +54,7 @@ export default async function InscriptionPage() {
         <span className="inline-block bg-surface text-green-dark text-[10px] font-bold px-3.5 py-[5px] rounded-xl uppercase tracking-[1px] mb-4">
           Réseau sélectif · {MAX_SPOTS} places par ville
         </span>
-        <h1 className="text-[34px] font-extrabold text-white leading-[1.2] mb-3 tracking-tight">
+        <h1 className="text-[26px] md:text-[34px] font-extrabold text-white leading-[1.2] mb-3 tracking-tight">
           Rejoignez le réseau des<br />
           <span className="text-green-light">{siteConfig.specialtyPlural} de {siteConfig.cityLabel}</span>
         </h1>
@@ -102,7 +102,7 @@ export default async function InscriptionPage() {
               </span>
             </div>
             <div className="flex items-end gap-1 mb-1">
-              <span className="text-[42px] font-extrabold text-green-dark tracking-tight leading-none">24</span>
+              <span className="text-[34px] md:text-[42px] font-extrabold text-green-dark tracking-tight leading-none">24</span>
               <span className="text-lg font-bold text-green-dark mb-1">€</span>
               <span className="text-sm font-medium text-muted mb-2">/mois</span>
             </div>
@@ -196,7 +196,7 @@ export default async function InscriptionPage() {
 
       {/* Bottom CTA */}
       <section className="bg-green-dark text-center py-[52px] px-4 md:px-10">
-        <h2 className="text-[26px] font-extrabold text-white mb-2.5">
+        <h2 className="text-[22px] md:text-[26px] font-extrabold text-white mb-2.5">
           {isFull ? 'Réseau complet — rejoignez la liste d\'attente' : 'Prêt à rejoindre le réseau ?'}
         </h2>
         <p className="text-[13px] text-white/70 mb-6">

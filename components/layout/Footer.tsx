@@ -3,7 +3,7 @@ import { siteConfig } from '@/lib/config'
 
 export default function Footer() {
   return (
-    <footer className="bg-green-deep text-white/65 px-10 py-6 md:py-7 flex flex-col md:flex-row justify-between items-center gap-5 md:gap-0">
+    <footer className="bg-green-deep text-white/65 px-5 md:px-10 py-6 md:py-7 flex flex-col md:flex-row justify-between items-center gap-5 md:gap-0">
       <div>
         <Link href="/" className="text-white font-extrabold text-sm no-underline">
           {siteConfig.specialty}

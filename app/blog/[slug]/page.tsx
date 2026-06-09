@@ -184,7 +184,7 @@ export default async function BlogArticlePage(
           <p className="text-[10px] font-bold text-green-light uppercase tracking-[2px] mb-3">
             Guide complet
           </p>
-          <h1 className="font-accent text-[26px] md:text-[34px] text-white leading-[1.2] mb-4">{post.title}</h1>
+          <h1 className="font-accent text-[22px] md:text-[34px] text-white leading-[1.2] mb-4">{post.title}</h1>
           {post.excerpt && (
             <p className="text-sm text-white/70 leading-[1.65] max-w-[600px]">{post.excerpt}</p>
           )}
@@ -198,7 +198,7 @@ export default async function BlogArticlePage(
         <article>
           {/* Cover image */}
           {post.cover_url ? (
-            <div className="w-full h-[280px] rounded-xl overflow-hidden mb-8">
+            <div className="w-full h-[170px] sm:h-[220px] md:h-[280px] rounded-xl overflow-hidden mb-6 md:mb-8">
               <img
                 src={post.cover_url}
                 alt={post.title}
@@ -206,7 +206,7 @@ export default async function BlogArticlePage(
               />
             </div>
           ) : (
-            <div className="w-full h-[280px] rounded-xl bg-gradient-to-br from-green-dark via-[#467954] to-green mb-8" />
+            <div className="w-full h-[170px] sm:h-[220px] md:h-[280px] rounded-xl bg-gradient-to-br from-green-dark via-[#467954] to-green mb-6 md:mb-8" />
           )}
 
           {/* Article content */}

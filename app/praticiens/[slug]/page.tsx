@@ -136,7 +136,7 @@ export default async function ProfilePage(
       {/* Header — gradient splits at 140px */}
       <div
         className="px-4 md:px-10 pt-6 md:pt-8 pb-0"
-        style={{ background: 'linear-gradient(to bottom, #284a30 0%, #284a30 140px, #fbfaf8 140px)' }}
+        style={{ background: 'linear-gradient(to bottom, #284a30 0%, #284a30 120px, #fbfaf8 120px)' }}
       >
         <div
           className="max-w-[1060px] mx-auto flex flex-col md:grid md:gap-7 md:items-end"
@@ -146,9 +146,9 @@ export default async function ProfilePage(
           <div className="relative mb-4 md:-mb-5 shrink-0 self-end w-fit">
             {p.photo_url ? (
               <img src={p.photo_url} alt={`${p.first_name} ${p.last_name}`}
-                className="w-[120px] h-[120px] rounded-full border-4 border-white object-cover" />
+                className="w-[88px] h-[88px] md:w-[120px] md:h-[120px] rounded-full border-4 border-white object-cover" />
             ) : (
-              <div className={`w-[120px] h-[120px] rounded-full border-4 border-white bg-gradient-to-br ${grad} flex items-center justify-center text-[40px] font-extrabold text-white`}>
+              <div className={`w-[88px] h-[88px] md:w-[120px] md:h-[120px] rounded-full border-4 border-white bg-gradient-to-br ${grad} flex items-center justify-center text-[30px] md:text-[40px] font-extrabold text-white`}>
                 {initials}
               </div>
             )}
@@ -165,10 +165,10 @@ export default async function ProfilePage(
           </div>
 
           <div className="pb-6">
-            <h1 className="text-[28px] font-extrabold text-white tracking-tight mb-1.5">
+            <h1 className="text-[22px] md:text-[28px] font-extrabold text-white tracking-tight mb-1.5">
               {p.first_name} {p.last_name}
             </h1>
-            <p className="text-[13px] text-white/70">
+            <p className="text-[12px] md:text-[13px] text-white/70">
               {siteConfig.cityLabel}{p.neighborhood ? ` — ${p.neighborhood}` : ''}
             </p>
           </div>
@@ -204,7 +204,7 @@ export default async function ProfilePage(
         {/* Left column */}
         <div className="space-y-[18px]">
           {p.bio && (
-            <div className="bg-white border-[1.5px] border-border rounded-xl p-[22px]">
+            <div className="bg-white border-[1.5px] border-border rounded-xl p-4 md:p-[22px]">
               <h2 className="text-base font-extrabold text-green-dark mb-3.5">
                 À propos de {p.first_name}
               </h2>
@@ -213,7 +213,7 @@ export default async function ProfilePage(
           )}
 
           {tags.length > 0 && (
-            <div className="bg-white border-[1.5px] border-border rounded-xl p-[22px]">
+            <div className="bg-white border-[1.5px] border-border rounded-xl p-4 md:p-[22px]">
               <h2 className="text-base font-extrabold text-green-dark mb-3.5">
                 Domaines d&apos;intervention
               </h2>
@@ -227,7 +227,7 @@ export default async function ProfilePage(
             </div>
           )}
 
-          <div className="bg-white border-[1.5px] border-border rounded-xl p-[22px]">
+          <div className="bg-white border-[1.5px] border-border rounded-xl p-4 md:p-[22px]">
             <h2 className="text-base font-extrabold text-green-dark mb-3.5">
               Comment se déroule un suivi ?
             </h2>
@@ -252,7 +252,7 @@ export default async function ProfilePage(
           </div>
 
           {testimonials.length > 0 && (
-            <div className="bg-white border-[1.5px] border-border rounded-xl p-[22px]">
+            <div className="bg-white border-[1.5px] border-border rounded-xl p-4 md:p-[22px]">
               <h2 className="text-base font-extrabold text-green-dark mb-3.5">
                 Ce que disent mes patients
               </h2>
@@ -274,7 +274,7 @@ export default async function ProfilePage(
 
         {/* Right sidebar */}
         <div className="space-y-4">
-          <div className="bg-green-dark rounded-xl p-[22px]">
+          <div className="bg-green-dark rounded-xl p-4 md:p-[22px]">
             <h3 className="text-sm font-extrabold text-white mb-1.5">Prendre rendez-vous</h3>
             <p className="text-[11px] text-white/65 mb-4 leading-[1.5]">
               Réservation directe sur l&apos;agenda de {p.first_name}.

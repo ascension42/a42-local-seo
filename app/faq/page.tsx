@@ -116,7 +116,7 @@ export default function FaqPage() {
           <p className="text-[10px] font-bold text-green-light uppercase tracking-[2px] mb-3">
             Questions fréquentes
           </p>
-          <h1 className="text-[30px] font-extrabold text-white leading-[1.2] mb-3 tracking-tight">
+          <h1 className="text-[24px] md:text-[30px] font-extrabold text-white leading-[1.2] mb-3 tracking-tight">
             La sophrologie à {siteConfig.cityLabel} :<br />toutes vos questions
           </h1>
           <p className="text-sm text-white/70 leading-[1.65]">

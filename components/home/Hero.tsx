@@ -33,15 +33,15 @@ export default function Hero({ practitionerCount, neighborhoodCount, tagCount }:
       </div>
 
       {/* Stats — bottom right */}
-      <div className="absolute bottom-5 right-4 md:bottom-7 md:right-10 flex gap-1.5 md:gap-2 max-w-[calc(100vw-32px)]">
+      <div className="absolute bottom-4 right-3 md:bottom-7 md:right-10 flex gap-1 md:gap-2 max-w-[calc(100vw-24px)]">
         {[
           { num: practitionerCount, label: 'Praticiens' },
           { num: tagCount, label: 'Spécialités' },
           { num: neighborhoodCount, label: 'Zones' },
         ].map(({ num, label }) => (
-          <div key={label} className="text-center bg-black/30 backdrop-blur-sm px-3 py-2 md:px-4 md:py-2.5 rounded-xl border border-white/10">
-            <span className="block text-[20px] md:text-[24px] font-extrabold text-white leading-tight">{num}</span>
-            <span className="text-[9px] md:text-[10px] font-semibold text-white/75 uppercase tracking-[1px]">{label}</span>
+          <div key={label} className="text-center bg-black/30 backdrop-blur-sm px-2 py-1.5 md:px-4 md:py-2.5 rounded-lg md:rounded-xl border border-white/10">
+            <span className="block text-[17px] md:text-[24px] font-extrabold text-white leading-tight">{num}</span>
+            <span className="text-[8px] md:text-[10px] font-semibold text-white/75 uppercase tracking-[0.5px] md:tracking-[1px]">{label}</span>
           </div>
         ))}
       </div>

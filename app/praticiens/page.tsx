@@ -76,7 +76,7 @@ export default async function AnnuairePage({ searchParams }: { searchParams: Pro
           <p className="text-[10px] font-bold text-green-light uppercase tracking-[2px] mb-2">
             {siteConfig.cityLabel} &amp; région
           </p>
-          <h1 className="text-[26px] font-extrabold text-white tracking-tight mb-1.5">
+          <h1 className="text-[22px] md:text-[26px] font-extrabold text-white tracking-tight mb-1.5">
             {practitioners.length} {siteConfig.specialtyLabel.toLowerCase()}{practitioners.length > 1 ? 's' : ''} à {siteConfig.cityLabel}
           </h1>
           <p className="text-[13px] text-white/65">

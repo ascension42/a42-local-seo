@@ -55,7 +55,7 @@ export default async function BlogPage() {
           <p className="text-[10px] font-bold text-green-light uppercase tracking-[2px] mb-2">
             Ressources &amp; Conseils
           </p>
-          <h1 className="text-[26px] font-extrabold text-white tracking-tight">
+          <h1 className="text-[22px] md:text-[26px] font-extrabold text-white tracking-tight">
             Le guide de la {siteConfig.specialtyLabel.toLowerCase()} à {siteConfig.cityLabel}
           </h1>
         </div>

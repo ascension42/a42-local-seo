@@ -32,7 +32,7 @@ function BigCard({ p, active, onActivate }: { p: Practitioner; active: boolean; 
       }`}
     >
       {/* Header */}
-      <div className={`relative bg-gradient-to-br ${g1} ${g2} h-[210px] md:h-[240px] p-5 flex flex-col justify-end overflow-hidden`}>
+      <div className={`relative bg-gradient-to-br ${g1} ${g2} h-[185px] md:h-[240px] p-4 md:p-5 flex flex-col justify-end overflow-hidden`}>
         {/* Decorative circles */}
         <div className="absolute -top-10 -right-10 w-44 h-44 rounded-full bg-white/5 pointer-events-none" />
         <div className="absolute top-20 right-20 w-20 h-20 rounded-full bg-white/5 pointer-events-none" />
@@ -58,7 +58,7 @@ function BigCard({ p, active, onActivate }: { p: Practitioner; active: boolean; 
           <p className="text-[10px] font-bold text-green-light/80 uppercase tracking-[1.5px] mb-1.5">
             {siteConfig.specialtyLabel}
           </p>
-          <h3 className="text-[21px] font-extrabold text-white tracking-tight leading-tight">
+          <h3 className="text-[18px] md:text-[21px] font-extrabold text-white tracking-tight leading-tight">
             {p.first_name} {p.last_name}
           </h3>
           {p.neighborhood && (

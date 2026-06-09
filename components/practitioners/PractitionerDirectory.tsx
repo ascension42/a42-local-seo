@@ -85,7 +85,7 @@ export default function PractitionerDirectory({ practitioners, allTags, cityLat,
               {dropdownOpen && (
                 <>
                   <div className="fixed inset-0 z-20" onClick={() => setDropdownOpen(false)} />
-                  <div className="absolute top-full mt-2 left-0 z-30 bg-white border border-border rounded-xl shadow-xl py-1.5 min-w-[210px]">
+                  <div className="absolute top-full mt-2 left-0 z-30 bg-white border border-border rounded-xl shadow-xl py-1.5 min-w-[160px] max-w-[calc(100vw-32px)]">
                     {overflowTags.map(tag => (
                       <button
                         key={tag}
