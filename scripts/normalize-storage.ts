@@ -3,15 +3,11 @@
  *
  * Convention cible : {specialty}/{city}/{type}/{nom-lisible}.ext
  *
- * Usage : npx tsx scripts/normalize-storage.ts
- * Requires .env.local with NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY
+ * Usage (depuis la racine du projet) :
+ *   npx tsx --env-file=.env.local scripts/normalize-storage.ts
  */
 
 import { createClient } from '@supabase/supabase-js'
-import * as dotenv from 'dotenv'
-import * as path from 'path'
-
-dotenv.config({ path: path.resolve(process.cwd(), '.env.local') })
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const SERVICE_KEY  = process.env.SUPABASE_SERVICE_ROLE_KEY!
