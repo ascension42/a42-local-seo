@@ -4,6 +4,8 @@ import './globals.css'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 import { siteConfig } from '@/lib/config'
+import { Analytics } from '@vercel/analytics/react'
+import PostHogProvider from '@/components/analytics/PostHogProvider'
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ['latin'],
@@ -31,9 +33,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="fr" className={`${jakarta.variable} ${fraunces.variable}`} suppressHydrationWarning>
       <body className="bg-bg text-ink font-sans antialiased flex flex-col min-h-screen">
-        <Navbar />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        <PostHogProvider>
+          <Navbar />
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </PostHogProvider>
+        <Analytics />
       </body>
     </html>
   )

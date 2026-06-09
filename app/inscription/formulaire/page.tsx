@@ -3,6 +3,7 @@
 import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { siteConfig } from '@/lib/config'
+import { track } from '@/lib/analytics'
 
 type Specialty = { slug: string; name: string }
 type Plan = 'standard' | 'premium'
@@ -29,6 +30,7 @@ function FormContent() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const [formStarted, setFormStarted] = useState(false)
 
   useEffect(() => {
     fetch('/api/specialties')
@@ -39,10 +41,19 @@ function FormContent() {
       })
   }, [])
 
+  function handleFieldChange(field: string, value: string) {
+    if (!formStarted) {
+      setFormStarted(true)
+      track({ name: 'inscription_form_started', properties: { plan: form.plan as Plan } })
+    }
+    setForm(f => ({ ...f, [field]: value }))
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!form.first_name || !form.last_name || !form.specialty_slug || !form.email) {
       setError('Merci de remplir tous les champs obligatoires.')
+      track({ name: 'inscription_form_error', properties: { plan: form.plan as Plan, error: 'missing_required_fields' } })
       return
     }
     setError('')
@@ -55,9 +66,12 @@ function FormContent() {
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error ?? 'Erreur serveur')
+      track({ name: 'inscription_form_submitted', properties: { plan: form.plan as Plan, specialty: form.specialty_slug } })
       setSubmitted(true)
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Une erreur est survenue, veuillez réessayer.')
+      const message = err instanceof Error ? err.message : 'Une erreur est survenue, veuillez réessayer.'
+      setError(message)
+      track({ name: 'inscription_form_error', properties: { plan: form.plan as Plan, error: message } })
     } finally {
       setLoading(false)
     }
@@ -117,15 +131,15 @@ function FormContent() {
 
       <form onSubmit={handleSubmit} className="bg-surface rounded-2xl p-6 shadow-sm space-y-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Field label="Prénom *" value={form.first_name} onChange={v => setForm(f => ({ ...f, first_name: v }))} placeholder="Marie" />
-          <Field label="Nom *" value={form.last_name} onChange={v => setForm(f => ({ ...f, last_name: v }))} placeholder="Dupont" />
+          <Field label="Prénom *" value={form.first_name} onChange={v => handleFieldChange('first_name', v)} placeholder="Marie" />
+          <Field label="Nom *" value={form.last_name} onChange={v => handleFieldChange('last_name', v)} placeholder="Dupont" />
         </div>
 
         <div>
           <label className="block text-xs font-semibold text-foreground mb-1.5">Métier *</label>
           <select
             value={form.specialty_slug}
-            onChange={e => setForm(f => ({ ...f, specialty_slug: e.target.value }))}
+            onChange={e => handleFieldChange('specialty_slug', e.target.value)}
             required
             className="w-full border border-border rounded-xl px-4 py-2.5 text-sm text-foreground bg-white focus:outline-none focus:ring-2 focus:ring-green/30 focus:border-green"
           >
@@ -136,8 +150,8 @@ function FormContent() {
           </select>
         </div>
 
-        <Field label="Email *" value={form.email} onChange={v => setForm(f => ({ ...f, email: v }))} type="email" placeholder="marie.dupont@gmail.com" />
-        <Field label="Téléphone" value={form.phone} onChange={v => setForm(f => ({ ...f, phone: v }))} type="tel" placeholder="06 12 34 56 78" />
+        <Field label="Email *" value={form.email} onChange={v => handleFieldChange('email', v)} type="email" placeholder="marie.dupont@gmail.com" />
+        <Field label="Téléphone" value={form.phone} onChange={v => handleFieldChange('phone', v)} type="tel" placeholder="06 12 34 56 78" />
 
         {error && <p className="text-red-500 text-xs">{error}</p>}
 

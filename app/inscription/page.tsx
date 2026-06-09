@@ -1,5 +1,6 @@
 import { siteConfig } from '@/lib/config'
 import type { Metadata } from 'next'
+import InscriptionPlanCTA from '@/components/inscription/InscriptionPlanCTA'
 import CountdownTimer from '@/components/inscription/CountdownTimer'
 
 export const revalidate = 86400
@@ -129,12 +130,14 @@ export default function InscriptionPage() {
                 ))}
               </ul>
 
-              <a
+              <InscriptionPlanCTA
+                plan="standard"
+                location="cards"
                 href="/inscription/formulaire?plan=standard"
                 className="block w-full py-3 rounded-xl font-bold text-[14px] bg-bg-alt text-green-dark border border-border hover:border-green hover:bg-surface transition-colors text-center"
               >
                 Choisir le Standard
-              </a>
+              </InscriptionPlanCTA>
             </div>
 
             {/* Plan Mise en avant */}
@@ -178,12 +181,14 @@ export default function InscriptionPage() {
                 ))}
               </ul>
 
-              <a
+              <InscriptionPlanCTA
+                plan="premium"
+                location="cards"
                 href="/inscription/formulaire?plan=premium"
                 className="block w-full py-3 rounded-xl font-bold text-[14px] bg-green text-white hover:bg-[#4faa73] transition-colors text-center"
               >
                 Choisir la Mise en avant
-              </a>
+              </InscriptionPlanCTA>
             </div>
           </div>
 
@@ -239,12 +244,12 @@ export default function InscriptionPage() {
           Rejoignez les praticiens déjà référencés sur {siteConfig.domain}
         </p>
         <div className="flex justify-center gap-4">
-          <a href="/inscription/formulaire?plan=standard" className="inline-block bg-white/15 text-white font-bold text-sm px-7 py-3.5 rounded-lg hover:bg-white/25 transition-colors border border-white/30">
+          <InscriptionPlanCTA plan="standard" location="bottom_cta" href="/inscription/formulaire?plan=standard" className="inline-block bg-white/15 text-white font-bold text-sm px-7 py-3.5 rounded-lg hover:bg-white/25 transition-colors border border-white/30">
             Standard — 24 €/mois
-          </a>
-          <a href="/inscription/formulaire?plan=premium" className="inline-block bg-green text-white font-bold text-sm px-7 py-3.5 rounded-lg hover:bg-[#4faa73] transition-colors">
+          </InscriptionPlanCTA>
+          <InscriptionPlanCTA plan="premium" location="bottom_cta" href="/inscription/formulaire?plan=premium" className="inline-block bg-green text-white font-bold text-sm px-7 py-3.5 rounded-lg hover:bg-[#4faa73] transition-colors">
             Mise en avant — 49 €/mois ★
-          </a>
+          </InscriptionPlanCTA>
         </div>
       </section>
     </>

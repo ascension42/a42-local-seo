@@ -1,5 +1,5 @@
-import Link from 'next/link'
 import { siteConfig } from '@/lib/config'
+import HeroCTAs from './HeroCTAs'
 
 export default function Hero({ practitionerCount, neighborhoodCount, tagCount }: { practitionerCount: number; neighborhoodCount: number; tagCount: number }) {
   return (
@@ -18,14 +18,7 @@ export default function Hero({ practitionerCount, neighborhoodCount, tagCount }:
         <p className="text-[13px] text-white/80 leading-[1.65] mb-7 max-w-[340px]">
           Praticiens certifiés, vérifiés. Consultations en cabinet ou en ligne — adaptées à vos besoins.
         </p>
-        <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
-          <Link href="/praticiens" className="bg-green text-white font-bold text-[13px] px-6 py-[11px] rounded-md hover:bg-[#4faa73] transition-colors">
-            Voir les praticiens
-          </Link>
-          <Link href="/inscription" className="text-white/75 text-xs font-medium hover:text-white transition-colors">
-            Inscrire mon cabinet →
-          </Link>
-        </div>
+        <HeroCTAs />
       </div>
       <div className="absolute bottom-5 right-5 md:bottom-7 md:right-10 flex gap-4 md:gap-7">
         {[
