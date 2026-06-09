@@ -21,7 +21,7 @@ export default function CategoryGrid() {
         <button
           key={cat.label}
           onClick={() => router.push(`/praticiens?tag=${encodeURIComponent(cat.label)}`)}
-          className="bg-white border-[1.5px] border-border rounded-[10px] p-[18px] text-left cursor-pointer hover:border-green hover:bg-surface hover:-translate-y-px hover:shadow-md transition-all duration-150 group"
+          className="bg-white border-[1.5px] border-border rounded-[10px] p-[18px] text-left cursor-pointer shadow-[0_1px_6px_rgba(0,0,0,0.06)] hover:border-green hover:bg-surface hover:-translate-y-px hover:shadow-[0_4px_12px_rgba(0,0,0,0.10)] transition-all duration-150 group"
         >
           <p className="text-xs font-bold text-green-dark group-hover:text-green transition-colors">
             {cat.label}

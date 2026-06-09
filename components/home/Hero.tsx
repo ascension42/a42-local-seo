@@ -31,18 +31,6 @@ export default function Hero({ practitionerCount, neighborhoodCount, tagCount }:
         </p>
         <HeroCTAs />
       </div>
-      <div className="absolute bottom-5 right-5 md:bottom-7 md:right-10 flex gap-4 md:gap-7">
-        {[
-          { num: practitionerCount, label: 'Praticiens' },
-          { num: tagCount, label: 'Spécialités' },
-          { num: neighborhoodCount, label: 'Zones' },
-        ].map(({ num, label }) => (
-          <div key={label} className="text-center text-white">
-            <span className="block text-[22px] font-extrabold text-green-light">{num}</span>
-            <span className="text-[10px] font-medium text-white/65 uppercase tracking-[1px]">{label}</span>
-          </div>
-        ))}
-      </div>
     </div>
   )
 }

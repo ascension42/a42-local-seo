@@ -3,6 +3,8 @@ import { getPractitionerBySlug } from '@/lib/queries'
 import { createStaticClient } from '@/lib/supabase/static'
 import { siteConfig } from '@/lib/config'
 import type { Metadata } from 'next'
+import Badge from '@/components/ui/Badge'
+import PatientsBadge from '@/components/practitioners/PatientsBadge'
 import ProfileViewTracker from '@/components/practitioners/ProfileViewTracker'
 import BookingButton from '@/components/practitioners/BookingButton'
 
@@ -36,16 +38,10 @@ const gradients = [
   'from-[#467954] to-[#6ab885]',
 ]
 
-const modeLabelMap: Record<string, string> = {
+const modeLabel: Record<string, string> = {
   cabinet: 'Cabinet uniquement',
   online: 'En ligne uniquement',
   both: 'Cabinet & En ligne',
-}
-
-const modeIconMap: Record<string, string> = {
-  cabinet: '🏢',
-  online: '💻',
-  both: '🏢💻',
 }
 
 export default async function ProfilePage(
@@ -76,61 +72,57 @@ export default async function ProfilePage(
   const testimonials = p.testimonials ?? []
   const initials = `${p.first_name[0]}${p.last_name[0]}`
   const grad = gradients[p.first_name.charCodeAt(0) % gradients.length]
-  const bookingHref = p.booking_url ?? p.doctolib_url ?? p.calendly_url ?? '#'
 
   return (
     <>
       <ProfileViewTracker practitionerId={p.id} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
 
-      {/* Green banner — name + city only */}
-      <div className="bg-green-dark px-4 md:px-10 pt-8 pb-12">
-        <div className="max-w-[1060px] mx-auto">
-          <h1 className="text-[28px] font-extrabold text-white tracking-tight mb-1">
-            {p.first_name} {p.last_name}
-          </h1>
-          <p className="text-[13px] text-white/70">
-            {siteConfig.cityLabel}{p.neighborhood ? ` — ${p.neighborhood}` : ''}
-          </p>
-        </div>
-      </div>
-
-      {/* À cheval strip — photo + mode tag + contact button */}
-      <div className="px-4 md:px-10 -mt-12 relative z-10 mb-4 md:mb-6">
-        <div className="max-w-[1060px] mx-auto flex flex-col md:flex-row md:items-end gap-3 md:gap-4">
-          {/* Photo — straddles green/content boundary */}
-          <div className="self-start shrink-0">
-            {p.photo_url ? (
-              <img
-                src={p.photo_url}
-                alt={`${p.first_name} ${p.last_name}`}
-                className="w-24 h-24 rounded-full border-4 border-white object-cover shadow-md"
-              />
-            ) : (
-              <div className={`w-24 h-24 rounded-full border-4 border-white bg-gradient-to-br ${grad} flex items-center justify-center text-[32px] font-extrabold text-white shadow-md`}>
-                {initials}
-              </div>
-            )}
+      {/* Header — gradient splits at 140px */}
+      <div
+        className="px-4 md:px-10 pt-6 md:pt-8 pb-0"
+        style={{ background: 'linear-gradient(to bottom, #284a30 0%, #284a30 140px, #fbfaf8 140px)' }}
+      >
+        <div
+          className="max-w-[1060px] mx-auto flex flex-col md:grid md:gap-7 md:items-end"
+          style={{ gridTemplateColumns: 'auto 1fr auto' }}
+        >
+          {p.photo_url ? (
+            <img src={p.photo_url} alt={`${p.first_name} ${p.last_name}`}
+              className="w-[120px] h-[120px] rounded-full border-4 border-white object-cover mb-4 md:-mb-5 shrink-0" />
+          ) : (
+            <div className={`w-[120px] h-[120px] rounded-full border-4 border-white bg-gradient-to-br ${grad} flex items-center justify-center text-[40px] font-extrabold text-white mb-4 md:-mb-5 shrink-0`}>
+              {initials}
+            </div>
+          )}
+          <div className="pb-6">
+            <h1 className="text-[28px] font-extrabold text-white tracking-tight mb-1.5">
+              {p.first_name} {p.last_name}
+            </h1>
+            <p className="text-[13px] text-white/70 mb-2.5">
+              {siteConfig.cityLabel}{p.neighborhood ? ` — ${p.neighborhood}` : ''}
+            </p>
+            <div className="flex gap-2 flex-wrap items-center">
+              <Badge variant="mode">{modeLabel[p.consultation_mode]}</Badge>
+              <PatientsBadge accepting={p.accepting_patients} />
+              {p.is_verified && (
+                <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full bg-green/20 text-green-light border border-green/30">
+                  <svg viewBox="0 0 12 12" width="10" fill="none">
+                    <circle cx="6" cy="6" r="5.5" stroke="currentColor" strokeWidth="1"/>
+                    <path d="M3.5 6l1.5 1.5L8.5 4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                  Certifié &amp; Vérifié
+                </span>
+              )}
+            </div>
           </div>
-
-          {/* Action strip */}
-          <div className="flex-1 bg-white rounded-xl shadow-md border border-border/60 px-3 md:px-4 py-3 flex flex-wrap items-center gap-2 min-w-0">
-            <span className="inline-flex items-center gap-1.5 text-[11px] font-bold px-3 py-1.5 rounded-full bg-green-dark/8 text-green-dark border border-green-dark/15">
-              <span>{modeIconMap[p.consultation_mode]}</span>
-              {modeLabelMap[p.consultation_mode]}
-            </span>
-            {p.is_verified && (
-              <span className="inline-flex items-center gap-1.5 text-[11px] font-bold px-3 py-1.5 rounded-full bg-green/10 text-green border border-green/20">
-                <svg viewBox="0 0 12 12" width="12" fill="none">
-                  <circle cx="6" cy="6" r="5.5" stroke="currentColor" strokeWidth="1" />
-                  <path d="M3.5 6l1.5 1.5L8.5 4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-                Certifié &amp; Vérifié
-              </span>
-            )}
+          <div className="pb-6 flex flex-col gap-2.5 items-start md:items-end">
             <a
               href={`mailto:contact@${siteConfig.domain}?subject=Contact ${encodeURIComponent(p.first_name + ' ' + p.last_name)}`}
-              className="ml-auto bg-green text-white font-bold text-[13px] px-5 py-2.5 rounded-lg whitespace-nowrap hover:bg-[#4faa73] transition-colors"
+              className="bg-green text-white font-bold text-[13px] px-7 py-3 rounded-lg whitespace-nowrap hover:bg-[#4faa73] transition-colors"
             >
               Contacter le praticien
             </a>
@@ -144,14 +136,18 @@ export default async function ProfilePage(
         <div className="space-y-[18px]">
           {p.bio && (
             <div className="bg-white border-[1.5px] border-border rounded-xl p-[22px]">
-              <h2 className="text-base font-extrabold text-green-dark mb-3.5">À propos de {p.first_name}</h2>
+              <h2 className="text-base font-extrabold text-green-dark mb-3.5">
+                À propos de {p.first_name}
+              </h2>
               <p className="text-[13px] leading-[1.8] text-ink">{p.bio}</p>
             </div>
           )}
 
           {tags.length > 0 && (
             <div className="bg-white border-[1.5px] border-border rounded-xl p-[22px]">
-              <h2 className="text-base font-extrabold text-green-dark mb-3.5">Domaines d&apos;intervention</h2>
+              <h2 className="text-base font-extrabold text-green-dark mb-3.5">
+                Domaines d&apos;intervention
+              </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 {tags.map((t) => (
                   <div key={t.id} className="bg-surface border-l-[3px] border-green rounded-r-lg p-3">
@@ -163,7 +159,9 @@ export default async function ProfilePage(
           )}
 
           <div className="bg-white border-[1.5px] border-border rounded-xl p-[22px]">
-            <h2 className="text-base font-extrabold text-green-dark mb-3.5">Comment se déroule un suivi ?</h2>
+            <h2 className="text-base font-extrabold text-green-dark mb-3.5">
+              Comment se déroule un suivi ?
+            </h2>
             <div className="space-y-3.5">
               {[
                 ['Séance de bilan (gratuite, 20 min)', 'Échange pour comprendre votre situation et vos objectifs.'],
@@ -172,7 +170,9 @@ export default async function ProfilePage(
                 ['Autonomie & bilan final', 'Vous disposez des outils pour pratiquer seul(e).'],
               ].map(([title, desc], i) => (
                 <div key={i} className="flex gap-3.5 items-start">
-                  <span className="w-7 h-7 rounded-full bg-green text-white text-[11px] font-extrabold flex items-center justify-center shrink-0">{i + 1}</span>
+                  <span className="w-7 h-7 rounded-full bg-green text-white text-[11px] font-extrabold flex items-center justify-center shrink-0">
+                    {i + 1}
+                  </span>
                   <div>
                     <p className="text-xs font-bold text-green-dark mb-0.5">{title}</p>
                     <p className="text-[11px] text-muted leading-[1.5]">{desc}</p>
@@ -184,12 +184,18 @@ export default async function ProfilePage(
 
           {testimonials.length > 0 && (
             <div className="bg-white border-[1.5px] border-border rounded-xl p-[22px]">
-              <h2 className="text-base font-extrabold text-green-dark mb-3.5">Ce que disent mes patients</h2>
+              <h2 className="text-base font-extrabold text-green-dark mb-3.5">
+                Ce que disent mes patients
+              </h2>
               <div className="space-y-3">
                 {testimonials.map((t) => (
                   <div key={t.id} className="bg-bg-alt rounded-lg p-3.5 border-l-[3px] border-green-light">
-                    <p className="text-xs italic leading-[1.6] text-ink mb-2">&laquo; {t.content} &raquo;</p>
-                    <p className="text-[10px] font-bold text-muted">{t.author_name}{t.author_location ? ` — ${t.author_location}` : ''}</p>
+                    <p className="text-xs italic leading-[1.6] text-ink mb-2">
+                      &laquo; {t.content} &raquo;
+                    </p>
+                    <p className="text-[10px] font-bold text-muted">
+                      {t.author_name}{t.author_location ? ` — ${t.author_location}` : ''}
+                    </p>
                   </div>
                 ))}
               </div>
@@ -205,7 +211,7 @@ export default async function ProfilePage(
               Réservation directe sur l&apos;agenda de {p.first_name}.
             </p>
             <BookingButton
-              href={bookingHref}
+              href={p.booking_url ?? p.doctolib_url ?? p.calendly_url ?? '#'}
               practitionerId={p.id}
               className="block bg-green text-white text-center font-bold text-[13px] py-3 rounded-lg mb-2.5 hover:bg-[#4faa73] transition-colors"
             >
@@ -215,26 +221,27 @@ export default async function ProfilePage(
           </div>
 
           <div className="bg-white border-[1.5px] border-border rounded-xl p-5">
-            <h3 className="text-[13px] font-extrabold text-green-dark mb-3.5 pb-2.5 border-b border-border">Infos pratiques</h3>
+            <h3 className="text-[13px] font-extrabold text-green-dark mb-3.5 pb-2.5 border-b border-border">
+              Infos pratiques
+            </h3>
             {[
-              p.cabinet_address && ['Adresse', p.cabinet_address, false],
-              p.neighborhood && ['Quartier', p.neighborhood, false],
               ['Tarif séance', p.hourly_rate ? `${p.hourly_rate} €` : '—', true],
-              ['Modalités', modeLabelMap[p.consultation_mode], false],
-            ].filter(Boolean).map((row) => {
-              const [label, value, highlight] = row as [string, string, boolean]
-              return (
-                <div key={label} className="flex justify-between items-center py-1.5 border-b border-bg-alt last:border-0 text-xs">
-                  <span className="text-muted font-medium">{label}</span>
-                  <span className={`font-semibold text-right max-w-[180px] ${highlight ? 'text-green-dark' : 'text-ink'}`}>{value}</span>
-                </div>
-              )
-            })}
+              ['Modalités', modeLabel[p.consultation_mode], false],
+              ['Quartier', p.neighborhood ?? '—', false],
+              ['En activité depuis', p.years_active ? `${p.years_active}` : '—', false],
+            ].map(([label, value, highlight]) => (
+              <div key={String(label)} className="flex justify-between items-center py-1.5 border-b border-bg-alt last:border-0 text-xs">
+                <span className="text-muted font-medium">{label}</span>
+                <span className={`font-semibold ${highlight ? 'text-green-dark' : 'text-ink'}`}>{value}</span>
+              </div>
+            ))}
           </div>
 
           {(p.website_url || p.doctolib_url || p.booking_url || p.calendly_url || p.instagram_url) && (
             <div className="bg-white border-[1.5px] border-border rounded-xl p-5">
-              <h3 className="text-[13px] font-extrabold text-green-dark mb-3 pb-2.5 border-b border-border">Retrouver {p.first_name}</h3>
+              <h3 className="text-[13px] font-extrabold text-green-dark mb-3 pb-2.5 border-b border-border">
+                Retrouver {p.first_name}
+              </h3>
               <div className="space-y-2">
                 {p.website_url && (
                   <a href={p.website_url} target="_blank" rel="noopener noreferrer"
@@ -262,7 +269,9 @@ export default async function ProfilePage(
           )}
 
           <div className="bg-white border-[1.5px] border-border rounded-xl p-5">
-            <h3 className="text-[13px] font-extrabold text-green-dark mb-3.5 pb-2.5 border-b border-border">Certifications</h3>
+            <h3 className="text-[13px] font-extrabold text-green-dark mb-3.5 pb-2.5 border-b border-border">
+              Certifications
+            </h3>
             {[
               ['Diplôme', p.certification ?? '—'],
               ['École', p.school ?? '—'],
