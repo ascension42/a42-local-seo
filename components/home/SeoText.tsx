@@ -16,7 +16,7 @@ export default function SeoText() {
             <p className="text-xs text-muted leading-[1.8]">
               La sophrologie est une méthode de relaxation dynamique créée par Alfonso Caycedo, combinant
               respiration contrôlée, décontraction musculaire progressive et visualisation positive.
-              À {city}, nos praticiens certifiés RNCP de niveau 5 vous accompagnent à votre rythme,
+              À {city}, nos praticiens certifiés vous accompagnent à votre rythme,
               en cabinet ou en ligne.
             </p>
             <p className="text-xs text-muted leading-[1.8] mt-2.5">
@@ -46,8 +46,8 @@ export default function SeoText() {
               Comment choisir son {sp} ?
             </h2>
             <p className="text-xs text-muted leading-[1.8]">
-              Vérifiez que le praticien est titulaire d&apos;un titre RNCP de niveau 5 minimum. Méfiez-vous des
-              formations courtes sans certification reconnue. Tous les praticiens de notre annuaire sont
+              Vérifiez que le praticien est titulaire d&apos;une certification reconnue. Méfiez-vous des
+              formations courtes sans accréditation sérieuse. Tous les praticiens de notre annuaire sont
               vérifiés par notre équipe avant publication.
             </p>
             <p className="text-xs text-muted leading-[1.8] mt-2">

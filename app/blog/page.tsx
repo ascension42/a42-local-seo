@@ -11,7 +11,7 @@ const city = siteConfig.cityLabel
 
 export const metadata: Metadata = {
   title: `Guide sophrologie ${city} — Articles & conseils`,
-  description: `Articles et guides sur la sophrologie à ${city} : gestion du stress, sommeil, anxiété, préparation mentale. Conseils de sophrologues certifiés RNCP.`,
+  description: `Articles et guides sur la sophrologie à ${city} : gestion du stress, sommeil, anxiété, préparation mentale. Conseils de sophrologues certifiés.`,
   alternates: { canonical: `${siteUrl}/blog` },
   openGraph: {
     title: `Guide sophrologie ${city} — Articles & conseils`,

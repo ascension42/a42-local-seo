@@ -75,7 +75,7 @@ const faqs = [
     questions: [
       {
         q: 'Comment choisir un sophrologue certifié ?',
-        a: 'Vérifiez que le praticien est titulaire d\'un titre RNCP (Répertoire National des Certifications Professionnelles) de niveau 5 minimum. Méfiez-vous des formations de quelques week-ends sans certification reconnue. N\'hésitez pas à demander le diplôme avant de commencer un suivi.',
+        a: 'Vérifiez que le praticien est titulaire d\'une certification reconnue. Méfiez-vous des formations de quelques week-ends sans accréditation sérieuse. N\'hésitez pas à demander le diplôme avant de commencer un suivi.',
       },
       {
         q: `Y a-t-il des sophrologues qui consultent en ligne à ${siteConfig.cityLabel} ?`,

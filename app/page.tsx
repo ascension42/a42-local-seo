@@ -16,12 +16,12 @@ const sp = siteConfig.specialtyLabel.toLowerCase()
 const city = siteConfig.cityLabel
 
 export const metadata: Metadata = {
-  title: `${siteConfig.specialtyLabel} ${city} — Annuaire certifié RNCP`,
-  description: `Trouvez votre ${sp} certifié RNCP à ${city}. Praticiens vérifiés, consultations en cabinet ou en ligne. Prise de rendez-vous directe, sans ordonnance.`,
+  title: `${siteConfig.specialtyLabel} ${city} — Annuaire certifié`,
+  description: `Trouvez votre ${sp} certifié à ${city}. Praticiens vérifiés, consultations en cabinet ou en ligne. Prise de rendez-vous directe, sans ordonnance.`,
   alternates: { canonical: siteUrl },
   openGraph: {
-    title: `${siteConfig.specialtyLabel} ${city} — Annuaire certifié RNCP`,
-    description: `Annuaire des ${sp}s certifiés RNCP à ${city}. Praticiens vérifiés, disponibles en cabinet ou en ligne.`,
+    title: `${siteConfig.specialtyLabel} ${city} — Annuaire certifié`,
+    description: `Annuaire des ${sp}s certifiés à ${city}. Praticiens vérifiés, disponibles en cabinet ou en ligne.`,
     url: siteUrl,
     type: 'website',
   },
@@ -41,7 +41,7 @@ export default async function HomePage() {
     '@id': `${siteUrl}/#directory`,
     name: `${siteConfig.siteName} — Annuaire certifié`,
     url: siteUrl,
-    description: `Annuaire des ${sp}s certifiés RNCP à ${city}. ${heroStats.practitionerCount} praticien${heroStats.practitionerCount > 1 ? 's' : ''} vérifiés, consultations en cabinet ou en ligne.`,
+    description: `Annuaire des ${sp}s certifiés à ${city}. ${heroStats.practitionerCount} praticien${heroStats.practitionerCount > 1 ? 's' : ''} vérifiés, consultations en cabinet ou en ligne.`,
     areaServed: { '@type': 'City', name: city },
     numberOfEmployees: { '@type': 'QuantitativeValue', value: heroStats.practitionerCount },
     knowsAbout: ['sophrologie', 'relaxation', 'gestion du stress', 'troubles du sommeil', 'anxiété', 'bien-être'],
