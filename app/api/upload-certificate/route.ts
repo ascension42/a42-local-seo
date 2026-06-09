@@ -34,7 +34,7 @@ export async function POST(req: Request) {
 
     const supabase = createServiceClient()
     const ext = file.name.split('.').pop()?.toLowerCase() ?? 'pdf'
-    const path = `certificates/${siteConfig.city}/${siteConfig.specialty}/${firstSlug}-${lastSlug}.${ext}`
+    const path = `${siteConfig.specialty}/${siteConfig.city}/certificates/${firstSlug}-${lastSlug}.${ext}`
 
     // PDFs: Supabase bucket may restrict MIME types — upload as octet-stream to bypass bucket policy
     const contentType = file.type.includes('pdf') ? 'application/octet-stream' : file.type
