@@ -16,6 +16,9 @@ export async function generateStaticParams() {
 }
 
 const siteUrl = `https://${siteConfig.domain}`
+const sp = siteConfig.specialtyLabel
+const spLower = siteConfig.specialtyLabel.toLowerCase()
+const spPlural = siteConfig.specialtyPlural
 
 export async function generateMetadata(
   { params }: { params: Promise<{ slug: string }> }
@@ -24,17 +27,17 @@ export async function generateMetadata(
   const city = await getNetworkCityBySlug(slug)
   if (!city) return {}
 
-  const title = `Sophrologue ${city.name} — Praticiens certifiés`
-  const description = `Trouvez un sophrologue certifié à ${city.name}${city.region ? ` (${city.region})` : ''}. Praticiens vérifiés, consultations en cabinet ou en ligne.`
+  const title = `${sp} ${city.name} — Praticiens certifiés`
+  const description = `Trouvez un ${spLower} certifié à ${city.name}${city.region ? ` (${city.region})` : ''}. Praticiens vérifiés, consultations en cabinet ou en ligne.`
 
   return {
     title,
     description,
     keywords: [
-      `sophrologue ${city.name}`,
-      `sophrologie ${city.name}`,
-      `sophrologue certifié`,
-      'séance sophrologie',
+      `${spLower} ${city.name}`,
+      `${siteConfig.specialty} ${city.name}`,
+      `${spLower} certifié`,
+      `séance ${siteConfig.specialty}`,
     ],
     alternates: { canonical: `${siteUrl}/villes/${slug}` },
     openGraph: {
@@ -46,15 +49,6 @@ export async function generateMetadata(
     },
   }
 }
-
-const SPECIALTIES = [
-  'Gestion du stress',
-  'Troubles du sommeil',
-  'Préparation mentale',
-  'Confiance en soi',
-  'Accompagnement périnatal',
-  'Anxiété & burn-out',
-]
 
 export default async function CityPage(
   { params }: { params: Promise<{ slug: string }> }
@@ -81,8 +75,8 @@ export default async function CityPage(
     ? {
         '@context': 'https://schema.org',
         '@type': 'MedicalBusiness',
-        name: `Sophrologues à ${city.name}`,
-        description: `Annuaire de sophrologues certifiés à ${city.name}`,
+        name: `${spPlural} à ${city.name}`,
+        description: `Annuaire de ${spLower}s certifiés à ${city.name}`,
         url: `https://${city.domain}`,
         areaServed: { '@type': 'City', name: city.name },
         numberOfEmployees: { '@type': 'QuantitativeValue', value: city.practitioner_count },
@@ -115,7 +109,7 @@ export default async function CityPage(
         {heroImageUrl ? (
           <img
             src={heroImageUrl}
-            alt={`Sophrologue ${city.name}`}
+            alt={`${sp} ${city.name}`}
             className="absolute inset-0 w-full h-full object-cover"
           />
         ) : (
@@ -135,7 +129,7 @@ export default async function CityPage(
             {city.region ?? 'France'}
           </p>
           <h1 className="text-[28px] md:text-[36px] leading-[1.15] mb-4 tracking-tight text-white font-extrabold">
-            Sophrologue<br />
+            {sp}<br />
             à <span className="text-green-light">{city.name}</span>
           </h1>
           <p className="text-[13px] text-white/80 leading-[1.65] max-w-[340px]">
@@ -174,27 +168,34 @@ export default async function CityPage(
           {/* Left */}
           <div>
             <h2 className="text-xl font-extrabold text-green-dark mb-4 tracking-tight">
-              La sophrologie à {city.name}
+              {sp} à {city.name}
             </h2>
             <p className="text-[13px] text-muted leading-[1.85] mb-4">
-              À {city.name}{city.region ? `, en ${city.region},` : ','} la sophrologie accompagne de nombreux
-              habitants dans la gestion du stress, l&apos;amélioration du sommeil et le renforcement de la confiance
+              À {city.name}{city.region ? `, en ${city.region},` : ','} {spLower} accompagne de nombreux
+              habitants dans la gestion du stress, l&apos;amélioration du bien-être et le renforcement de la confiance
               en soi.{' '}
               {isLargeCity
                 ? `Avec ${popLabel} habitants, la ville dispose d'un tissu de praticiens qualifiés pour répondre à toutes les demandes.`
                 : 'Ville à taille humaine, elle offre un cadre propice à un accompagnement personnalisé et à l\'écoute.'}
             </p>
             <p className="text-[13px] text-muted leading-[1.85] mb-8">
-              Nos sophrologues certifiés à {city.name} interviennent pour adultes, adolescents et seniors — en
+              Nos {spLower}s certifiés à {city.name} interviennent pour adultes, adolescents et seniors — en
               cabinet ou en visioconférence. Chaque praticien est vérifié avant d&apos;être référencé sur notre
               annuaire.
             </p>
 
             <h3 className="text-[14px] font-extrabold text-green-dark mb-4 tracking-tight">
-              Motifs de consultation fréquents
+              Domaines d&apos;accompagnement
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
-              {SPECIALTIES.map((label) => (
+              {[
+                'Gestion du stress',
+                'Troubles du sommeil',
+                'Préparation mentale',
+                'Confiance en soi',
+                'Accompagnement périnatal',
+                'Anxiété & burn-out',
+              ].map((label) => (
                 <div
                   key={label}
                   className="flex items-center gap-2.5 px-4 py-3 bg-surface rounded-xl border border-border"

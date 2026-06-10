@@ -2,32 +2,24 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { siteConfig } from '@/lib/config'
 import { getNetworkCityBySlug } from '@/lib/queries'
-import { cityContent } from '@/lib/cityContent'
+import { getCityContent } from '@/lib/cityContent'
 
 export const revalidate = 3600
 
 const siteUrl = `https://${siteConfig.domain}`
-const city = siteConfig.cityLabel
+const content = getCityContent(siteConfig.city, siteConfig.cityLabel)
+const sp = siteConfig.specialtyLabel.toLowerCase()
 
 export const metadata: Metadata = {
-  title: cityContent.about.title,
-  description: `${city} en Occitanie : patrimoine, canal du Midi, cadre de vie au quotidien... Découvrez la ville et trouvez un sophrologue certifié près de chez vous.`,
-  alternates: { canonical: `${siteUrl}/a-propos-de-beziers` },
+  title: content.about.title,
+  description: `${siteConfig.cityLabel} : patrimoine, cadre de vie et bien-être au quotidien. Découvrez la ville et trouvez un ${sp} certifié près de chez vous.`,
+  alternates: { canonical: `${siteUrl}/ville` },
   openGraph: {
-    title: cityContent.about.title,
-    description: `Présentation de ${city} : patrimoine, cadre de vie, et annuaire de sophrologues certifiés.`,
-    url: `${siteUrl}/a-propos-de-beziers`,
+    title: content.about.title,
+    description: `Présentation de ${siteConfig.cityLabel} : patrimoine, cadre de vie, et annuaire de ${siteConfig.specialtyPlural.toLowerCase()} certifiés.`,
+    url: `${siteUrl}/ville`,
     type: 'website',
   },
-}
-
-const breadcrumbJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'BreadcrumbList',
-  itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Accueil', item: siteUrl },
-    { '@type': 'ListItem', position: 2, name: cityContent.about.title, item: `${siteUrl}/a-propos-de-beziers` },
-  ],
 }
 
 export default async function AboutCityPage() {
@@ -36,10 +28,19 @@ export default async function AboutCityPage() {
   const cityJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'City',
-    name: city,
+    name: siteConfig.cityLabel,
     ...(networkCity?.region ? { containedInPlace: { '@type': 'AdministrativeArea', name: networkCity.region } } : {}),
     ...(networkCity?.population ? { population: networkCity.population } : {}),
-    url: `${siteUrl}/a-propos-de-beziers`,
+    url: `${siteUrl}/ville`,
+  }
+
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Accueil', item: siteUrl },
+      { '@type': 'ListItem', position: 2, name: content.about.title, item: `${siteUrl}/ville` },
+    ],
   }
 
   return (
@@ -53,10 +54,10 @@ export default async function AboutCityPage() {
             Votre ville
           </p>
           <h1 className="text-[24px] md:text-[30px] font-extrabold text-white leading-[1.2] mb-3 tracking-tight">
-            {cityContent.about.title}
+            {content.about.title}
           </h1>
           <p className="text-sm text-white/70 leading-[1.65]">
-            Patrimoine, cadre de vie et bien-être au quotidien à {city}.
+            Patrimoine, cadre de vie et bien-être au quotidien à {siteConfig.cityLabel}.
           </p>
         </div>
       </div>
@@ -67,7 +68,7 @@ export default async function AboutCityPage() {
             Présentation générale
           </h2>
           <div className="space-y-4">
-            {cityContent.about.intro.map((paragraph) => (
+            {content.about.intro.map((paragraph) => (
               <p key={paragraph} className="text-[13px] text-muted leading-[1.85]">
                 {paragraph}
               </p>
@@ -80,7 +81,7 @@ export default async function AboutCityPage() {
             Cadre de vie &amp; bien-être local
           </h2>
           <div className="space-y-4">
-            {cityContent.about.wellbeing.map((paragraph) => (
+            {content.about.wellbeing.map((paragraph) => (
               <p key={paragraph} className="text-[13px] text-muted leading-[1.85]">
                 {paragraph}
               </p>
@@ -90,7 +91,7 @@ export default async function AboutCityPage() {
 
         <div className="bg-surface border border-green rounded-2xl p-8 text-center">
           <h2 className="text-base font-extrabold text-green-dark mb-2 tracking-tight">
-            Trouver un {siteConfig.specialtyLabel.toLowerCase()} à {city}
+            Trouver un {sp} à {siteConfig.cityLabel}
           </h2>
           <p className="text-[13px] text-muted leading-[1.65] mb-5 max-w-[480px] mx-auto">
             Consultez notre annuaire de praticiens certifiés et vérifiés, en cabinet ou en ligne.
