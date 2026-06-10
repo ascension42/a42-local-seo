@@ -1,7 +1,23 @@
 import { siteConfig } from '@/lib/config'
 import HeroCTAs from './HeroCTAs'
 
-export default function Hero({ practitionerCount, neighborhoodCount, tagCount }: { practitionerCount: number; neighborhoodCount: number; tagCount: number }) {
+type HeroProps = {
+  practitionerCount: number
+  neighborhoodCount: number
+  tagCount: number
+  region?: string | null
+  population?: number | null
+}
+
+export default function Hero({ practitionerCount, neighborhoodCount, tagCount, region, population }: HeroProps) {
+  const isLargeCity = (population ?? 0) > 50_000
+
+  const tagline = region
+    ? isLargeCity
+      ? `Praticiens certifiés et vérifiés à ${siteConfig.cityLabel} et dans son agglomération, en ${region} — en cabinet ou en ligne.`
+      : `Praticiens certifiés et vérifiés au cœur de ${region} — un accompagnement de proximité, en cabinet ou en visioconférence.`
+    : 'Praticiens certifiés, vérifiés. Consultations en cabinet ou en ligne — adaptées à vos besoins.'
+
   return (
     <div className="relative min-h-[420px] md:h-[420px] overflow-hidden">
       {/* Background image or gradient */}
@@ -27,7 +43,7 @@ export default function Hero({ practitionerCount, neighborhoodCount, tagCount }:
           <span className="text-green-light">{siteConfig.cityLabel}</span>
         </h1>
         <p className="text-[13px] text-white/80 leading-[1.65] mb-7 max-w-[340px]">
-          Praticiens certifiés, vérifiés. Consultations en cabinet ou en ligne — adaptées à vos besoins.
+          {tagline}
         </p>
         <HeroCTAs />
       </div>

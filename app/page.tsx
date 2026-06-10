@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { getRotatingPractitioners, getHeroStats, getBlogPosts, getTopTags } from '@/lib/queries'
+import { getRotatingPractitioners, getHeroStats, getBlogPosts, getTopTags, getNetworkCityBySlug } from '@/lib/queries'
 import Hero from '@/components/home/Hero'
 import CategoryGrid from '@/components/home/CategoryGrid'
 import SectionHeader from '@/components/ui/SectionHeader'
@@ -28,11 +28,12 @@ export const metadata: Metadata = {
 }
 
 export default async function HomePage() {
-  const [displayedPractitioners, heroStats, posts, topTags] = await Promise.all([
+  const [displayedPractitioners, heroStats, posts, topTags, homeCity] = await Promise.all([
     getRotatingPractitioners(3),
     getHeroStats(),
     getBlogPosts(),
     getTopTags(8),
+    getNetworkCityBySlug(siteConfig.city),
   ])
 
   const directoryJsonLd = {
@@ -51,7 +52,13 @@ export default async function HomePage() {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(directoryJsonLd) }} />
-      <Hero practitionerCount={heroStats.practitionerCount} neighborhoodCount={heroStats.neighborhoodCount} tagCount={heroStats.tagCount} />
+      <Hero
+        practitionerCount={heroStats.practitionerCount}
+        neighborhoodCount={heroStats.neighborhoodCount}
+        tagCount={heroStats.tagCount}
+        region={homeCity?.region}
+        population={homeCity?.population}
+      />
 
       <section className="py-[52px] pb-11">
         <div className="max-w-[1060px] mx-auto px-4 md:px-10">
