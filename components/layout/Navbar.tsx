@@ -14,7 +14,7 @@ export default function Navbar() {
         {/* Desktop */}
         <div className="hidden md:flex gap-7 items-center">
           <Link href="/praticiens" className="text-white/75 text-xs font-medium hover:text-white transition-colors">Trouver un praticien</Link>
-          <Link href="/a-propos-de-beziers" className="text-white/75 text-xs font-medium hover:text-white transition-colors">{siteConfig.cityLabel}</Link>
+          <Link href="/ville" className="text-white/75 text-xs font-medium hover:text-white transition-colors">{siteConfig.cityLabel}</Link>
           <Link href="/blog" className="text-white/75 text-xs font-medium hover:text-white transition-colors">Blog</Link>
           <Link href="/faq" className="text-white/75 text-xs font-medium hover:text-white transition-colors">FAQ</Link>
           <Link href="/inscription" className="bg-green text-white text-xs font-semibold px-4 py-[7px] rounded-[5px] hover:bg-[#4faa73] transition-colors">Inscrire mon cabinet</Link>
@@ -29,7 +29,7 @@ export default function Navbar() {
       {/* Mobile overlay */}
       {open && (
         <div className="md:hidden fixed inset-0 z-40 bg-green-deep flex flex-col items-center justify-center gap-8 pt-[58px]">
-          {[{href:'/praticiens',label:'Trouver un praticien'},{href:'/a-propos-de-beziers',label:siteConfig.cityLabel},{href:'/blog',label:'Blog'},{href:'/faq',label:'FAQ'}].map(({href,label})=>(
+          {[{href:'/praticiens',label:'Trouver un praticien'},{href:'/ville',label:siteConfig.cityLabel},{href:'/blog',label:'Blog'},{href:'/faq',label:'FAQ'}].map(({href,label})=>(
             <Link key={href} href={href} className="text-white text-xl font-bold" onClick={() => setOpen(false)}>{label}</Link>
           ))}
           <Link href="/inscription" className="mt-2 bg-green text-white font-bold text-base px-8 py-3.5 rounded-lg" onClick={() => setOpen(false)}>
