@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import { getNetworkCityBySlug } from '@/lib/queries'
 import { createStaticClient } from '@/lib/supabase/static'
 import { siteConfig } from '@/lib/config'
+import { formatPopulation } from '@/lib/format'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 
@@ -44,12 +45,6 @@ export async function generateMetadata(
       locale: 'fr_FR',
     },
   }
-}
-
-function formatPopulation(n: number): string {
-  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1).replace('.0', '')} M`
-  if (n >= 10_000) return `${Math.round(n / 1_000)} 000`
-  return n.toLocaleString('fr-FR')
 }
 
 const SPECIALTIES = [
