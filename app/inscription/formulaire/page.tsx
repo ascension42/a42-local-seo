@@ -158,8 +158,8 @@ function FormContent() {
       if (!form.specialty_slug) return 'Veuillez sélectionner votre métier.'
       if (!form.cabinet_address.trim()) return "L'adresse de votre cabinet est requise."
       if (zones.length > 0 && !form.zone) return 'Veuillez sélectionner votre zone.'
-      if (!form.niche.trim()) return 'Veuillez renseigner votre niche.'
-      if (slotStatus === 'taken') return 'Ce slot (zone + niche) est déjà pris. Choisissez une autre combinaison.'
+      if (!form.niche.trim()) return 'Veuillez renseigner votre spécialité.'
+      if (slotStatus === 'taken') return 'Ce slot (zone + spécialité) est déjà pris. Choisissez une autre combinaison.'
     }
     if (n === 3) {
       if (!form.siret.trim()) return 'Le numéro SIRET est requis.'
@@ -286,18 +286,17 @@ function FormContent() {
               </select>
             </div>
             <Field label="Adresse du cabinet *" value={form.cabinet_address} onChange={v => set('cabinet_address', v)} placeholder="12 rue de la Paix, Pézenas" />
-            <Field label="Quartier (affiché sur votre profil)" value={form.neighborhood} onChange={v => set('neighborhood', v)} placeholder="Centre-ville" />
 
-            {/* Zone d'exclusivité */}
+            {/* Zone d'exclusivité — affiché sur le profil */}
             {zones.length > 0 && (
               <div>
                 <label className="block text-xs font-semibold text-foreground mb-1.5">
                   Votre zone d&apos;exclusivité *
-                  <span className="ml-1.5 text-muted font-normal">— vous serez le seul dans cette zone pour votre niche</span>
+                  <span className="ml-1.5 text-muted font-normal">(affiché sur votre profil)</span>
                 </label>
                 <select
                   value={form.zone}
-                  onChange={e => { set('zone', e.target.value); checkSlot(e.target.value, form.niche) }}
+                  onChange={e => { const z = zones.find(x => x.slug === e.target.value); set('zone', e.target.value); if (z) set('neighborhood', z.label); checkSlot(e.target.value, form.niche) }}
                   className="w-full border border-border rounded-xl px-4 py-2.5 text-sm text-foreground bg-white focus:outline-none focus:ring-2 focus:ring-green/30 focus:border-green"
                 >
                   <option value="">Sélectionnez votre zone</option>
@@ -308,11 +307,11 @@ function FormContent() {
               </div>
             )}
 
-            {/* Niche d'exclusivité */}
+            {/* Spécialité */}
             <div>
               <label className="block text-xs font-semibold text-foreground mb-1">
-                Votre niche *
-                <span className="ml-1.5 text-muted font-normal">— votre spécialité principale dans votre zone</span>
+                Votre spécialité *
+                <span className="ml-1.5 text-muted font-normal">— votre approche principale dans cette zone</span>
               </label>
               <div className="flex flex-wrap gap-1.5 mb-2 mt-1.5">
                 {SUGGESTED_NICHES.map(n => (
@@ -334,7 +333,7 @@ function FormContent() {
                   type="text"
                   value={nicheInput}
                   onChange={e => { setNicheInput(e.target.value); set('niche', e.target.value); if (e.target.value.length > 2) checkSlot(form.zone, e.target.value) }}
-                  placeholder="Ou saisissez votre propre niche…"
+                  placeholder="Ou saisissez votre propre spécialité…"
                   className="flex-1 border border-border rounded-xl px-4 py-2.5 text-sm text-foreground bg-white placeholder:text-muted/60 focus:outline-none focus:ring-2 focus:ring-green/30 focus:border-green"
                 />
               </div>
@@ -345,7 +344,7 @@ function FormContent() {
                 <p className="text-[11px] text-green font-semibold mt-1.5">✓ Ce slot est disponible — vous serez le seul !</p>
               )}
               {slotStatus === 'taken' && (
-                <p className="text-[11px] text-red-500 font-semibold mt-1.5">✗ Ce slot est déjà pris. Choisissez une autre zone ou niche.</p>
+                <p className="text-[11px] text-red-500 font-semibold mt-1.5">✗ Ce slot est déjà pris. Choisissez une autre zone ou spécialité.</p>
               )}
             </div>
             <Field label="Tarif moyen (€/séance)" value={form.hourly_rate} onChange={v => set('hourly_rate', v)} type="number" placeholder="55" />
