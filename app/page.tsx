@@ -45,7 +45,7 @@ export default async function HomePage() {
     description: `Annuaire des ${sp}s certifiés à ${city}. ${heroStats.practitionerCount} praticien${heroStats.practitionerCount > 1 ? 's' : ''} vérifiés, consultations en cabinet ou en ligne.`,
     areaServed: { '@type': 'City', name: city },
     numberOfEmployees: { '@type': 'QuantitativeValue', value: heroStats.practitionerCount },
-    knowsAbout: ['sophrologie', 'relaxation', 'gestion du stress', 'troubles du sommeil', 'anxiété', 'bien-être'],
+    knowsAbout: [siteConfig.specialty, 'relaxation', 'gestion du stress', 'troubles du sommeil', 'anxiété', 'bien-être'],
     publisher: { '@id': `${siteUrl}/#organization` },
   }
 
