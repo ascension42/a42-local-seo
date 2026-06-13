@@ -64,13 +64,13 @@ export default async function InscriptionPage() {
         </p>
       </div>
 
-      {/* Stats bar */}
+      {/* Value props bar */}
       <div className="bg-green-deep border-b border-white/10 py-5 px-6 md:px-10">
         <div className="max-w-[1060px] mx-auto flex flex-wrap justify-center gap-x-8 gap-y-3 md:gap-[60px]">
           {[
-            ['1 200', 'visites / mois'],
-            ['340', 'clics vers les praticiens'],
-            ['#1', `Google "${siteConfig.specialty} ${siteConfig.cityLabel.toLowerCase()}"`],
+            ['✓', 'Vérification sous 48h'],
+            ['✓', 'Profil indexé sur Google'],
+            ['✓', 'Réseau local exclusif'],
           ].map(([n, l]) => (
             <div key={String(l)} className="text-center">
               <span className="block text-[20px] md:text-[26px] font-extrabold text-green-light">{n}</span>
