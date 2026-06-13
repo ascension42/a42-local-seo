@@ -2,12 +2,14 @@
 
 import { useState, useEffect, useRef, Suspense } from 'react'
 import { siteConfig } from '@/lib/config'
+import { getZonesForCity, SUGGESTED_NICHES } from '@/lib/zones'
 
 type Specialty = { slug: string; name: string }
 
 type FormData = {
   first_name: string; last_name: string; email: string; phone: string
   specialty_slug: string; cabinet_address: string; neighborhood: string
+  zone: string; niche: string
   hourly_rate: string; website_url: string; booking_url: string
   selected_tags: string[]
   siret: string; years_experience: string; training_description: string
@@ -53,10 +55,14 @@ function StepTabs({ current }: { current: number }) {
 }
 
 function FormContent() {
+  const zones = getZonesForCity(siteConfig.city)
+
   const [step, setStep] = useState(1)
   const [specialties, setSpecialties] = useState<Specialty[]>([])
   const [availableTags, setAvailableTags] = useState<string[]>([])
   const [customTagInput, setCustomTagInput] = useState('')
+  const [nicheInput, setNicheInput] = useState('')
+  const [slotStatus, setSlotStatus] = useState<'idle' | 'checking' | 'available' | 'taken'>('idle')
   const [certUpload, setCertUpload] = useState<'idle' | 'uploading' | 'done' | 'error'>('idle')
   const [certError, setCertError] = useState('')
   const [certFileName, setCertFileName] = useState('')
@@ -66,6 +72,7 @@ function FormContent() {
   const [form, setForm] = useState<FormData>({
     first_name: '', last_name: '', email: '', phone: '',
     specialty_slug: '', cabinet_address: '', neighborhood: '',
+    zone: '', niche: '',
     hourly_rate: '', website_url: '', booking_url: '',
     selected_tags: [],
     siret: '', years_experience: '', training_description: '',
@@ -129,6 +136,18 @@ function FormContent() {
     }
   }
 
+  async function checkSlot(zone: string, niche: string) {
+    if (!zone || !niche) { setSlotStatus('idle'); return }
+    setSlotStatus('checking')
+    try {
+      const r = await fetch(`/api/check-slot?zone=${encodeURIComponent(zone)}&niche=${encodeURIComponent(niche)}`)
+      const d = await r.json()
+      setSlotStatus(d.available ? 'available' : 'taken')
+    } catch {
+      setSlotStatus('idle')
+    }
+  }
+
   function validateStep(n: number): string {
     if (n === 1) {
       if (!form.first_name.trim()) return 'Le prénom est requis.'
@@ -138,6 +157,9 @@ function FormContent() {
     if (n === 2) {
       if (!form.specialty_slug) return 'Veuillez sélectionner votre métier.'
       if (!form.cabinet_address.trim()) return "L'adresse de votre cabinet est requise."
+      if (zones.length > 0 && !form.zone) return 'Veuillez sélectionner votre zone.'
+      if (!form.niche.trim()) return 'Veuillez renseigner votre niche.'
+      if (slotStatus === 'taken') return 'Ce slot (zone + niche) est déjà pris. Choisissez une autre combinaison.'
     }
     if (n === 3) {
       if (!form.siret.trim()) return 'Le numéro SIRET est requis.'
@@ -264,7 +286,68 @@ function FormContent() {
               </select>
             </div>
             <Field label="Adresse du cabinet *" value={form.cabinet_address} onChange={v => set('cabinet_address', v)} placeholder="12 rue de la Paix, Pézenas" />
-            <Field label="Quartier / zone" value={form.neighborhood} onChange={v => set('neighborhood', v)} placeholder="Centre-ville" />
+            <Field label="Quartier (affiché sur votre profil)" value={form.neighborhood} onChange={v => set('neighborhood', v)} placeholder="Centre-ville" />
+
+            {/* Zone d'exclusivité */}
+            {zones.length > 0 && (
+              <div>
+                <label className="block text-xs font-semibold text-foreground mb-1.5">
+                  Votre zone d&apos;exclusivité *
+                  <span className="ml-1.5 text-muted font-normal">— vous serez le seul dans cette zone pour votre niche</span>
+                </label>
+                <select
+                  value={form.zone}
+                  onChange={e => { set('zone', e.target.value); checkSlot(e.target.value, form.niche) }}
+                  className="w-full border border-border rounded-xl px-4 py-2.5 text-sm text-foreground bg-white focus:outline-none focus:ring-2 focus:ring-green/30 focus:border-green"
+                >
+                  <option value="">Sélectionnez votre zone</option>
+                  {zones.map(z => (
+                    <option key={z.slug} value={z.slug}>{z.label} — {z.description}</option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+            {/* Niche d'exclusivité */}
+            <div>
+              <label className="block text-xs font-semibold text-foreground mb-1">
+                Votre niche *
+                <span className="ml-1.5 text-muted font-normal">— votre spécialité principale dans votre zone</span>
+              </label>
+              <div className="flex flex-wrap gap-1.5 mb-2 mt-1.5">
+                {SUGGESTED_NICHES.map(n => (
+                  <button
+                    key={n} type="button"
+                    onClick={() => { set('niche', n); setNicheInput(n); checkSlot(form.zone, n) }}
+                    className={`text-[11px] font-semibold px-3 py-1.5 rounded-full border transition-colors ${
+                      form.niche === n
+                        ? 'bg-green text-white border-green'
+                        : 'bg-white text-green-dark border-border hover:border-green'
+                    }`}
+                  >
+                    {n}
+                  </button>
+                ))}
+              </div>
+              <div className="flex items-center gap-2">
+                <input
+                  type="text"
+                  value={nicheInput}
+                  onChange={e => { setNicheInput(e.target.value); set('niche', e.target.value); if (e.target.value.length > 2) checkSlot(form.zone, e.target.value) }}
+                  placeholder="Ou saisissez votre propre niche…"
+                  className="flex-1 border border-border rounded-xl px-4 py-2.5 text-sm text-foreground bg-white placeholder:text-muted/60 focus:outline-none focus:ring-2 focus:ring-green/30 focus:border-green"
+                />
+              </div>
+              {slotStatus === 'checking' && (
+                <p className="text-[11px] text-muted mt-1.5">Vérification de disponibilité…</p>
+              )}
+              {slotStatus === 'available' && form.zone && form.niche && (
+                <p className="text-[11px] text-green font-semibold mt-1.5">✓ Ce slot est disponible — vous serez le seul !</p>
+              )}
+              {slotStatus === 'taken' && (
+                <p className="text-[11px] text-red-500 font-semibold mt-1.5">✗ Ce slot est déjà pris. Choisissez une autre zone ou niche.</p>
+              )}
+            </div>
             <Field label="Tarif moyen (€/séance)" value={form.hourly_rate} onChange={v => set('hourly_rate', v)} type="number" placeholder="55" />
             <Field label="Site web" value={form.website_url} onChange={v => set('website_url', v)} type="url" placeholder="https://marie-dupont-sophro.fr" />
             <Field

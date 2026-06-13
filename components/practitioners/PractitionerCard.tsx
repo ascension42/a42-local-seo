@@ -40,9 +40,14 @@ export default function PractitionerCard({ practitioner: p }: Props) {
         <h3 className="text-[15px] font-extrabold text-green-dark mb-0.5">
           {p.first_name} {p.last_name}
         </h3>
-        <p className="text-[11px] text-muted mb-2.5">
+        <p className="text-[11px] text-muted mb-1.5">
           {p.neighborhood}{p.hourly_rate ? ` — ${p.hourly_rate} €/séance` : ''}
         </p>
+        {p.niche && (
+          <span className="inline-block bg-green/10 text-green-dark text-[10px] font-bold px-2 py-0.5 rounded-full mb-2">
+            {p.niche}
+          </span>
+        )}
         <div className="flex flex-wrap gap-1 mb-3.5">
           {tags.slice(0, 3).map((t) => (
             <span key={t.id} className="bg-surface text-green-dark text-[10px] font-medium px-2 py-0.5 rounded-[10px]">

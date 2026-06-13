@@ -5,7 +5,8 @@ export async function POST(req: Request) {
   try {
     const {
       first_name, last_name, specialty_slug, email, phone,
-      cabinet_address, neighborhood, hourly_rate, website_url,
+      cabinet_address, neighborhood, zone, niche,
+      hourly_rate, website_url,
       booking_url, calendly_url,
       siret, years_experience, training_description,
       selected_tags, custom_tag, certificate_url,
@@ -15,7 +16,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Champs obligatoires manquants' }, { status: 400 })
     }
 
-    const citySlug = process.env.NEXT_PUBLIC_CITY_SLUG ?? 'pezenas'
+    const citySlug = process.env.NEXT_PUBLIC_CITY ?? 'lumevale'
     const supabase = createServiceClient()
 
     const { data: row, error } = await supabase
@@ -25,9 +26,11 @@ export async function POST(req: Request) {
         last_name,
         specialty_slug,
         email,
-        phone: phone || null,
-        plan: 'standard',
+        phone:    phone    || null,
+        plan:     'standard',
         city_slug: citySlug,
+        zone:     zone     || null,
+        niche:    niche    || null,
       })
       .select('id')
       .single()
@@ -42,18 +45,20 @@ export async function POST(req: Request) {
         body: JSON.stringify({
           inscription_id: row.id,
           first_name, last_name, specialty_slug, email,
-          phone: phone || '',
-          cabinet_address: cabinet_address || '',
-          neighborhood: neighborhood || '',
-          hourly_rate: hourly_rate || '',
-          website_url: website_url || '',
-          booking_url: booking_url || '',
-          calendly_url: calendly_url || '',
-          siret: siret || '',
-          years_experience: years_experience || '',
+          phone:                phone                || '',
+          cabinet_address:      cabinet_address      || '',
+          neighborhood:         neighborhood         || '',
+          zone:                 zone                 || '',
+          niche:                niche                || '',
+          hourly_rate:          hourly_rate          || '',
+          website_url:          website_url          || '',
+          booking_url:          booking_url          || '',
+          calendly_url:         calendly_url         || '',
+          siret:                siret                || '',
+          years_experience:     years_experience     || '',
           training_description: training_description || '',
           tags: [...(Array.isArray(selected_tags) ? selected_tags : []), custom_tag].filter(Boolean).join(', '),
-          certificate_url: certificate_url || '',
+          certificate_url:      certificate_url      || '',
         }),
       }).catch(() => {})
     }

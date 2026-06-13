@@ -55,6 +55,8 @@ export interface Practitioner {
   is_premium: boolean
   is_verified: boolean
   accepting_patients: boolean
+  zone?: string | null
+  niche?: string | null
   lat?: number | null
   lng?: number | null
   created_at: string
