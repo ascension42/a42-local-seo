@@ -33,6 +33,19 @@ const cityContentMap: Record<string, CityContent> = {
       ],
     },
   },
+  lumevale: {
+    about: {
+      title: 'Lumévale, votre ville au quotidien',
+      intro: [
+        "Nichée entre collines et vallées verdoyantes, Lumévale est une cité au charme paisible. Ses ruelles pavées, ses marchés animés et son patrimoine architectural unique en font un lieu de vie apprécié de ceux qui recherchent calme et authenticité.",
+        "Ville de taille moyenne, Lumévale bénéficie d'une situation géographique idéale : à mi-chemin entre la mer et la montagne, elle offre à ses habitants un cadre de vie propice au ressourcement et à l'équilibre.",
+      ],
+      wellbeing: [
+        "Le parc de la Lumière, en plein cœur de la ville, accueille chaque semaine des événements bien-être et des ateliers en plein air. Les berges de la Vèle, rivière traversant Lumévale, sont idéales pour une promenade méditative.",
+        "Grâce à son tissu associatif dynamique et sa culture du prendre soin, Lumévale dispose d'une offre de praticiens en bien-être variée et accessible — un cadre de choix pour commencer ou approfondir un accompagnement personnel.",
+      ],
+    },
+  },
 }
 
 export function getCityContent(citySlug: string, cityLabel: string): CityContent {
