@@ -4,8 +4,6 @@ import { useState, useEffect, useRef, Suspense } from 'react'
 import { siteConfig } from '@/lib/config'
 import { getZonesForCity, SUGGESTED_NICHES } from '@/lib/zones'
 
-type Specialty = { slug: string; name: string }
-
 type FormData = {
   first_name: string; last_name: string; email: string; phone: string
   specialty_slug: string; cabinet_address: string; neighborhood: string
@@ -58,7 +56,6 @@ function FormContent() {
   const zones = getZonesForCity(siteConfig.city)
 
   const [step, setStep] = useState(1)
-  const [specialties, setSpecialties] = useState<Specialty[]>([])
   const [availableTags, setAvailableTags] = useState<string[]>([])
   const [customTagInput, setCustomTagInput] = useState('')
   const [nicheInput, setNicheInput] = useState('')
@@ -71,7 +68,7 @@ function FormContent() {
 
   const [form, setForm] = useState<FormData>({
     first_name: '', last_name: '', email: '', phone: '',
-    specialty_slug: '', cabinet_address: '', neighborhood: '',
+    specialty_slug: siteConfig.specialty, cabinet_address: '', neighborhood: '',
     zone: '', niche: '',
     hourly_rate: '', website_url: '', booking_url: '',
     selected_tags: [],
@@ -84,10 +81,6 @@ function FormContent() {
   const [submitted, setSubmitted] = useState(false)
 
   useEffect(() => {
-    fetch('/api/specialties').then(r => r.json()).then((data: Specialty[]) => {
-      setSpecialties(data)
-      if (data.length === 1) setForm(f => ({ ...f, specialty_slug: data[0].slug }))
-    })
     fetch('/api/tags').then(r => r.json()).then(setAvailableTags)
   }, [])
 
@@ -155,7 +148,6 @@ function FormContent() {
       if (!form.email.trim() || !form.email.includes('@')) return 'Un email valide est requis.'
     }
     if (n === 2) {
-      if (!form.specialty_slug) return 'Veuillez sélectionner votre métier.'
       if (!form.cabinet_address.trim()) return "L'adresse de votre cabinet est requise."
       if (zones.length > 0 && !form.zone) return 'Veuillez sélectionner votre zone.'
       if (!form.niche.trim()) return 'Veuillez renseigner votre spécialité.'
@@ -271,20 +263,12 @@ function FormContent() {
               <Field label="Prénom *" value={form.first_name} onChange={v => set('first_name', v)} placeholder="Marie" />
               <Field label="Nom *" value={form.last_name} onChange={v => set('last_name', v)} placeholder="Dupont" />
             </div>
-            <Field label="Email professionnel *" value={form.email} onChange={v => set('email', v)} type="email" placeholder="marie.dupont@gmail.com" />
+            <Field label="Email *" value={form.email} onChange={v => set('email', v)} type="email" placeholder="marie.dupont@gmail.com" />
             <Field label="Téléphone" value={form.phone} onChange={v => set('phone', v)} type="tel" placeholder="06 12 34 56 78" />
           </>}
 
           {/* Step 2 — Activité */}
           {step === 2 && <>
-            <div>
-              <label className="block text-xs font-semibold text-foreground mb-1.5">Métier *</label>
-              <select value={form.specialty_slug} onChange={e => set('specialty_slug', e.target.value)}
-                className="w-full border border-border rounded-xl px-4 py-2.5 text-sm text-foreground bg-white focus:outline-none focus:ring-2 focus:ring-green/30 focus:border-green">
-                <option value="">Sélectionnez votre métier</option>
-                {specialties.map(s => <option key={s.slug} value={s.slug}>{s.name}</option>)}
-              </select>
-            </div>
             <Field label="Adresse du cabinet *" value={form.cabinet_address} onChange={v => set('cabinet_address', v)} placeholder="12 rue de la Paix, Pézenas" />
 
             {/* Zone d'exclusivité — affiché sur le profil */}
@@ -360,7 +344,7 @@ function FormContent() {
             {/* Domaines d'intervention — at end */}
             <div>
               <label className="block text-xs font-semibold text-foreground mb-0.5">
-                Domaines d&apos;intervention <span className="text-muted font-normal">(choisissez vos spécialités)</span>
+                Domaines d&apos;intervention <span className="text-muted font-normal">(choisissez vos thématiques)</span>
               </label>
               <div className="flex flex-wrap gap-1.5 mb-2.5 mt-2">
                 {availableTags.map(tag => (
