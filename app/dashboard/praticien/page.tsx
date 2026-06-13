@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { signOut } from '../actions'
+import { siteConfig } from '@/lib/config'
 
 export const dynamic = 'force-dynamic'
 
@@ -186,7 +187,7 @@ export default async function PractitionerDashboardPage() {
               )}
             </div>
             <p className="text-[11px] text-muted mt-4">
-              Contactez <a href="mailto:contact@sophrologue-bordeaux.fr" className="text-green hover:underline">notre équipe</a> pour mettre à jour votre fiche.
+              Contactez <a href={`mailto:contact@${siteConfig.domain}`} className="text-green hover:underline">notre équipe</a> pour mettre à jour votre fiche.
             </p>
           </div>
         )}

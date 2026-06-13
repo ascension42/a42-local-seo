@@ -5,14 +5,16 @@ import FaqAccordion from '@/components/ui/FaqAccordion'
 
 const siteUrl = `https://${siteConfig.domain}`
 const city = siteConfig.cityLabel
+const sp = siteConfig.specialtyLabel.toLowerCase()
+const spLabel = siteConfig.specialtyLabel
 
 export const metadata: Metadata = {
-  title: `FAQ Sophrologie ${city} — Tarifs, séances, remboursement`,
-  description: `Tout savoir sur la sophrologie à ${city} : tarifs (50–90€), remboursement mutuelle, nombre de séances, différences avec la psychologie. Réponses claires.`,
+  title: `FAQ ${spLabel} ${city} — Tarifs, séances, remboursement`,
+  description: `Tout savoir sur la ${sp} à ${city} : tarifs (50–90€), remboursement mutuelle, nombre de séances. Réponses claires.`,
   alternates: { canonical: `${siteUrl}/faq` },
   openGraph: {
-    title: `FAQ Sophrologie ${city} — Tarifs, séances, remboursement`,
-    description: `Questions fréquentes sur la sophrologie à ${city} : tarifs, remboursement, comment choisir son sophrologue.`,
+    title: `FAQ ${spLabel} ${city} — Tarifs, séances, remboursement`,
+    description: `Questions fréquentes sur la ${sp} à ${city} : tarifs, remboursement, comment choisir son ${sp}.`,
     url: `${siteUrl}/faq`,
     type: 'website',
   },
@@ -20,19 +22,19 @@ export const metadata: Metadata = {
 
 const faqs = [
   {
-    category: 'La sophrologie, c\'est quoi ?',
+    category: `La ${sp}, c'est quoi ?`,
     questions: [
       {
-        q: 'Qu\'est-ce que la sophrologie ?',
-        a: 'La sophrologie est une méthode de relaxation dynamique créée par Alfonso Caycedo dans les années 1960. Elle combine des techniques de respiration, de décontraction musculaire progressive et de visualisation positive pour aider à mieux gérer le stress, améliorer le sommeil et renforcer la confiance en soi.',
+        q: `Qu'est-ce que la ${sp} ?`,
+        a: `La ${sp} est une approche de bien-être et d'accompagnement personnel qui combine des techniques de respiration, de détente corporelle et de visualisation positive. Elle aide à mieux gérer le stress, améliorer le sommeil et renforcer la confiance en soi.`,
       },
       {
-        q: 'Quelle est la différence entre sophrologie et psychologie ?',
-        a: 'Le sophrologue travaille sur le bien-être et le développement personnel à travers des techniques corporelles et mentales. Il ne traite pas les pathologies psychiatriques. Le psychologue, lui, a une formation universitaire en psychologie clinique et accompagne les troubles psychiques. Les deux approches sont complémentaires.',
+        q: `Quelle est la différence entre ${sp} et psychologie ?`,
+        a: `Le ${sp} travaille sur le bien-être et le développement personnel à travers des techniques corporelles et mentales. Il ne traite pas les pathologies psychiatriques. Le psychologue, lui, a une formation universitaire en psychologie clinique et accompagne les troubles psychiques. Les deux approches sont complémentaires.`,
       },
       {
-        q: 'La sophrologie est-elle reconnue médicalement ?',
-        a: 'La sophrologie n\'est pas une profession de santé réglementée en France. Elle n\'est donc pas remboursée par la Sécurité Sociale. En revanche, de nombreuses mutuelles proposent un forfait "médecines douces" qui peut couvrir une partie des séances.',
+        q: `La ${sp} est-elle reconnue médicalement ?`,
+        a: `La ${sp} n'est pas une profession de santé réglementée en France. Elle n'est donc pas remboursée par la Sécurité Sociale. En revanche, de nombreuses mutuelles proposent un forfait "médecines douces" qui peut couvrir une partie des séances.`,
       },
     ],
   },
@@ -40,15 +42,15 @@ const faqs = [
     category: 'Les séances',
     questions: [
       {
-        q: 'Comment se déroule une séance de sophrologie ?',
-        a: 'Une séance dure généralement 45 minutes à 1 heure. Elle commence par un échange verbal sur votre état et vos objectifs, suivi d\'exercices pratiques (respiration, relaxation musculaire, visualisation) en position assise ou debout. La séance se termine par un temps d\'intégration et d\'échange.',
+        q: `Comment se déroule une séance de ${sp} ?`,
+        a: `Une séance dure généralement 45 minutes à 1 heure. Elle commence par un échange verbal sur votre état et vos objectifs, suivi d'exercices pratiques en position assise ou debout. La séance se termine par un temps d'intégration et d'échange.`,
       },
       {
         q: 'Combien de séances sont nécessaires ?',
         a: 'Un suivi type comprend entre 6 et 10 séances hebdomadaires. Les premiers effets se ressentent souvent dès la 3ème ou 4ème séance. Certaines personnes continuent au-delà pour un travail de fond, d\'autres s\'arrêtent une fois leurs objectifs atteints.',
       },
       {
-        q: 'La sophrologie fonctionne-t-elle en ligne ?',
+        q: `La ${sp} fonctionne-t-elle en ligne ?`,
         a: 'Oui. Les séances en visioconférence sont aussi efficaces qu\'en cabinet pour la grande majorité des problématiques. Elles offrent plus de flexibilité (pas de déplacement, créneaux plus larges) et permettent de pratiquer dans un environnement familier.',
       },
     ],
@@ -57,29 +59,29 @@ const faqs = [
     category: 'Tarifs et remboursements',
     questions: [
       {
-        q: `Combien coûte une séance de sophrologie à ${siteConfig.cityLabel} ?`,
-        a: `À ${siteConfig.cityLabel}, le tarif d'une séance individuelle varie entre 50 et 90 € selon l'expérience du praticien et ses spécialités. Les séances en ligne sont généralement 5 à 10 € moins chères qu'en cabinet. Certains praticiens proposent des forfaits multi-séances à tarif réduit.`,
+        q: `Combien coûte une séance de ${sp} à ${city} ?`,
+        a: `À ${city}, le tarif d'une séance individuelle varie entre 50 et 90 € selon l'expérience du praticien et ses spécialités. Les séances en ligne sont généralement 5 à 10 € moins chères qu'en cabinet. Certains praticiens proposent des forfaits multi-séances à tarif réduit.`,
       },
       {
-        q: 'La sophrologie est-elle remboursée par la mutuelle ?',
-        a: 'La sophrologie n\'est pas remboursée par la Sécurité Sociale. En revanche, de nombreuses mutuelles (Harmonie Mutuelle, MGEN, Alan, Groupama...) proposent un forfait annuel pour les médecines douces, souvent entre 50 et 200 € par an. Consultez votre contrat ou appelez votre mutuelle pour vérifier.',
+        q: `La ${sp} est-elle remboursée par la mutuelle ?`,
+        a: 'La ${sp} n\'est pas remboursée par la Sécurité Sociale. En revanche, de nombreuses mutuelles (Harmonie Mutuelle, MGEN, Alan, Groupama...) proposent un forfait annuel pour les médecines douces, souvent entre 50 et 200 € par an. Consultez votre contrat ou appelez votre mutuelle pour vérifier.',
       },
       {
-        q: 'Faut-il une ordonnance pour consulter un sophrologue ?',
-        a: 'Non. Vous n\'avez pas besoin d\'ordonnance médicale pour consulter un sophrologue. Cependant, votre médecin peut vous orienter vers un praticien en cas de burn-out, de trouble anxieux, ou de préparation à une intervention chirurgicale.',
+        q: `Faut-il une ordonnance pour consulter un ${sp} ?`,
+        a: `Non. Vous n'avez pas besoin d'ordonnance médicale pour consulter un ${sp}. Cependant, votre médecin peut vous orienter vers un praticien en cas de burn-out, de trouble anxieux, ou de préparation à une intervention chirurgicale.`,
       },
     ],
   },
   {
-    category: 'Choisir son sophrologue',
+    category: `Choisir son ${sp}`,
     questions: [
       {
-        q: 'Comment choisir un sophrologue certifié ?',
+        q: `Comment choisir un ${sp} certifié ?`,
         a: 'Vérifiez que le praticien est titulaire d\'une certification reconnue. Méfiez-vous des formations de quelques week-ends sans accréditation sérieuse. N\'hésitez pas à demander le diplôme avant de commencer un suivi.',
       },
       {
-        q: `Y a-t-il des sophrologues qui consultent en ligne à ${siteConfig.cityLabel} ?`,
-        a: `Oui, plusieurs sophrologues référencés sur notre annuaire proposent des consultations en visioconférence. Vous pouvez filtrer par "En ligne" sur notre page annuaire pour les voir.`,
+        q: `Y a-t-il des ${sp}s qui consultent en ligne à ${city} ?`,
+        a: `Oui, plusieurs ${sp}s référencés sur notre annuaire proposent des consultations en visioconférence. Vous pouvez filtrer par "En ligne" sur notre page annuaire pour les voir.`,
       },
     ],
   },
@@ -102,7 +104,7 @@ const breadcrumbJsonLd = {
   '@type': 'BreadcrumbList',
   itemListElement: [
     { '@type': 'ListItem', position: 1, name: 'Accueil', item: siteUrl },
-    { '@type': 'ListItem', position: 2, name: `FAQ Sophrologie ${city}`, item: `${siteUrl}/faq` },
+    { '@type': 'ListItem', position: 2, name: `FAQ ${spLabel} ${city}`, item: `${siteUrl}/faq` },
   ],
 }
 
@@ -117,7 +119,7 @@ export default function FaqPage() {
             Questions fréquentes
           </p>
           <h1 className="text-[24px] md:text-[30px] font-extrabold text-white leading-[1.2] mb-3 tracking-tight">
-            La sophrologie à {siteConfig.cityLabel} :<br />toutes vos questions
+            La {sp} à {city} :<br />toutes vos questions
           </h1>
           <p className="text-sm text-white/70 leading-[1.65]">
             Définition, tarifs, remboursements, nombre de séances... Tout ce qu&apos;il faut savoir avant de consulter.
@@ -137,10 +139,10 @@ export default function FaqPage() {
 
         <div className="bg-surface border border-green rounded-2xl p-8 text-center">
           <h2 className="text-base font-extrabold text-green-dark mb-2">
-            Prêt à trouver votre sophrologue ?
+            Prêt à trouver votre {sp} ?
           </h2>
           <p className="text-xs text-muted mb-5">
-            Consultez notre annuaire des praticiens certifiés à {siteConfig.cityLabel}.
+            Consultez notre annuaire des praticiens certifiés à {city}.
           </p>
           <Link
             href="/praticiens"

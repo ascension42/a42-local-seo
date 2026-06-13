@@ -3,6 +3,7 @@ import Link from 'next/link'
 
 export default function SeoText() {
   const sp = siteConfig.specialtyLabel.toLowerCase()
+  const spPlural = siteConfig.specialtyPlural.toLowerCase()
   const city = siteConfig.cityLabel
   return (
     <section className="py-12 border-t border-border">
@@ -14,8 +15,8 @@ export default function SeoText() {
               La {sp} à {city}
             </h2>
             <p className="text-xs text-muted leading-[1.8]">
-              La sophrologie est une méthode de relaxation dynamique créée par Alfonso Caycedo, combinant
-              respiration contrôlée, décontraction musculaire progressive et visualisation positive.
+              La {sp} est une approche de bien-être et d'accompagnement personnel qui aide à mieux gérer
+              le stress, améliorer la qualité de vie et renforcer les ressources intérieures.
               À {city}, nos praticiens certifiés vous accompagnent à votre rythme,
               en cabinet ou en ligne.
             </p>
@@ -56,10 +57,10 @@ export default function SeoText() {
           </div>
           <div>
             <h2 className="text-base font-extrabold text-green-dark mb-3 tracking-tight">
-              Sophrologie en ligne à {city}
+              {siteConfig.specialtyLabel} en ligne à {city}
             </h2>
             <p className="text-xs text-muted leading-[1.8]">
-              Plusieurs sophrologues de notre annuaire proposent des séances de sophrologie en visioconférence.
+              Plusieurs {spPlural} de notre annuaire proposent des séances en visioconférence.
               Aussi efficaces qu&apos;en cabinet, elles offrent plus de flexibilité : pas de déplacement,
               créneaux élargis, pratique depuis chez vous.
             </p>
@@ -72,7 +73,7 @@ export default function SeoText() {
               Remboursement & tarifs
             </h2>
             <p className="text-xs text-muted leading-[1.8]">
-              La sophrologie n&apos;est pas remboursée par la Sécurité Sociale. En revanche, de nombreuses
+              La {sp} n&apos;est pas remboursée par la Sécurité Sociale. En revanche, de nombreuses
               mutuelles (Harmonie, MGEN, Alan…) proposent un forfait médecines douces couvrant une partie
               des séances. Renseignez-vous auprès de votre mutuelle.
             </p>
