@@ -18,3 +18,4 @@ jobs:
         run: |
           git push origin main:deploy/sophrologue-pezenas --force
           git push origin main:deploy/sophrologue-beziers --force
+          git push origin main:deploy/sophrologue-montpellier --force
